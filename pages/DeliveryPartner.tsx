@@ -1,20 +1,19 @@
-
-import React from 'react';
-import { 
-  Wallet, 
-  Calendar, 
-  ShieldCheck, 
-  Gift, 
-  ArrowRight, 
-  Smartphone, 
-  CheckCircle2, 
-  FileText, 
-  Zap, 
+import React from "react";
+import {
+  Wallet,
+  Calendar,
+  ShieldCheck,
+  Gift,
+  ArrowRight,
+  Smartphone,
+  CheckCircle2,
+  FileText,
+  Zap,
   PlayCircle,
   Home as HomeIcon,
   Clock,
-  MapPin
-} from 'lucide-react';
+  MapPin,
+} from "lucide-react";
 
 interface DeliveryPartnerProps {
   onGoHome?: () => void;
@@ -26,10 +25,11 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
       {/* Premium Hero Section */}
       <section className="relative min-h-[85vh] flex items-center justify-center bg-[#1C1C1C] overflow-hidden">
         {/* Background Image with optimized overlay */}
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-fixed bg-center scale-105"
-          style={{ 
-            backgroundImage: 'url("https://images.unsplash.com/photo-1626354313200-98308f972044?auto=format&fit=crop&q=80&w=1920")',
+          style={{
+            backgroundImage:
+              'url("https://images.unsplash.com/photo-1626354313200-98308f972044?auto=format&fit=crop&q=80&w=1920")',
           }}
         >
           {/* Multi-layered gradient for text readability and premium feel */}
@@ -46,19 +46,24 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
               </span>
               HIRING NOW ACROSS INDIA
             </div>
-            
+
             <h1 className="text-white text-5xl md:text-7xl font-black mb-6 leading-[1.1] drop-shadow-lg">
               Drive Your Growth. <br />
               <span className="text-[#E23744]">Earn With Bhukk.</span>
             </h1>
-            
+
             <p className="text-white/90 text-xl md:text-2xl font-medium mb-10 max-w-xl leading-relaxed drop-shadow-md">
-              Join the elite league of delivery partners. Get flexible hours, instant payouts, and comprehensive insurance.
+              Join the elite league of delivery partners. Get flexible hours,
+              instant payouts, and comprehensive insurance.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <button className="group w-full sm:w-auto bg-[#E23744] text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-[#c62833] transition-all shadow-2xl flex items-center justify-center gap-3 active:scale-95">
-                Register as Partner <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                Register as Partner{" "}
+                <ArrowRight
+                  size={22}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
               </button>
               <button className="w-full sm:w-auto bg-white/10 backdrop-blur-xl text-white border border-white/30 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-3 active:scale-95">
                 <Smartphone size={22} /> Download App
@@ -84,168 +89,349 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
         </div>
       </section>
 
-      {/* Benefits Grid - Zomato Style Cards */}
-      <section className="py-24 bg-white">
+      {/* --- Delivery Partner Content (preserve hero above) --- */}
+
+      {/* How The Delivery App Works */}
+      <section className="pt-16 pb-24 bg-white">
         <div className="max-w-[1100px] mx-auto px-4">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-black text-[#1C1C1C] mb-4 tracking-tight">Perks of riding with us</h2>
-            <p className="text-[#696969] text-lg">Designed for your comfort, safety, and financial growth.</p>
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-black text-[#1C1C1C]">
+              Your Work, Simplified
+            </h2>
+            <p className="text-[#696969] mt-3">
+              A clear, safe flow — from accepting an order to quick payout.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { icon: <Wallet size={36} />, title: 'Weekly Payouts', desc: 'Secure earnings deposited directly every week without delay.' },
-              { icon: <Calendar size={36} />, title: 'Own Your Time', desc: 'Login and logout whenever you want. Be your own boss.' },
-              { icon: <ShieldCheck size={36} />, title: 'Health First', desc: 'Complimentary medical and accidental insurance for you and your family.' },
-              { icon: <Gift size={36} />, title: 'Incentive Rain', desc: 'Complete daily targets and unlock massive performance bonuses.' }
-            ].map((benefit, i) => (
-              <div key={i} className="p-10 rounded-[2.5rem] bg-[#F8F8F8] hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-transparent hover:border-gray-100 group">
-                <div className="text-[#E23744] mb-8 bg-white w-20 h-20 flex items-center justify-center rounded-3xl shadow-sm group-hover:bg-[#E23744] group-hover:text-white transition-colors duration-500">
-                  {benefit.icon}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div className="space-y-8">
+              {[
+                {
+                  title: "Go Online",
+                  desc: "Open the Bhukk Partner App and set your availability.",
+                  emoji: "🟢",
+                },
+                {
+                  title: "Accept Orders",
+                  desc: "Receive requests from nearby licensed stores and accept jobs you want.",
+                  emoji: "✅",
+                },
+                {
+                  title: "Pick Up Securely",
+                  desc: "Pick up sealed packages only from verified stores.",
+                  emoji: "📦",
+                },
+                {
+                  title: "Deliver Safely",
+                  desc: "Follow navigation to verified addresses and handover to the verified customer.",
+                  emoji: "🛵",
+                },
+                {
+                  title: "Get Paid",
+                  desc: "Transparent settlements — weekly and clear breakdowns in the app.",
+                  emoji: "💸",
+                },
+              ].map((s, i) => (
+                <div key={i} className="flex gap-6 items-start">
+                  <div className="flex-shrink-0 w-14 h-14 rounded-xl bg-[#FFF5F6] text-[#E23744] flex items-center justify-center text-2xl font-black shadow-sm">
+                    {s.emoji}
+                  </div>
+                  <div>
+                    <h4 className="text-2xl font-bold text-[#1C1C1C]">
+                      {s.title}
+                    </h4>
+                    <p className="text-[#6b6b6b] mt-1">{s.desc}</p>
+                  </div>
                 </div>
-                <h3 className="text-2xl font-extrabold text-[#1C1C1C] mb-4">{benefit.title}</h3>
-                <p className="text-[#696969] leading-relaxed text-lg">{benefit.desc}</p>
+              ))}
+            </div>
+
+            <div className="space-y-6">
+              <div className="rounded-3xl overflow-hidden shadow-2xl bg-[#f8fafc] p-6">
+                <h5 className="text-sm font-bold text-[#1C1C1C] uppercase mb-4">
+                  In-app views
+                </h5>
+                <div className="grid grid-cols-2 gap-3">
+                  <img
+                    src="/assets/order_request.png"
+                    alt="Order request"
+                    className="w-full h-36 object-cover rounded-xl"
+                  />
+                  <img
+                    src="/assets/navigation_screen.png"
+                    alt="Navigation"
+                    className="w-full h-36 object-cover rounded-xl"
+                  />
+                  <img
+                    src="/assets/earnings_summary.png"
+                    alt="Earnings"
+                    className="w-full h-36 object-cover rounded-xl"
+                  />
+                  <img
+                    src="/assets/support_button.png"
+                    alt="Support"
+                    className="w-full h-36 object-cover rounded-xl"
+                  />
+                </div>
+                <p className="text-sm text-[#6b6b6b] mt-4">
+                  Screenshots: order request, navigation, earnings summary, and
+                  quick support access.
+                </p>
+              </div>
+
+              <div className="text-sm text-[#6b6b6b]">
+                Animations: subtle device float and button micro-interactions to
+                signal live data in the app.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Perks & Benefits */}
+      <section className="py-24 bg-[#FFFBF7]">
+        <div className="max-w-[1100px] mx-auto px-4 text-center">
+          <h2 className="text-4xl md:text-5xl font-black text-[#1C1C1C] mb-6">
+            Why Deliver with Bhukk
+          </h2>
+          <p className="text-[#696969] mb-10">
+            Built for safety, earnings, and flexibility.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: "💰", title: "Highest payout per delivery" },
+              { icon: "🕒", title: "Flexible working hours" },
+              { icon: "📍", title: "Hyperlocal deliveries" },
+              { icon: "🛡️", title: "Safety-first operations" },
+              { icon: "📲", title: "Easy-to-use partner app" },
+              { icon: "⚡", title: "Fast weekly settlements" },
+              { icon: "🎓", title: "Onboarding & training" },
+              { icon: "🧾", title: "Clear rules & transparency" },
+            ].map((b, i) => (
+              <div
+                key={i}
+                className="p-6 bg-white rounded-2xl shadow-sm text-left"
+              >
+                <div className="text-3xl mb-4">{b.icon}</div>
+                <h4 className="font-bold text-lg text-[#1C1C1C]">{b.title}</h4>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-sm text-[#a33] mt-8">
+            ⚠️ No alcohol consumption while on duty — only sealed package
+            deliveries.
+          </p>
+        </div>
+      </section>
+
+      {/* Safety & Compliance */}
+      <section className="py-20 bg-white">
+        <div className="max-w-[900px] mx-auto px-4">
+          <h3 className="text-3xl font-black text-[#1C1C1C] text-center mb-6">
+            Safety Comes First
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <ul className="space-y-4">
+              {[
+                "Helmet & ID mandatory",
+                "Age-verified delivery only",
+                "Sealed package pickups",
+                "No cash handling (where possible)",
+              ].map((s, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <div className="text-[#E23744] mt-1">•</div>
+                  <div className="text-[#6b6b6b]">{s}</div>
+                </li>
+              ))}
+            </ul>
+
+            <div className="bg-[#FFF5F6] p-6 rounded-2xl">
+              <h4 className="font-bold text-xl mb-3">Support & Emergency</h4>
+              <p className="text-[#6b6b6b]">
+                24×7 partner support and an emergency help button inside the
+                app. We work with local authorities and licensed stores to
+                maintain compliance.
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-[#6b6b6b] mt-6 text-center">
+            These measures build trust with regulators, families, and customers.
+          </p>
+        </div>
+      </section>
+
+      {/* Earnings & Payouts */}
+      <section className="py-20 bg-[#FFFBF7]">
+        <div className="max-w-[1100px] mx-auto px-4">
+          <h3 className="text-3xl font-black text-[#1C1C1C] text-center mb-8">
+            How Much Can You Earn?
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
+              <h4 className="font-extrabold text-2xl">Base payout</h4>
+              <p className="text-[#6b6b6b] mt-2">
+                Calculated per order using distance, time, and demand.
+                Transparent breakdown shown after every trip.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
+              <h4 className="font-extrabold text-2xl">Peak incentives</h4>
+              <p className="text-[#6b6b6b] mt-2">
+                Extra incentives during peak hours and high-demand zones to
+                boost earnings.
+              </p>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm">
+              <h4 className="font-extrabold text-2xl">Payout cycle</h4>
+              <p className="text-[#6b6b6b] mt-2">
+                Fast weekly settlements with clear ledger and dispute resolution
+                in-app.
+              </p>
+            </div>
+          </div>
+
+          <p className="text-sm text-[#6b6b6b] mt-6">
+            ⚠️ Avoid exact ₹ promises unless guaranteed — earnings vary by city
+            and demand.
+          </p>
+        </div>
+      </section>
+
+      {/* Eligibility & Documents */}
+      <section className="py-24 bg-white">
+        <div className="max-w-[1100px] mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div>
+            <h3 className="text-3xl font-black text-[#1C1C1C] mb-6">
+              Who Can Join Bhukk?
+            </h3>
+            <ul className="space-y-3 text-[#6b6b6b]">
+              {[
+                "Age 21+",
+                "Valid driving license",
+                "Two-wheeler",
+                "Smartphone (Android)",
+                "Helmet",
+                "Aadhaar & PAN",
+                "Police verification (if required by state)",
+              ].map((r, i) => (
+                <li key={i} className="flex items-center gap-3">
+                  <div className="text-[#E23744]">✔</div>
+                  <div>{r}</div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-3xl font-black text-[#1C1C1C] mb-6">
+              Documents Required
+            </h3>
+            <ul className="space-y-3 text-[#6b6b6b]">
+              {[
+                "Driving License",
+                "Aadhaar Card",
+                "PAN Card",
+                "Vehicle RC",
+                "Bank Account Details",
+                "Profile Photo",
+              ].map((d, i) => (
+                <li key={i} className="flex items-start gap-3">
+                  <div className="text-[#E23744] mt-1">•</div>
+                  <div>{d}</div>
+                </li>
+              ))}
+            </ul>
+            <p className="text-sm text-[#6b6b6b] mt-6">
+              All documents are uploaded securely through the Partner app. No
+              paperwork at pickup.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Download CTA */}
+      <section className="py-20 bg-[#E23744] text-white">
+        <div className="max-w-[1100px] mx-auto px-4 flex flex-col md:flex-row items-center gap-8">
+          <div className="flex-1">
+            <h3 className="text-4xl font-black">Start Delivering Today</h3>
+            <p className="mt-3 text-lg text-white/90">
+              Download the Delivery Partner app and start accepting orders in
+              your city.
+            </p>
+            <div className="mt-6 flex items-center gap-4">
+              <a
+                href="#"
+                className="inline-flex items-center gap-3 bg-white text-[#1C1C1C] px-5 py-3 rounded-2xl font-bold shadow"
+              >
+                Get it on Google Play
+              </a>
+              <span className="text-sm text-white/90">Android only</span>
+            </div>
+          </div>
+
+          <div className="flex-1 flex justify-center">
+            <img
+              src="/assets/delivery_phone_mock.png"
+              alt="Delivery app"
+              className="w-64 rounded-3xl shadow-2xl animate-float"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-20 bg-white">
+        <div className="max-w-[900px] mx-auto px-4">
+          <h3 className="text-3xl font-black text-[#1C1C1C] text-center mb-8">
+            Frequently Asked Questions
+          </h3>
+          <div className="space-y-4">
+            {[
+              {
+                q: "Is alcohol handling safe?",
+                a: "Yes. You only pick up sealed packages from licensed retailers and deliver to verified customers.",
+              },
+              {
+                q: "Do I need to carry cash?",
+                a: "Preferably no — most orders are prepaid. If cash is required, follow the app guidance.",
+              },
+              {
+                q: "Can I choose my working hours?",
+                a: "Yes — go online when you want to accept orders.",
+              },
+              {
+                q: "What if I face an issue during delivery?",
+                a: "Use the in-app support or the emergency help button to reach our operations team.",
+              },
+            ].map((f, i) => (
+              <div key={i} className="p-6 rounded-2xl bg-[#FFFBF7]">
+                <h4 className="font-bold">{f.q}</h4>
+                <p className="text-[#6b6b6b] mt-2">{f.a}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Process Section */}
-      <section className="py-24 bg-[#1C1C1C] text-white">
-        <div className="max-w-[1100px] mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-20 items-center">
-            <div className="flex-1 space-y-10">
-              <h2 className="text-4xl md:text-5xl font-black leading-tight">Onboard in less than <br /><span className="text-[#E23744]">24 Hours</span></h2>
-              
-              <div className="space-y-12">
-                {[
-                  { icon: <FileText size={24} />, title: 'Quick Application', desc: 'Upload your documents via the app—Aadhaar, DL, and RC.' },
-                  { icon: <Zap size={24} />, title: 'Digital Training', desc: 'Complete our 15-minute interactive safety & delivery training.' },
-                  { icon: <CheckCircle2 size={24} />, title: 'Start Riding', desc: 'Activate your profile and accept your first delivery order.' }
-                ].map((step, i) => (
-                  <div key={i} className="flex gap-8 group">
-                    <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-[#E23744] text-2xl group-hover:bg-[#E23744] group-hover:text-white transition-all duration-300">
-                      {i + 1}
-                    </div>
-                    <div className="space-y-3">
-                      <h4 className="text-2xl font-bold text-white">{step.title}</h4>
-                      <p className="text-gray-400 text-lg leading-relaxed">{step.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex-1 relative">
-              <div className="absolute -inset-10 bg-[#E23744]/20 blur-[100px] rounded-full"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800" 
-                alt="Delivery Partner Support"
-                className="relative rounded-[3rem] shadow-2xl border-8 border-white/5 transform hover:scale-105 transition-transform duration-700"
-              />
-            </div>
-          </div>
+      {/* Mandatory Disclaimer */}
+      <footer className="py-8 bg-white border-t">
+        <div className="max-w-[1100px] mx-auto px-4 text-sm text-[#6b6b6b]">
+          <p className="mb-2">
+            🔐 <strong>Disclaimer:</strong> Bhukk delivery partners do not sell
+            alcohol. They only deliver sealed packages from licensed retailers
+            to verified customers in accordance with local laws.
+          </p>
+          <p>
+            If you have more questions or want help getting started, download
+            the app and reach out via the Partner Support section.
+          </p>
         </div>
-      </section>
-
-      {/* Partner App Mockup Section */}
-      <section className="py-32 bg-white overflow-hidden">
-        <div className="max-w-[1100px] mx-auto px-4">
-          <div className="flex flex-col lg:flex-row items-center gap-24">
-            <div className="flex-1 order-2 lg:order-1 flex justify-center">
-              <div className="relative">
-                {/* Floating Elements */}
-                <div className="absolute -left-16 top-20 bg-white p-6 rounded-2xl shadow-2xl z-20 animate-bounce-slow hidden md:block">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-green-100 text-green-600 p-2 rounded-full"><Wallet size={20} /></div>
-                    <div>
-                      <p className="text-xs text-gray-500 font-bold uppercase">Last Payout</p>
-                      <p className="text-xl font-black text-gray-800">₹8,450</p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Device Frame */}
-                <div className="relative w-80 h-[640px] bg-[#1C1C1C] rounded-[3.5rem] border-[12px] border-[#1C1C1C] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] overflow-hidden">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-6 bg-[#1C1C1C] rounded-b-3xl z-30"></div>
-                  <div className="absolute inset-0 bg-white p-6 pt-12 text-left flex flex-col">
-                    <div className="flex justify-between items-center mb-8">
-                      <div className="h-6 w-24 bg-gray-100 rounded-full"></div>
-                      <div className="h-10 w-10 bg-[#E23744] rounded-2xl flex items-center justify-center text-white"><Smartphone size={20} /></div>
-                    </div>
-                    
-                    <div className="bg-gradient-to-br from-[#1C1C1C] to-gray-800 p-6 rounded-3xl text-white mb-8 shadow-xl">
-                      <p className="text-xs text-white/60 font-bold uppercase tracking-widest mb-1">Current Earnings</p>
-                      <h4 className="text-3xl font-black">₹2,840.00</h4>
-                      <div className="mt-4 flex justify-between items-center">
-                        <span className="text-[10px] bg-green-500 px-2 py-1 rounded-full font-bold">ACTIVE TRIP</span>
-                        <div className="h-1 w-12 bg-white/20 rounded-full"></div>
-                      </div>
-                    </div>
-
-                    <div className="space-y-6">
-                      <p className="text-sm font-black text-gray-800 uppercase tracking-widest">Performance</p>
-                      {[1, 2, 3].map(i => (
-                        <div key={i} className="flex items-center gap-4 bg-gray-50 p-4 rounded-2xl">
-                          <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#E23744]"><Zap size={20} /></div>
-                          <div className="flex-1">
-                            <div className="h-3 w-2/3 bg-gray-200 rounded-full mb-2"></div>
-                            <div className="h-2 w-1/2 bg-gray-100 rounded-full"></div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="mt-auto">
-                      <button className="w-full bg-[#E23744] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-lg shadow-[#E23744]/30">
-                        Go Online
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex-1 order-1 lg:order-2 space-y-8">
-              <h2 className="text-4xl md:text-6xl font-black text-[#1C1C1C] leading-[1.1]">The App That <br /><span className="text-[#E23744]">Works For You.</span></h2>
-              <p className="text-[#696969] text-xl leading-relaxed">
-                Smart navigation, real-time earnings tracker, and 24/7 priority support. Everything you need to succeed is right in your pocket.
-              </p>
-              
-              <div className="flex flex-wrap gap-4 pt-6">
-                <button className="flex items-center gap-3 bg-[#1C1C1C] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-black transition-all shadow-xl active:scale-95">
-                  <PlayCircle size={24} /> Google Play
-                </button>
-                <button className="flex items-center gap-3 bg-white text-[#1C1C1C] border-2 border-gray-100 px-8 py-4 rounded-2xl font-bold text-lg hover:bg-gray-50 transition-all active:scale-95">
-                  <Smartphone size={24} /> App Store
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Cross-Sell / Home Redirect */}
-      <section className="py-24 bg-[#FFFBF7]">
-        <div className="max-w-[1100px] mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto space-y-8 bg-white p-16 rounded-[4rem] shadow-2xl border border-gray-100">
-            <div className="inline-flex p-5 bg-[#FFF1F2] rounded-3xl text-[#E23744] mb-4">
-              <HomeIcon size={40} />
-            </div>
-            <h2 className="text-4xl font-black text-[#1C1C1C]">Not looking to drive?</h2>
-            <p className="text-[#696969] text-xl leading-relaxed">
-              Experience India's smartest liquor delivery app as a customer. Legal, fast, and secure.
-            </p>
-            <button 
-              onClick={onGoHome}
-              className="group inline-flex items-center gap-3 bg-[#E23744] text-white px-12 py-5 rounded-2xl font-black text-xl hover:bg-[#c62833] transition-all shadow-xl active:scale-95"
-            >
-              Order Now <ArrowRight size={24} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </section>
+      </footer>
     </div>
   );
 };
