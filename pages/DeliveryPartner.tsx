@@ -28,8 +28,7 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
         <div
           className="absolute inset-0 bg-cover bg-fixed bg-center scale-105"
           style={{
-            backgroundImage:
-              'url("https://images.unsplash.com/photo-1626354313200-98308f972044?auto=format&fit=crop&q=80&w=1920")',
+            backgroundImage: 'url("/assets/background_delivery.png")',
           }}
         >
           {/* Multi-layered gradient for text readability and premium feel */}
