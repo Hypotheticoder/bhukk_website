@@ -4,6 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 const SECTIONS = [
   {
     title: "Better for Customers",
+    page: "home",
     description:
       "Enjoy a curated selection of premium beverages delivered to your doorstep in minutes, not hours.",
     image:
@@ -16,6 +17,7 @@ const SECTIONS = [
   },
   {
     title: "Better for Store Owners",
+    page: "partnership",
     description:
       "Digitize your shop and reach thousands of new customers in your locality with zero hassle.",
     image: "/assets/store_owner.png",
@@ -27,6 +29,7 @@ const SECTIONS = [
   },
   {
     title: "Better for Delivery Partners",
+    page: "partner",
     description:
       "Earn more with flexible timings, professional training, and industry-standard insurance coverage.",
     image: "/assets/delivery_partner.png",
@@ -39,6 +42,15 @@ const SECTIONS = [
 ];
 
 const BetterForEveryone: React.FC = () => {
+  const navigateTo = (page: string) => {
+    try {
+      window.location.hash = `#${page}`;
+      window.dispatchEvent(new CustomEvent("navigate", { detail: page }));
+    } catch (e) {
+      // fallback: set location only
+      window.location.hash = `#${page}`;
+    }
+  };
   return (
     <div className="space-y-24 overflow-hidden">
       <div className="text-center animate-fade-in-up">
@@ -95,7 +107,10 @@ const BetterForEveryone: React.FC = () => {
                   </li>
                 ))}
               </ul>
-              <button className="mt-4 px-8 py-3 bg-white border border-[#E23744] text-[#E23744] font-semibold rounded-lg hover:bg-[#E23744] hover:text-white transition-all">
+              <button
+                onClick={() => navigateTo((section as any).page || "home")}
+                className="mt-4 px-8 py-3 bg-white border border-[#E23744] text-[#E23744] font-semibold rounded-lg hover:bg-[#E23744] hover:text-white transition-all"
+              >
                 Learn More
               </button>
             </div>

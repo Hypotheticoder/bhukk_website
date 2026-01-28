@@ -406,7 +406,7 @@ const AddStore: React.FC = () => {
               <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl group">
                 <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10"></div>
                 <img
-                  src="https://images.unsplash.com/photo-1590669803587-09ad4d6a668a?auto=format&fit=crop&q=80&w=1000"
+                  src="/assets/dashboard.png"
                   alt="Store Management"
                   className="w-full h-[450px] object-cover transition-transform duration-[10s] group-hover:scale-110"
                 />

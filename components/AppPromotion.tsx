@@ -86,12 +86,12 @@ const AppPromotion: React.FC = () => {
             <img
               src="/assets/playstore.png"
               alt="Play Store"
-              className="h-20 cursor-pointer transition-transform hover:scale-105"
+              className="h-9 cursor-pointer transition-transform hover:scale-105"
             />
             <img
               src="/assets/App.png"
               alt="App Store"
-              className="h-20 cursor-pointer transition-transform hover:scale-105"
+              className="h-9 cursor-pointer transition-transform hover:scale-105"
             />
           </div>
         </div>
