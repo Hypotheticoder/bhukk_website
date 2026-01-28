@@ -15,9 +15,19 @@ const Footer: React.FC = () => {
       <div className="max-w-[1100px] mx-auto px-4 md:px-0">
         {/* Top Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-          <h2 className="text-3xl font-black italic tracking-tighter text-[#1C1C1C]">
-            bhukk
-          </h2>
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            <img
+              src="/assets/Bhukk_without_bg.png"
+              alt="Bhukk logo"
+              className="h-8 w-8 md:h-10 md:w-10 mr-2"
+            />
+            <h2 className="text-3xl font-black italic tracking-tighter text-[#1C1C1C]">
+              Bhukk
+            </h2>
+          </div>
 
           <div className="flex items-center gap-4">
             <button className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
