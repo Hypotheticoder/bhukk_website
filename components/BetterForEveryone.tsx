@@ -17,7 +17,7 @@ const SECTIONS = [
   },
   {
     title: "Better for Store Owners",
-    page: "partnership",
+    page: "store",
     description:
       "Digitize your shop and reach thousands of new customers in your locality with zero hassle.",
     image: "/assets/store_owner.png",
