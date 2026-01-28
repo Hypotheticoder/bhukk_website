@@ -9,6 +9,7 @@ import {
   ArrowRight,
   ChevronDown,
 } from "lucide-react";
+import B2BSection from "@/components/B2BSection";
 
 const COUNTRIES = [
   {
@@ -258,6 +259,71 @@ const AddStore: React.FC = () => {
                 </label>
               </div>
 
+              {/* Document Uploads */}
+              <div className="pt-2 space-y-4">
+                <h4 className="text-sm font-bold text-[#1C1C1C]">
+                  Required Documents
+                </h4>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Liquor Retail License
+                  </label>
+                  <input
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Business Registration
+                  </label>
+                  <input
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Owner ID & PAN (upload)
+                    </label>
+                    <input
+                      type="file"
+                      accept="application/pdf,image/*"
+                      multiple
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Store Address Proof
+                    </label>
+                    <input
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Store Photos
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
               <button className="w-full bg-[#1C1C1C] text-white py-4 rounded-xl font-bold text-base hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-2 flex items-center justify-center gap-2">
                 Submit & Start Selling <ArrowRight size={18} />
               </button>
@@ -265,6 +331,9 @@ const AddStore: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* B2B Partner Overview (inserted) */}
+      <B2BSection showHero={false} />
 
       {/* Why Bhukk Section */}
       <section className="py-24 bg-white">

@@ -66,9 +66,6 @@ const Partnership: React.FC = () => {
         </div>
       </section>
 
-      {/* B2B Partner Overview (inserted) */}
-      <B2BSection />
-
       {/* Property Categories */}
       <section className="py-24 bg-white">
         <div className="max-w-[1100px] mx-auto px-6">

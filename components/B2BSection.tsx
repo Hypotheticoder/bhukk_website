@@ -8,7 +8,11 @@ import {
   CreditCard,
 } from "lucide-react";
 
-const B2BSection: React.FC = () => {
+type B2BSectionProps = {
+  showHero?: boolean;
+};
+
+const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     storeName: "",
@@ -24,70 +28,72 @@ const B2BSection: React.FC = () => {
   return (
     <section className="bg-white text-[#1C1C1C] overflow-hidden">
       {/* HERO CTA */}
-      <div className="max-w-[1100px] mx-auto px-4 py-16">
-        <div className="flex flex-col lg:flex-row items-center gap-12">
-          <div className="flex-1">
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="w-1 h-8 bg-[#E23744] rounded-full" />
-              <span className="text-sm font-bold uppercase text-[#E23744]">
-                Partner with Bhukk
-              </span>
-            </div>
-
-            <div className="bg-white/60 backdrop-blur-md p-8 rounded-3xl shadow-md">
-              <h2 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-                Partner with Bhukk. Grow Your Liquor Business Digitally.
-              </h2>
-              <p className="text-[#696969] mb-6 max-w-xl">
-                Join Bhukk’s B2B platform and reach thousands of nearby
-                customers without investing in your own app, delivery team, or
-                technology.
-              </p>
-
-              <div className="flex flex-wrap gap-4">
-                <button
-                  onClick={() => {
-                    window.location.hash = "partnership";
-                    window.dispatchEvent(
-                      new CustomEvent("navigate", { detail: "partnership" }),
-                    );
-                  }}
-                  className="bg-[#E23744] text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-[#c62833]"
-                >
-                  Become a Partner
-                </button>
-                <button
-                  onClick={() => {
-                    window.location.hash = "contact";
-                    window.dispatchEvent(
-                      new CustomEvent("navigate", { detail: "contact" }),
-                    );
-                  }}
-                  className="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold"
-                >
-                  Request a Demo
-                </button>
+      {showHero && (
+        <div className="max-w-[1100px] mx-auto px-4 py-16">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-3 mb-4">
+                <div className="w-1 h-8 bg-[#E23744] rounded-full" />
+                <span className="text-sm font-bold uppercase text-[#E23744]">
+                  Partner with Bhukk
+                </span>
               </div>
+
+              <div className="bg-white/60 backdrop-blur-md p-8 rounded-3xl shadow-md">
+                <h2 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
+                  Partner with Bhukk. Grow Your Liquor Business Digitally.
+                </h2>
+                <p className="text-[#696969] mb-6 max-w-xl">
+                  Join Bhukk’s B2B platform and reach thousands of nearby
+                  customers without investing in your own app, delivery team, or
+                  technology.
+                </p>
+
+                <div className="flex flex-wrap gap-4">
+                  <button
+                    onClick={() => {
+                      window.location.hash = "store";
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "store" }),
+                      );
+                    }}
+                    className="bg-[#E23744] text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-[#c62833]"
+                  >
+                    Become a Partner
+                  </button>
+                  <button
+                    onClick={() => {
+                      window.location.hash = "contact";
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "contact" }),
+                      );
+                    }}
+                    className="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold"
+                  >
+                    Request a Demo
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-500 mt-4">
+                Bhukk operates as a B2B platform by partnering with licensed
+                liquor retailers to digitize sales, manage orders, and handle
+                last-mile delivery efficiently.
+              </p>
             </div>
 
-            <p className="text-sm text-gray-500 mt-4">
-              Bhukk operates as a B2B platform by partnering with licensed
-              liquor retailers to digitize sales, manage orders, and handle
-              last-mile delivery efficiently.
-            </p>
-          </div>
-
-          <div className="flex-1 flex justify-center lg:justify-end">
-            <div className="w-full max-w-md rounded-3xl overflow-hidden shadow-lg">
-              <img
-                src="/assets/b2b1.png"
-                alt="Store owner using tablet"
-                className="w-full h-auto object-cover"
-              />
+            <div className="flex-1 flex justify-center lg:justify-end">
+              <div className="w-full max-w-md rounded-3xl overflow-hidden shadow-lg">
+                <img
+                  src="/assets/b2b1.png"
+                  alt="Store owner using tablet"
+                  className="w-full h-auto object-cover"
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Better for Store Owners */}
       <div className="max-w-[1100px] mx-auto px-4 py-12">
@@ -208,7 +214,7 @@ const B2BSection: React.FC = () => {
         </div>
       </div>
 
-      {/* B2B Onboarding Form */}
+      {/* B2B Onboarding Form
       <div className="max-w-[1100px] mx-auto px-4 py-12">
         <div className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
           <div className="md:flex md:items-start md:gap-8">
@@ -360,34 +366,7 @@ const B2BSection: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Optional Social Proof */}
-      <div className="max-w-[1100px] mx-auto px-4 py-12">
-        <h3 className="text-2xl font-extrabold text-center mb-4">
-          Why Stores Choose Bhukk
-        </h3>
-        <p className="text-center text-gray-500 mb-8">
-          Trusted by stores across India — see the results for yourself.
-        </p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-6 bg-white rounded-2xl shadow text-center">
-            <h4 className="text-3xl font-extrabold">30%</h4>
-            <p className="text-sm text-gray-500">Increase in monthly orders</p>
-          </div>
-          <div className="p-6 bg-white rounded-2xl shadow text-center">
-            <h4 className="text-3xl font-extrabold">Zero</h4>
-            <p className="text-sm text-gray-500">
-              Delivery investment required
-            </p>
-          </div>
-          <div className="p-6 bg-white rounded-2xl shadow text-center">
-            <h4 className="text-3xl font-extrabold">500+</h4>
-            <p className="text-sm text-gray-500">Partner stores and counting</p>
-          </div>
-        </div>
-      </div>
+      </div> */}
     </section>
   );
 };
