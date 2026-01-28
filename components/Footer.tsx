@@ -22,10 +22,10 @@ const Footer: React.FC = () => {
             <img
               src="/assets/Bhukk_without_bg.png"
               alt="Bhukk logo"
-              className="h-8 w-8 md:h-10 md:w-10 mr-2"
+              className="h-8 w-8 md:h-10 md:w-10 mr-1"
             />
             <h2 className="text-3xl font-black italic tracking-tighter text-[#1C1C1C]">
-              Bhukk
+              bhukk
             </h2>
           </div>
 
