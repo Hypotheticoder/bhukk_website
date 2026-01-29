@@ -19,7 +19,7 @@ const Home: React.FC = () => {
           <FeatureCards />
         </section>
 
-        <section id="trust-section" className="py-16">
+        <section id="#trust-section" className="py-16">
           <BetterForEveryone />
         </section>
 

@@ -82,7 +82,7 @@ const Hero: React.FC = () => {
               className="mt-2 inline-flex items-center gap-3 bg-transparent text-white border border-white/30 px-6 py-3 rounded-xl font-semibold text-base hover:bg-white hover:text-[#1C1C1C] transition-all shadow-lg max-w-[720px] text-center"
             >
               <UserPlus className="text-[#E23744]" />
-              Become a partner as retailor, distributor and store owner
+              Become a Bhukk Partner — Retailers, Distributors & Store Owners
             </button>
           </div>
         </div>
