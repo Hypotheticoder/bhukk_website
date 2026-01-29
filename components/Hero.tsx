@@ -1,5 +1,5 @@
 import React from "react";
-import { Smartphone, PlayCircle, ChevronDown } from "lucide-react";
+import { Smartphone, PlayCircle, ChevronDown, UserPlus } from "lucide-react";
 
 const Hero: React.FC = () => {
   return (
@@ -38,17 +38,53 @@ const Hero: React.FC = () => {
 
         {/* CTA Buttons */}
         <div
-          className="flex flex-col md:flex-row items-center justify-center gap-4 animate-fade-in-up delay-300 opacity-0"
+          className="flex flex-col items-center gap-4 animate-fade-in-up delay-300 opacity-0"
           style={{ animationFillMode: "forwards" }}
         >
-          <button className="flex items-center gap-3 bg-white text-[#1C1C1C] px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-xl">
-            <PlayCircle className="text-[#E23744]" />
-            Get it on Google Play
-          </button>
-          <button className="flex items-center gap-3 bg-white text-[#1C1C1C] px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-xl">
-            <Smartphone className="text-[#E23744]" />
-            Download on App Store
-          </button>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full md:w-auto">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent("show-coming-soon"));
+              }}
+              className="flex items-center gap-3 bg-white text-[#1C1C1C] px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-xl"
+            >
+              <PlayCircle className="text-[#E23744]" />
+              Get it on Google Play
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent("show-coming-soon"));
+              }}
+              className="flex items-center gap-3 bg-white text-[#1C1C1C] px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:-translate-y-1 shadow-xl"
+            >
+              <Smartphone className="text-[#E23744]" />
+              Download on App Store
+            </button>
+          </div>
+
+          <div className="w-full md:w-auto flex justify-center">
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                try {
+                  window.location.hash = "#store";
+                  window.dispatchEvent(
+                    new CustomEvent("navigate", { detail: "store" }),
+                  );
+                } catch (err) {
+                  window.dispatchEvent(
+                    new CustomEvent("navigate", { detail: "store" }),
+                  );
+                }
+              }}
+              className="mt-2 inline-flex items-center gap-3 bg-transparent text-white border border-white/30 px-6 py-3 rounded-xl font-semibold text-base hover:bg-white hover:text-[#1C1C1C] transition-all shadow-lg max-w-[720px] text-center"
+            >
+              <UserPlus className="text-[#E23744]" />
+              Become a partner as retailor, distributor and store owner
+            </button>
+          </div>
         </div>
       </div>
 

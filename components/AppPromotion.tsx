@@ -86,11 +86,17 @@ const AppPromotion: React.FC = () => {
             <img
               src="/assets/playstore.png"
               alt="Play Store"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("show-coming-soon"))
+              }
               className="h-9 cursor-pointer transition-transform hover:scale-105"
             />
             <img
               src="/assets/App.png"
               alt="App Store"
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("show-coming-soon"))
+              }
               className="h-9 cursor-pointer transition-transform hover:scale-105"
             />
           </div>

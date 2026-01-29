@@ -7,6 +7,7 @@ import AddStore from "./pages/AddStore";
 import Partnership from "./pages/Partnership";
 import Contact from "./pages/Contact";
 import Trust from "./pages/Trust";
+import ComingSoon from "./components/ComingSoon";
 
 export type PageType =
   | "home"
@@ -19,6 +20,7 @@ export type PageType =
 const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState<PageType>("home");
+  const [showComingSoon, setShowComingSoon] = useState(false);
 
   // Listen for cross-component navigation events (hash or custom)
   useEffect(() => {
@@ -73,7 +75,18 @@ const App: React.FC = () => {
       setScrolled(window.scrollY > 50);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleShowComingSoon = () => setShowComingSoon(true);
+    window.addEventListener(
+      "show-coming-soon",
+      handleShowComingSoon as EventListener,
+    );
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener(
+        "show-coming-soon",
+        handleShowComingSoon as EventListener,
+      );
+    };
   }, []);
 
   // Scroll to top on page change
@@ -110,6 +123,10 @@ const App: React.FC = () => {
       {renderPage()}
 
       <Footer />
+      <ComingSoon
+        show={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+      />
     </div>
   );
 };

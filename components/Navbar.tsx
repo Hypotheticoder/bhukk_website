@@ -99,7 +99,14 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
             }`}
           >
             <Smartphone size={16} />
-            <a href="#" className="hover:opacity-80 transition-opacity">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent("show-coming-soon"));
+              }}
+              className="hover:opacity-80 transition-opacity"
+            >
               Get App
             </a>
           </div>
@@ -132,7 +139,14 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
               </button>
             ))}
             <hr className="border-gray-100" />
-            <a href="#" className="flex items-center gap-2 text-sm">
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent("show-coming-soon"));
+              }}
+              className="flex items-center gap-2 text-sm"
+            >
               <Smartphone size={18} />
               Get the App
             </a>

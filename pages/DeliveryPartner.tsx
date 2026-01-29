@@ -365,6 +365,10 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
             <div className="mt-6 flex items-center gap-4">
               <a
                 href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.dispatchEvent(new CustomEvent("show-coming-soon"));
+                }}
                 className="inline-flex items-center gap-3 bg-white text-[#1C1C1C] px-5 py-3 rounded-2xl font-bold shadow"
               >
                 Get it on Google Play

@@ -86,11 +86,17 @@ const Footer: React.FC = () => {
               <img
                 src="/assets/playstore.png"
                 alt="Play Store"
+                onClick={() =>
+                  window.dispatchEvent(new CustomEvent("show-coming-soon"))
+                }
                 className="h-16 cursor-pointer"
               />
               <img
                 src="/assets/App.png"
                 alt="App Store"
+                onClick={() =>
+                  window.dispatchEvent(new CustomEvent("show-coming-soon"))
+                }
                 className="h-16 cursor-pointer"
               />
             </div>
