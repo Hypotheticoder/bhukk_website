@@ -6,8 +6,15 @@ import DeliveryPartner from "./pages/DeliveryPartner";
 import AddStore from "./pages/AddStore";
 import Partnership from "./pages/Partnership";
 import Contact from "./pages/Contact";
+import Trust from "./pages/Trust";
 
-export type PageType = "home" | "partner" | "store" | "partnership" | "contact";
+export type PageType =
+  | "home"
+  | "partner"
+  | "store"
+  | "partnership"
+  | "contact"
+  | "trust";
 
 const App: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -19,9 +26,14 @@ const App: React.FC = () => {
       const detail = (e as CustomEvent)?.detail;
       if (typeof detail === "string") {
         if (
-          ["home", "partner", "store", "partnership", "contact"].includes(
-            detail,
-          )
+          [
+            "home",
+            "partner",
+            "store",
+            "partnership",
+            "contact",
+            "trust",
+          ].includes(detail)
         ) {
           setCurrentPage(detail as PageType);
         }
@@ -30,7 +42,16 @@ const App: React.FC = () => {
 
     const handleHash = () => {
       const h = window.location.hash.replace("#", "");
-      if (["home", "partner", "store", "partnership", "contact"].includes(h)) {
+      if (
+        [
+          "home",
+          "partner",
+          "store",
+          "partnership",
+          "contact",
+          "trust",
+        ].includes(h)
+      ) {
         setCurrentPage(h as PageType);
       }
     };
@@ -70,6 +91,8 @@ const App: React.FC = () => {
         return <Partnership />;
       case "contact":
         return <Contact />;
+      case "trust":
+        return <Trust />;
       case "home":
       default:
         return <Home />;

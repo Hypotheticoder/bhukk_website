@@ -5,6 +5,7 @@ const SECTIONS = [
   {
     title: "Better for Customers",
     page: "home",
+    anchor: "trust",
     description:
       "Enjoy a curated selection of premium beverages delivered to your doorstep in minutes, not hours.",
     image:
@@ -108,7 +109,27 @@ const BetterForEveryone: React.FC = () => {
                 ))}
               </ul>
               <button
-                onClick={() => navigateTo((section as any).page || "home")}
+                onClick={() => {
+                  const anchor = (section as any).anchor;
+                  if (anchor) {
+                    const el = document.getElementById(anchor);
+                    if (el) {
+                      el.scrollIntoView({ behavior: "smooth", block: "start" });
+                      try { window.location.hash = `#${anchor}`; } catch (e) {}
+                      return;
+                    }
+                    // fallback: navigate to home then scroll
+                    try {
+                      window.dispatchEvent(new CustomEvent("navigate", { detail: "home" }));
+                      window.location.hash = "#home";
+                    } catch (e) {
+                      window.location.hash = "#home";
+                    }
+                    setTimeout(() => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" }), 350);
+                    return;
+                  }
+                  navigateTo((section as any).page || "home");
+                }}
                 className="mt-4 px-8 py-3 bg-white border border-[#E23744] text-[#E23744] font-semibold rounded-lg hover:bg-[#E23744] hover:text-white transition-all"
               >
                 Learn More

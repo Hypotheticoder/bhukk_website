@@ -10,6 +10,7 @@ export const COLORS = {
 
 export const NAV_LINKS = [
   { name: "Home", href: "#" },
+  // { name: "Trust", href: "#" },
   { name: "Add Store", href: "#" },
   // { name: "Partnership", href: "#" },
   { name: "Delivery Partner", href: "#" },

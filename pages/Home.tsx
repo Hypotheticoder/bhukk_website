@@ -4,6 +4,7 @@ import FeatureCards from "../components/FeatureCards";
 import BetterForEveryone from "../components/BetterForEveryone";
 import B2BSection from "../components/B2BSection";
 import AppPromotion from "../components/AppPromotion";
+import TrustSection from "../components/TrustSection";
 
 const Home: React.FC = () => {
   return (
@@ -18,8 +19,12 @@ const Home: React.FC = () => {
           <FeatureCards />
         </section>
 
-        <section id="better-for" className="py-12 border-t border-gray-100">
+        <section id="trust-section" className="py-16">
           <BetterForEveryone />
+        </section>
+
+        <section id="better-for" className="py-12 border-t border-gray-100">
+          <TrustSection />
         </section>
       </main>
 

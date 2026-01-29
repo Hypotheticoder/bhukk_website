@@ -15,7 +15,9 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
   const isDarkNav = scrolled || currentPage !== "home";
 
   const handleLinkClick = (name: string) => {
-    if (name === "Delivery Partner") {
+    if (name === "Trust") {
+      setPage("trust");
+    } else if (name === "Delivery Partner") {
       setPage("partner");
     } else if (name === "Home") {
       setPage("home");
@@ -78,7 +80,8 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
                   (link.name === "Add Store" && currentPage === "store") ||
                   (link.name === "Partnership" &&
                     currentPage === "partnership") ||
-                  (link.name === "Contact Us" && currentPage === "contact")
+                  (link.name === "Contact Us" && currentPage === "contact") ||
+                  (link.name === "Trust" && currentPage === "trust")
                     ? "text-[#E23744] font-semibold"
                     : ""
                 }`}
