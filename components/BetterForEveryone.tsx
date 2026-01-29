@@ -115,17 +115,30 @@ const BetterForEveryone: React.FC = () => {
                     const el = document.getElementById(anchor);
                     if (el) {
                       el.scrollIntoView({ behavior: "smooth", block: "start" });
-                      try { window.location.hash = `#${anchor}`; } catch (e) {}
+                      try {
+                        window.location.hash = `#${anchor}`;
+                      } catch (e) {}
                       return;
                     }
                     // fallback: navigate to home then scroll
                     try {
-                      window.dispatchEvent(new CustomEvent("navigate", { detail: "home" }));
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "home" }),
+                      );
                       window.location.hash = "#home";
                     } catch (e) {
                       window.location.hash = "#home";
                     }
-                    setTimeout(() => document.getElementById(anchor)?.scrollIntoView({ behavior: "smooth", block: "start" }), 350);
+                    setTimeout(
+                      () =>
+                        document
+                          .getElementById(anchor)
+                          ?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                          }),
+                      350,
+                    );
                     return;
                   }
                   navigateTo((section as any).page || "home");
