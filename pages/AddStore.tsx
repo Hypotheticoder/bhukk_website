@@ -337,7 +337,7 @@ const AddStore: React.FC = () => {
                     onChange={(e) => setBusinessCategory(e.target.value)}
                   >
                     <option value="">Select Business Category</option>
-                    <option>Retail Beverages Store</option>
+                    <option>Beverages Manufacturer</option>
                     <option>Authorized Distributor</option>
                     <option>Beverages Retailer</option>
                   </select>
