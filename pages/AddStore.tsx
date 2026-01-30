@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import B2BSection from "@/components/B2BSection";
+import DistributorRetailer from "@/components/DistributorRetailer";
 import { sendPartnerMessage } from "@/api/services/partner.service";
 
 const COUNTRIES = [
@@ -476,6 +477,9 @@ const AddStore: React.FC = () => {
       {/* local handlers */}
 
       {/* B2B Partner Overview (inserted) */}
+      <DistributorRetailer />
+
+      {/* Distributors ↔ Retailers section */}
       <B2BSection showHero={false} />
 
       {/* Why Bhukk Section */}

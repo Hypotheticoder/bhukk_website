@@ -5,14 +5,19 @@ import BetterForEveryone from "../components/BetterForEveryone";
 import B2BSection from "../components/B2BSection";
 import AppPromotion from "../components/AppPromotion";
 import TrustSection from "../components/TrustSection";
+import DistributorRetailer from "@/components/DistributorRetailer";
 
 const Home: React.FC = () => {
   return (
     <>
       <Hero />
+      <section id="b2b" className="py-16">
+        <B2BSection />
+      </section>
+
       <main className="max-w-[1100px] mx-auto px-4 md:px-0">
         <section id="b2b" className="py-16">
-          <B2BSection />
+          <DistributorRetailer />
         </section>
 
         <section id="features" className="py-16">
