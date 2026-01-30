@@ -210,7 +210,11 @@ const AddStore: React.FC = () => {
               </h2>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form
+              id="store-enroll-form"
+              className="space-y-4"
+              onSubmit={handleSubmit}
+            >
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -540,10 +544,67 @@ const AddStore: React.FC = () => {
               </p>
 
               <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-                <button className="bg-[#1C1C1C] text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-all shadow-xl flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    const el = document.getElementById("store-enroll-form");
+                    if (el) {
+                      const headerOffset = 80; // adjust if navbar height changes
+                      const rect = el.getBoundingClientRect();
+                      const target =
+                        window.pageYOffset + rect.top - headerOffset;
+                      window.scrollTo({ top: target, behavior: "smooth" });
+                      // Delay focus so the browser's focus-to-element doesn't
+                      // cancel/override the smooth scroll animation.
+                      setTimeout(() => {
+                        (
+                          el.querySelector(
+                            "input, select, textarea",
+                          ) as HTMLElement | null
+                        )?.focus();
+                      }, 350);
+                      return;
+                    }
+                    try {
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "store" }),
+                      );
+                      window.location.hash = "store";
+                    } catch (e) {
+                      window.location.hash = "store";
+                    }
+                    setTimeout(() => {
+                      const el2 = document.getElementById("store-enroll-form");
+                      if (el2) {
+                        const headerOffset = 80;
+                        const rect2 = el2.getBoundingClientRect();
+                        const target2 =
+                          window.pageYOffset + rect2.top - headerOffset;
+                        window.scrollTo({ top: target2, behavior: "smooth" });
+                        (
+                          el2.querySelector(
+                            "input, select, textarea",
+                          ) as HTMLElement | null
+                        )?.focus();
+                      }
+                    }, 350);
+                  }}
+                  className="bg-[#1C1C1C] text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-all shadow-xl flex items-center gap-2"
+                >
                   Get Started <ChevronRight size={20} />
                 </button>
-                <button className="bg-white text-[#1C1C1C] border border-gray-200 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all">
+                <button
+                  onClick={() => {
+                    try {
+                      window.location.hash = "contact";
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "contact" }),
+                      );
+                    } catch (e) {
+                      window.location.hash = "contact";
+                    }
+                  }}
+                  className="bg-white text-[#1C1C1C] border border-gray-200 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all"
+                >
                   Contact Support
                 </button>
               </div>
