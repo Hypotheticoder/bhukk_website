@@ -104,8 +104,7 @@ const App: React.FC = () => {
         return <Partnership />;
       case "contact":
         return <Contact />;
-      case "trust":
-        return <Trust />;
+      //  
       case "home":
       default:
         return <Home />;

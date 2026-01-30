@@ -81,14 +81,14 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ show = true, onClose }) => {
                   </div>
 
                   <h1 className="text-4xl md:text-5xl font-black leading-tight">
-                    Liquor.
+                    beverages.
                     <br />
                     Reimagined.
                   </h1>
 
                   <p className="text-white/90 max-w-md leading-relaxed">
                     Bhukk is crafting a modern, safe and fully compliant way to
-                    discover and order premium liquor from verified local
+                    discover and order premium beverages from verified local
                     stores.
                   </p>
 

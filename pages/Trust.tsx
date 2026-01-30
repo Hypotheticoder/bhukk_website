@@ -19,7 +19,7 @@ const Trust: React.FC = () => {
             Your Local Stores. One Trusted Platform.
           </h1>
           <p className="mt-4 text-lg text-[#696969] max-w-3xl mx-auto">
-            Bhukk makes discovering and ordering premium liquor simple, safe,
+            Bhukk makes discovering and ordering premium beverages simple, safe,
             and fully compliant — by connecting customers only with verified
             local stores and ensuring responsible delivery at every step.
           </p>
@@ -56,7 +56,7 @@ const Trust: React.FC = () => {
             </div>
             <h3 className="text-xl font-bold mb-2">Verified Local Stores</h3>
             <p className="text-sm text-[#696969] mb-3">
-              Shop from trusted, verified liquor stores in your locality — no
+              Shop from trusted, verified beverages stores in your locality — no
               unknown sellers, no surprises.
             </p>
             <ul className="text-sm space-y-2">
@@ -146,7 +146,7 @@ const Trust: React.FC = () => {
           <h3 className="text-xl font-bold mb-3">About Bhukk</h3>
           <p className="text-sm text-[#696969]">
             Bhukk offers customers a safe and convenient way to discover and
-            order premium liquor from verified local stores. Every order is
+            order premium beverages from verified local stores. Every order is
             handled responsibly — from age verification to sealed delivery —
             ensuring compliance with local laws while delivering a smooth,
             reliable experience right to your doorstep.

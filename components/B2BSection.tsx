@@ -41,7 +41,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
 
               <div className="bg-white/60 backdrop-blur-md p-8 rounded-3xl shadow-md">
                 <h2 className="text-4xl md:text-5xl font-extrabold leading-tight mb-4">
-                  Partner with Bhukk. Grow Your Liquor Business Digitally.
+                  Partner with Bhukk. Grow Your beverages Business Digitally.
                 </h2>
                 <p className="text-[#696969] mb-6 max-w-xl">
                   Join Bhukk’s B2B platform and reach thousands of nearby
@@ -77,7 +77,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
 
               <p className="text-sm text-gray-500 mt-4">
                 Bhukk operates as a B2B platform by partnering with licensed
-                liquor retailers to digitize sales, manage orders, and handle
+                beverages retailers to digitize sales, manage orders, and handle
                 last-mile delivery efficiently.
               </p>
             </div>
@@ -103,7 +103,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
               Better for Store Owners
             </h3>
             <p className="text-[#696969] mb-6">
-              Bhukk helps licensed liquor stores digitize operations, manage
+              Bhukk helps licensed beverages stores digitize operations, manage
               orders efficiently, and grow sales by connecting them with local
               customers through a reliable delivery network.
             </p>

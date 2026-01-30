@@ -131,12 +131,10 @@ const BetterForEveryone: React.FC = () => {
                     }
                     setTimeout(
                       () =>
-                        document
-                          .getElementById(anchor)
-                          ?.scrollIntoView({
-                            behavior: "smooth",
-                            block: "start",
-                          }),
+                        document.getElementById(anchor)?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        }),
                       350,
                     );
                     return;

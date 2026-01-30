@@ -8,8 +8,7 @@ const Hero: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-[10s] hover:scale-110"
         style={{
-          backgroundImage:
-            'url("https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&q=80&w=1920")',
+          backgroundImage: 'url("/assets/hero.png")',
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70"></div>
@@ -27,13 +26,13 @@ const Hero: React.FC = () => {
           className="text-white text-3xl md:text-5xl font-bold mb-4 drop-shadow-lg animate-fade-in-up delay-100 opacity-0"
           style={{ animationFillMode: "forwards" }}
         >
-          India's Smart Liquor Delivery App
+          India's Smartest Beverages Delivery App
         </h2>
         <p
           className="text-white/90 text-lg md:text-xl font-light mb-12 drop-shadow-md animate-fade-in-up delay-200 opacity-0"
           style={{ animationFillMode: "forwards" }}
         >
-          Fast, legal & reliable alcohol delivery at your doorstep
+          Fast, legal & reliable beverages delivery at your doorstep
         </p>
 
         {/* CTA Buttons */}

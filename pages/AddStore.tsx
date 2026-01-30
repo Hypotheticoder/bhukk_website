@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import B2BSection from "@/components/B2BSection";
+import { sendPartnerMessage } from "@/api/services/partner.service";
 
 const COUNTRIES = [
   {
@@ -49,6 +50,35 @@ const AddStore: React.FC = () => {
   const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // form state
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [storeName, setStoreName] = useState("");
+  const [businessCategory, setBusinessCategory] = useState("");
+  const [termsAccepted, setTermsAccepted] = useState(true);
+
+  // file inputs
+  const [beveragesLicenseFile, setbeveragesLicenseFile] = useState<File | null>(
+    null,
+  );
+  const [businessRegFile, setBusinessRegFile] = useState<File | null>(null);
+  const [ownerIdFiles, setOwnerIdFiles] = useState<File[] | null>(null);
+  const [addressProofFile, setAddressProofFile] = useState<File | null>(null);
+  const [storePhotos, setStorePhotos] = useState<File[] | null>(null);
+
+  // refs to clear file inputs after submit
+  const beveragesRef = useRef<HTMLInputElement | null>(null);
+  const businessRegRef = useRef<HTMLInputElement | null>(null);
+  const ownerIdRef = useRef<HTMLInputElement | null>(null);
+  const addressProofRef = useRef<HTMLInputElement | null>(null);
+  const storePhotosRef = useRef<HTMLInputElement | null>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,6 +92,66 @@ const AddStore: React.FC = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitError(null);
+    setSubmitSuccess(null);
+
+    if (!termsAccepted) {
+      setSubmitError("You must accept the terms to continue.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const form = new FormData();
+      form.append("first_name", firstName);
+      form.append("last_name", lastName);
+      form.append("email", email);
+      form.append("country_code", selectedCountry.dial);
+      form.append("phone", phone);
+      form.append("store_name", storeName);
+      form.append("business_category", businessCategory);
+      form.append("terms_accepted", termsAccepted ? "1" : "0");
+
+      if (beveragesLicenseFile)
+        form.append("beverages_retail_license", beveragesLicenseFile);
+      if (businessRegFile)
+        form.append("business_registration_license", businessRegFile);
+      if (ownerIdFiles && ownerIdFiles.length)
+        ownerIdFiles.forEach((f) => form.append("owner_id_files", f));
+      if (addressProofFile)
+        form.append("store_address_proof", addressProofFile);
+      if (storePhotos && storePhotos.length)
+        storePhotos.forEach((f) => form.append("store_photos", f));
+
+      await sendPartnerMessage(form);
+      setSubmitSuccess("Application submitted — we will contact you soon.");
+      // optionally clear form
+      setFirstName("");
+      setLastName("");
+      setEmail("");
+      setPhone("");
+      setStoreName("");
+      setBusinessCategory("");
+      setbeveragesLicenseFile(null);
+      setBusinessRegFile(null);
+      setOwnerIdFiles(null);
+      setAddressProofFile(null);
+      setStorePhotos(null);
+      // clear file input DOM values so the inputs appear empty
+      if (beveragesRef.current) beveragesRef.current.value = "";
+      if (businessRegRef.current) businessRegRef.current.value = "";
+      if (ownerIdRef.current) ownerIdRef.current.value = "";
+      if (addressProofRef.current) addressProofRef.current.value = "";
+      if (storePhotosRef.current) storePhotosRef.current.value = "";
+    } catch (err) {
+      setSubmitError("Failed to submit. Please try again later.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="pt-0 overflow-x-hidden">
@@ -82,7 +172,7 @@ const AddStore: React.FC = () => {
           <div className="relative z-10 p-16 xl:p-24 max-w-2xl animate-fade-in-up">
             <h1 className="text-white text-5xl xl:text-7xl font-black mb-6 leading-[1.1] tracking-tight">
               Partner with the <br />
-              <span className="text-[#E23744]">#1 Liquor app</span>
+              <span className="text-[#E23744]">#1 beverages app</span>
             </h1>
             <p className="text-white/90 text-xl xl:text-2xl leading-relaxed font-medium max-w-lg">
               Reach millions of customers and grow your retail business with
@@ -119,7 +209,7 @@ const AddStore: React.FC = () => {
               </h2>
             </div>
 
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -129,6 +219,8 @@ const AddStore: React.FC = () => {
                     type="text"
                     className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
                     placeholder="Jane"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -139,6 +231,8 @@ const AddStore: React.FC = () => {
                     type="text"
                     className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
                     placeholder="Doe"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
                   />
                 </div>
               </div>
@@ -149,8 +243,10 @@ const AddStore: React.FC = () => {
                 </label>
                 <input
                   type="email"
-                  placeholder="jane@liquorshop.com"
+                  placeholder="jane@beveragesshop.com"
                   className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -206,6 +302,8 @@ const AddStore: React.FC = () => {
                     type="tel"
                     placeholder="9876543210"
                     className="flex-1 bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
               </div>
@@ -218,6 +316,8 @@ const AddStore: React.FC = () => {
                   type="text"
                   placeholder="Vintage Spirits Boutique"
                   className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
+                  value={storeName}
+                  onChange={(e) => setStoreName(e.target.value)}
                 />
               </div>
 
@@ -226,11 +326,16 @@ const AddStore: React.FC = () => {
                   Business Type
                 </label>
                 <div className="relative">
-                  <select className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium appearance-none">
-                    <option>Select Business Category</option>
-                    <option>Retail Liquor Store</option>
+                  <select
+                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium appearance-none"
+                    value={businessCategory}
+                    onChange={(e) => setBusinessCategory(e.target.value)}
+                  >
+                    <option value="">Select Business Category</option>
+                    <option>Retail beverages Store</option>
                     <option>Wine & Beer Shop</option>
                     <option>Authorized Distributor</option>
+                    <option>Grocery</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                     <ChevronDown size={16} />
@@ -244,7 +349,8 @@ const AddStore: React.FC = () => {
                     <input
                       type="checkbox"
                       className="peer sr-only"
-                      defaultChecked
+                      checked={termsAccepted}
+                      onChange={(e) => setTermsAccepted(e.target.checked)}
                     />
                     <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all"></div>
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -267,12 +373,16 @@ const AddStore: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Liquor Retail License
+                    beverages Retail License
                   </label>
                   <input
+                    ref={beveragesRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full"
+                    onChange={(e) =>
+                      setbeveragesLicenseFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
 
@@ -281,9 +391,13 @@ const AddStore: React.FC = () => {
                     Business Registration
                   </label>
                   <input
+                    ref={businessRegRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full"
+                    onChange={(e) =>
+                      setBusinessRegFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
 
@@ -293,10 +407,16 @@ const AddStore: React.FC = () => {
                       Owner ID & PAN (upload)
                     </label>
                     <input
+                      ref={ownerIdRef}
                       type="file"
                       accept="application/pdf,image/*"
                       multiple
                       className="w-full"
+                      onChange={(e) =>
+                        setOwnerIdFiles(
+                          e.target.files ? Array.from(e.target.files) : null,
+                        )
+                      }
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -304,9 +424,13 @@ const AddStore: React.FC = () => {
                       Store Address Proof
                     </label>
                     <input
+                      ref={addressProofRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full"
+                      onChange={(e) =>
+                        setAddressProofFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
                 </div>
@@ -316,21 +440,40 @@ const AddStore: React.FC = () => {
                     Store Photos
                   </label>
                   <input
+                    ref={storePhotosRef}
                     type="file"
                     accept="image/*"
                     multiple
                     className="w-full"
+                    onChange={(e) =>
+                      setStorePhotos(
+                        e.target.files ? Array.from(e.target.files) : null,
+                      )
+                    }
                   />
                 </div>
               </div>
+              {submitError && (
+                <div className="text-sm text-red-500">{submitError}</div>
+              )}
+              {submitSuccess && (
+                <div className="text-sm text-green-600">{submitSuccess}</div>
+              )}
 
-              <button className="w-full bg-[#1C1C1C] text-white py-4 rounded-xl font-bold text-base hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-2 flex items-center justify-center gap-2">
-                Submit & Start Selling <ArrowRight size={18} />
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-[#1C1C1C] text-white py-4 rounded-xl font-bold text-base hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
+              >
+                {isSubmitting ? "Submitting..." : "Submit & Start Selling"}{" "}
+                <ArrowRight size={18} />
               </button>
             </form>
           </div>
         </div>
       </section>
+
+      {/* local handlers */}
 
       {/* B2B Partner Overview (inserted) */}
       <B2BSection showHero={false} />
@@ -389,7 +532,7 @@ const AddStore: React.FC = () => {
               </h2>
               <p className="text-[#696969] text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
                 Join the platform that is redefining how India discovers and
-                orders premium liquor legally and responsibly.
+                orders premium beverages legally and responsibly.
               </p>
 
               <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">

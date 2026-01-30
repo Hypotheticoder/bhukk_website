@@ -36,7 +36,7 @@ const Partnership: React.FC = () => {
           </h1>
           <p className="text-white/80 text-xl md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
             Rent or sell your warehouse and retail property to India's
-            fastest-growing liquor delivery network.
+            fastest-growing beverages delivery network.
           </p>
 
           <div className="mt-12 flex flex-wrap justify-center gap-4">
@@ -268,8 +268,9 @@ const Partnership: React.FC = () => {
             <Info size={48} strokeWidth={1} />
           </div>
           <h2 className="text-3xl font-black text-[#1C1C1C] italic">
-            "Our vision is to build the most efficient liquor logistics network
-            in India. Your property could be the next hub of this revolution."
+            "Our vision is to build the most efficient beverages logistics
+            network in India. Your property could be the next hub of this
+            revolution."
           </h2>
           <div className="space-y-1">
             <p className="font-bold text-[#1C1C1C]">Sameer Bhardwaj</p>

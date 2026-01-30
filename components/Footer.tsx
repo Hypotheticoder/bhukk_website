@@ -109,8 +109,8 @@ const Footer: React.FC = () => {
             By continuing past this page, you agree to our Terms of Service,
             Cookie Policy, Privacy Policy and Content Policies. All trademarks
             are properties of their respective owners. Bhukk ensures strict
-            legal age compliance for all liquor deliveries. 2024-2025 © Bhukk™
-            Ltd. All rights reserved.
+            legal age compliance for all beverages deliveries. 2024-2025 ©
+            Bhukk™ Ltd. All rights reserved.
           </p>
         </div>
       </div>

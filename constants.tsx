@@ -45,14 +45,14 @@ export const FOOTER_SECTIONS = [
 
 export const FEATURES = [
   {
-    title: "Liquor Delivery",
+    title: "beverages Delivery",
     description: "Premium alcohol from verified vendors delivered fast",
     image: "/assets/delivery.png",
     icon: <Wine className="w-6 h-6" />,
   },
   {
     title: "Partner With Bhukk",
-    description: "Increase sales for liquor stores & distributors",
+    description: "Increase sales for beverages stores & distributors",
     image: "/assets/partner.png",
     icon: <Store className="w-6 h-6" />,
   },

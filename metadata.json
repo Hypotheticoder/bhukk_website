@@ -1,6 +1,6 @@
 {
-  "name": "Bhukk - India's Smart Liquor Delivery",
-  "description": "A premium, Zomato-inspired landing page for Bhukk, a liquor delivery application focused on speed, legality, and B2B partnerships.",
+  "name": "Bhukk - India's Smart beverages Delivery",
+  "description": "A premium, Zomato-inspired landing page for Bhukk, a beverages delivery application focused on speed, legality, and B2B partnerships.",
   "requestFramePermissions": [
     "geolocation"
   ]
