@@ -337,10 +337,9 @@ const AddStore: React.FC = () => {
                     onChange={(e) => setBusinessCategory(e.target.value)}
                   >
                     <option value="">Select Business Category</option>
-                    <option>Retail beverages Store</option>
-                    <option>Wine & Beer Shop</option>
+                    <option>Retail Beverages Store</option>
                     <option>Authorized Distributor</option>
-                    <option>Grocery</option>
+                    <option>Beverages Retailer</option>
                   </select>
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                     <ChevronDown size={16} />
