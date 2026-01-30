@@ -5,29 +5,39 @@ import { PageType } from "../App";
 
 interface NavbarProps {
   scrolled: boolean;
-  setPage: (page: PageType) => void;
   currentPage: PageType;
+  navigate: (page: PageType) => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
+const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const isDarkNav = scrolled || currentPage !== "home";
 
   const handleLinkClick = (name: string) => {
-    if (name === "Trust") {
-      setPage("trust");
-    } else if (name === "Delivery Partner") {
-      setPage("partner");
-    } else if (name === "Home") {
-      setPage("home");
-    } else if (name === "Add Store") {
-      setPage("store");
-    } else if (name === "Partnership") {
-      setPage("partnership");
-    } else if (name === "Contact Us") {
-      setPage("contact");
+    switch (name) {
+      case "Home":
+        navigate("home");
+        break;
+      case "Delivery Partner":
+        navigate("partner");
+        break;
+      case "Add Store":
+        navigate("store");
+        break;
+      case "Partnership":
+        navigate("partnership");
+        break;
+      case "Contact Us":
+        navigate("contact");
+        break;
+      case "Trust":
+        navigate("trust");
+        break;
+      default:
+        break;
     }
+
     setMobileMenuOpen(false);
   };
 
@@ -42,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
         <div
           className="cursor-pointer flex items-center"
           onClick={() => {
-            setPage("home");
+            navigate("home");
             setMobileMenuOpen(false);
           }}
         >
@@ -72,11 +82,9 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
                 key={link.name}
                 onClick={() => handleLinkClick(link.name)}
                 className={`hover:opacity-70 transition-opacity ${
+                  (link.name === "Home" && currentPage === "home") ||
                   (link.name === "Delivery Partner" &&
                     currentPage === "partner") ||
-                  (link.name === "Home" &&
-                    currentPage === "home" &&
-                    isDarkNav) ||
                   (link.name === "Add Store" && currentPage === "store") ||
                   (link.name === "Partnership" &&
                     currentPage === "partnership") ||
@@ -91,6 +99,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
             ))}
           </div>
 
+          {/* Get App */}
           <div
             className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border ${
               isDarkNav
@@ -99,16 +108,14 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
             }`}
           >
             <Smartphone size={16} />
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                window.dispatchEvent(new CustomEvent("show-coming-soon"));
-              }}
+            <button
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("show-coming-soon"))
+              }
               className="hover:opacity-80 transition-opacity"
             >
               Get App
-            </a>
+            </button>
           </div>
         </div>
 
@@ -138,18 +145,18 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, setPage, currentPage }) => {
                 {link.name}
               </button>
             ))}
+
             <hr className="border-gray-100" />
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                window.dispatchEvent(new CustomEvent("show-coming-soon"));
-              }}
+
+            <button
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("show-coming-soon"))
+              }
               className="flex items-center gap-2 text-sm"
             >
               <Smartphone size={18} />
               Get the App
-            </a>
+            </button>
           </div>
         </div>
       )}

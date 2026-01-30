@@ -17,94 +17,107 @@ export type PageType =
   | "contact"
   | "trust";
 
+const VALID_PAGES: PageType[] = [
+  "home",
+  "partner",
+  "store",
+  "partnership",
+  "contact",
+  "trust",
+];
+
 const App: React.FC = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState<PageType>("home");
+  const [scrolled, setScrolled] = useState(false);
   const [showComingSoon, setShowComingSoon] = useState(false);
 
-  // Listen for cross-component navigation events (hash or custom)
+  /* -------------------------------
+     NAVIGATION (SINGLE SOURCE)
+     ------------------------------- */
+
+  const navigate = (page: PageType) => {
+    if (window.location.hash.replace("#", "") !== page) {
+      window.location.hash = page;
+    }
+  };
+
   useEffect(() => {
-    const handleNavigate = (e: Event) => {
-      const detail = (e as CustomEvent)?.detail;
-      if (typeof detail === "string") {
-        if (
-          [
-            "home",
-            "partner",
-            "store",
-            "partnership",
-            "contact",
-            "trust",
-          ].includes(detail)
-        ) {
-          setCurrentPage(detail as PageType);
-        }
+    const syncWithHash = () => {
+      const hash = window.location.hash.replace("#", "") || "home";
+
+      if (VALID_PAGES.includes(hash as PageType)) {
+        setCurrentPage(hash as PageType);
+      } else {
+        setCurrentPage("home");
+        window.location.hash = "home";
       }
     };
 
-    const handleHash = () => {
-      const h = window.location.hash.replace("#", "");
-      if (
-        [
-          "home",
-          "partner",
-          "store",
-          "partnership",
-          "contact",
-          "trust",
-        ].includes(h)
-      ) {
-        setCurrentPage(h as PageType);
-      }
-    };
+    // Initial load
+    syncWithHash();
 
-    window.addEventListener("navigate", handleNavigate as EventListener);
-    window.addEventListener("hashchange", handleHash);
-
-    // handle initial hash
-    handleHash();
+    // Back / Forward buttons
+    window.addEventListener("hashchange", syncWithHash);
 
     return () => {
-      window.removeEventListener("navigate", handleNavigate as EventListener);
-      window.removeEventListener("hashchange", handleHash);
+      window.removeEventListener("hashchange", syncWithHash);
     };
   }, []);
 
+  /* -------------------------------
+     SCROLL HANDLING
+     ------------------------------- */
+
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    window.addEventListener("scroll", handleScroll);
-    const handleShowComingSoon = () => setShowComingSoon(true);
-    window.addEventListener(
-      "show-coming-soon",
-      handleShowComingSoon as EventListener,
-    );
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener(
-        "show-coming-soon",
-        handleShowComingSoon as EventListener,
-      );
-    };
+
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Scroll to top on page change
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: "auto" });
   }, [currentPage]);
+
+  /* -------------------------------
+     GLOBAL UI EVENTS
+     ------------------------------- */
+
+  useEffect(() => {
+    const showComingSoonHandler = () => setShowComingSoon(true);
+
+    window.addEventListener(
+      "show-coming-soon",
+      showComingSoonHandler as EventListener,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "show-coming-soon",
+        showComingSoonHandler as EventListener,
+      );
+    };
+  }, []);
+
+  /* -------------------------------
+     PAGE RENDERER
+     ------------------------------- */
 
   const renderPage = () => {
     switch (currentPage) {
       case "partner":
-        return <DeliveryPartner onGoHome={() => setCurrentPage("home")} />;
+        return <DeliveryPartner onGoHome={() => navigate("home")} />;
       case "store":
         return <AddStore />;
       case "partnership":
         return <Partnership />;
       case "contact":
         return <Contact />;
-      //  
+      case "trust":
+        return <Trust />;
       case "home":
       default:
         return <Home />;
@@ -115,13 +128,14 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-white text-[#1C1C1C] overflow-x-hidden">
       <Navbar
         scrolled={scrolled}
-        setPage={setCurrentPage}
         currentPage={currentPage}
+        navigate={navigate} // ✅ ONLY way to navigate
       />
 
       {renderPage()}
 
       <Footer />
+
       <ComingSoon
         show={showComingSoon}
         onClose={() => setShowComingSoon(false)}
