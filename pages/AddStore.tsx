@@ -173,7 +173,7 @@ const AddStore: React.FC = () => {
           <div className="relative z-10 p-16 xl:p-24 max-w-2xl animate-fade-in-up">
             <h1 className="text-white text-5xl xl:text-7xl font-black mb-6 leading-[1.1] tracking-tight">
               Partner with the <br />
-              <span className="text-[#E23744]">#1 beverages app</span>
+              <span className="text-[#E23744]">#1 Beverages Facilitator</span>
             </h1>
             <p className="text-white/90 text-xl xl:text-2xl leading-relaxed font-medium max-w-lg">
               Reach millions of customers and grow your retail business with
@@ -182,7 +182,7 @@ const AddStore: React.FC = () => {
 
             <div className="mt-12 flex items-center gap-6">
               <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
+                {/* {[1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
                     className="w-10 h-10 rounded-full border-2 border-white overflow-hidden shadow-lg"
@@ -192,11 +192,11 @@ const AddStore: React.FC = () => {
                       alt="Merchant"
                     />
                   </div>
-                ))}
+                ))} */}
               </div>
-              <div className="text-white/70 text-xs font-bold uppercase tracking-[0.2em]">
+              {/* <div className="text-white/70 text-xs font-bold uppercase tracking-[0.2em]">
                 Trusted by 5,000+ Stores
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

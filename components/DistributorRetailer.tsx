@@ -15,7 +15,7 @@ const DistributorRetailer: React.FC = () => {
       <div className="max-w-[1200px] mx-auto px-6">
         {/* Header Section */}
         <div className="max-w-4xl mb-16">
-          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest uppercase bg-[#FFFBF7] text-[#E23744] rounded-full border border-[#f5eee6]">
+          <span className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-widest uppercase bg-[#FFFBF7] text-[#981A1E] rounded-full border border-[#f5eee6]">
             The Ecosystem
           </span>
           <h2 className="text-4xl md:text-6xl font-black text-[#1C1C1C] leading-[1.1] tracking-tight">
@@ -32,8 +32,8 @@ const DistributorRetailer: React.FC = () => {
         {/* Main Feature Cards */}
         <div className="grid gap-6 lg:grid-cols-3 mb-20">
           {/* Card 1 */}
-          <article className="group relative bg-[#FFFBF7] p-10 rounded-[32px] border border-[#f5eee6] transition-all duration-500 hover:shadow-2xl hover:shadow-[#E23744]/5 hover:-translate-y-2">
-            <div className="w-14 h-14 bg-[#E23744] text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-[#E23744]/20 group-hover:scale-110 transition-transform">
+          <article className="group relative bg-[#FFFBF7] p-10 rounded-[32px] border border-[#f5eee6] transition-all duration-500 hover:shadow-2xl hover:shadow-[#981A1E]/5 hover:-translate-y-2">
+            <div className="w-14 h-14 bg-[#981A1E] text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-[#981A1E]/20 group-hover:scale-110 transition-transform">
               <Store size={28} />
             </div>
             <h3 className="text-2xl font-bold mb-4 text-[#1C1C1C]">
@@ -53,7 +53,7 @@ const DistributorRetailer: React.FC = () => {
                   key={i}
                   className="flex items-center gap-3 text-sm font-medium text-[#1C1C1C]"
                 >
-                  <CheckCircle2 size={18} className="text-[#E23744]" /> {item}
+                  <CheckCircle2 size={18} className="text-[#981A1E]" /> {item}
                 </li>
               ))}
             </ul>
@@ -135,9 +135,9 @@ const DistributorRetailer: React.FC = () => {
 
             <div className="flex items-center gap-3">
               {[
-                "https://images.unsplash.com/photo-1542736667-069246bdbc6d?auto=format&fit=crop&q=80&w=420",
-                "https://images.unsplash.com/photo-1556740763-90ea3b7448a9?auto=format&fit=crop&q=80&w=420",
-                "https://images.unsplash.com/photo-1529335764851-94d0f2aa3d2b?auto=format&fit=crop&q=80&w=420",
+                "/assets/distribute1.jpeg",
+                "/assets/distribute2.jpeg",
+                "/assets/distribute3.jpeg",
               ].map((src, i) => (
                 <div
                   key={i}
@@ -158,7 +158,7 @@ const DistributorRetailer: React.FC = () => {
             <h4 className="text-2xl font-bold mb-6">How Bhukk Helps</h4>
             <div className="space-y-8">
               <div className="flex items-start gap-5 group">
-                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#E23744] transition-colors">
+                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#981A1E] transition-colors">
                   <Repeat size={20} />
                 </div>
                 <div>
@@ -171,7 +171,7 @@ const DistributorRetailer: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-5 group">
-                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#E23744] transition-colors">
+                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#981A1E] transition-colors">
                   <Globe size={20} />
                 </div>
                 <div>
@@ -184,7 +184,7 @@ const DistributorRetailer: React.FC = () => {
               </div>
 
               <div className="flex items-start gap-5 group">
-                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#E23744] transition-colors">
+                <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#981A1E] transition-colors">
                   <ArrowRight size={20} />
                 </div>
                 <div>
@@ -202,7 +202,7 @@ const DistributorRetailer: React.FC = () => {
         {/* Website-ready footer copy */}
         <div className="mt-16 pt-10 border-t border-gray-100 grid md:grid-cols-2 gap-10">
           <div>
-            <p className="text-[#E23744] font-bold text-sm uppercase tracking-widest mb-2">
+            <p className="text-[#981A1E] font-bold text-sm uppercase tracking-widest mb-2">
               For Distributors
             </p>
             <p className="text-[#696969] text-sm leading-relaxed">

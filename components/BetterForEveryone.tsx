@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
+import SectionModal from "./SectionModal";
 
 type Section = {
   title: string;
@@ -49,6 +50,19 @@ const SECTIONS: Section[] = [
       "Safety First Equipment",
     ],
   },
+  {
+    title: "Better for Manufacturers",
+    page: "store",
+    description:
+      "Connect with verified retailers and distributors, unlock bulk channels, and access demand signals to optimize production and distribution.",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQALUlu-elQUG5twTA-bmH6RJrpR3k8lKVP0Q&s",
+    features: [
+      "Demand forecasting & insights",
+      "Bulk ordering channels",
+      "Compliance & quality support",
+    ],
+  },
 ];
 
 const BetterForEveryone: React.FC = () => {
@@ -60,31 +74,52 @@ const BetterForEveryone: React.FC = () => {
    * - Never put section IDs in hash
    * - Scroll only via DOM
    */
-  const handleLearnMore = (page: Section["page"], anchor?: string) => {
-    // CASE 1: Scroll to section on Home
+  const [openSection, setOpenSection] = useState<Section | null>(null);
+
+  const handleOpenModal = (section: Section) => {
+    setOpenSection(section);
+  };
+
+  const handleContinue = (section: Section) => {
+    // Perform the same navigation/scroll behavior that Learn More used to do
+    const page = section.page;
+    const anchor = section.anchor;
+
     if (page === "home" && anchor) {
       const el = document.getElementById(anchor);
-
-      // Already on Home → scroll directly
       if (el) {
+        // if already on home and element present, scroll
         el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setOpenSection(null);
         return;
       }
 
-      // Not on Home → navigate first, then scroll
-      window.location.hash = "home";
+      // Not on home: navigate then scroll after short delay
+      try {
+        window.dispatchEvent(new CustomEvent("navigate", { detail: "home" }));
+        window.location.hash = "home";
+      } catch (e) {
+        window.location.hash = "home";
+      }
 
+      setOpenSection(null);
       setTimeout(() => {
         document
           .getElementById(anchor)
           ?.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 400);
-
       return;
     }
 
-    // CASE 2: Normal page navigation
-    window.location.hash = page;
+    // Normal page navigation
+    try {
+      window.dispatchEvent(new CustomEvent("navigate", { detail: page }));
+      window.location.hash = page;
+    } catch (e) {
+      window.location.hash = page;
+    }
+
+    setOpenSection(null);
   };
 
   return (
@@ -94,7 +129,7 @@ const BetterForEveryone: React.FC = () => {
         <h2 className="text-4xl font-bold text-[#1C1C1C] mb-4">
           Better for everyone
         </h2>
-        <div className="w-16 h-1 bg-[#E23744] mx-auto rounded-full" />
+        <div className="w-16 h-1 bg-[#981A1E] mx-auto rounded-full" />
       </div>
 
       {/* Sections */}
@@ -139,7 +174,7 @@ const BetterForEveryone: React.FC = () => {
               }}
             >
               <h3 className="text-3xl font-bold text-[#1C1C1C] flex items-center gap-3">
-                <span className="w-2 h-8 bg-[#E23744] rounded-full" />
+                <span className="w-2 h-8 bg-[#981A1E] rounded-full" />
                 {section.title}
               </h3>
 
@@ -153,15 +188,15 @@ const BetterForEveryone: React.FC = () => {
                     key={feature}
                     className="flex items-center gap-3 text-[#1C1C1C] font-medium"
                   >
-                    <CheckCircle2 className="w-5 h-5 text-[#E23744]" />
+                    <CheckCircle2 className="w-5 h-5 text-[#981A1E]" />
                     {feature}
                   </li>
                 ))}
               </ul>
 
               <button
-                onClick={() => handleLearnMore(section.page, section.anchor)}
-                className="mt-4 px-8 py-3 bg-white border border-[#E23744] text-[#E23744] font-semibold rounded-lg hover:bg-[#E23744] hover:text-white transition-all"
+                onClick={() => handleOpenModal(section)}
+                className="mt-4 px-8 py-3 bg-white border border-[#981A1E] text-[#981A1E] font-semibold rounded-lg hover:bg-[#981A1E] hover:text-white transition-all"
               >
                 Learn More
               </button>
@@ -169,6 +204,15 @@ const BetterForEveryone: React.FC = () => {
           </div>
         );
       })}
+
+      <SectionModal
+        open={!!openSection}
+        onClose={() => setOpenSection(null)}
+        title={openSection?.title ?? ""}
+        description={openSection?.description ?? ""}
+        features={openSection?.features ?? []}
+        onContinue={() => openSection && handleContinue(openSection)}
+      />
     </section>
   );
 };

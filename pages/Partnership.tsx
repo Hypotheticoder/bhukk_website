@@ -32,7 +32,7 @@ const Partnership: React.FC = () => {
 
         <div className="relative z-10 max-w-4xl text-center px-6 animate-fade-in-up">
           <h1 className="text-white text-5xl md:text-7xl font-black mb-6 tracking-tight leading-[1.1]">
-            Monetize Your <span className="text-[#E23744]">Space</span>
+            Monetize Your <span className="text-[#981A1E]">Space</span>
           </h1>
           <p className="text-white/80 text-xl md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
             Rent or sell your warehouse and retail property to India's
@@ -47,7 +47,7 @@ const Partnership: React.FC = () => {
                   .getElementById("partner-form")
                   ?.scrollIntoView({ behavior: "smooth" });
               }}
-              className="bg-[#E23744] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-[#E23744] transition-all flex items-center gap-2 shadow-xl"
+              className="bg-[#981A1E] text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white hover:text-[#981A1E] transition-all flex items-center gap-2 shadow-xl"
             >
               List Warehouse <ArrowRight size={20} />
             </button>
@@ -71,8 +71,8 @@ const Partnership: React.FC = () => {
         <div className="max-w-[1100px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Warehouse Card */}
-            <div className="group bg-[#F8F8F8] p-10 rounded-[3rem] border border-transparent hover:border-[#E23744]/20 transition-all hover:shadow-2xl space-y-6">
-              <div className="bg-[#E23744] text-white w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <div className="group bg-[#F8F8F8] p-10 rounded-[3rem] border border-transparent hover:border-[#981A1E]/20 transition-all hover:shadow-2xl space-y-6">
+              <div className="bg-[#981A1E] text-white w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <Warehouse size={32} />
               </div>
               <h3 className="text-3xl font-black text-[#1C1C1C]">
@@ -99,7 +99,7 @@ const Partnership: React.FC = () => {
             </div>
 
             {/* Retail Card */}
-            <div className="group bg-[#F8F8F8] p-10 rounded-[3rem] border border-transparent hover:border-[#E23744]/20 transition-all hover:shadow-2xl space-y-6">
+            <div className="group bg-[#F8F8F8] p-10 rounded-[3rem] border border-transparent hover:border-[#981A1E]/20 transition-all hover:shadow-2xl space-y-6">
               <div className="bg-[#1C1C1C] text-white w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                 <Building2 size={32} />
               </div>
@@ -137,7 +137,7 @@ const Partnership: React.FC = () => {
               <div className="space-y-6">
                 <h2 className="text-4xl font-black tracking-tight leading-tight">
                   List your property <br />
-                  <span className="text-[#E23744]">in 2 minutes</span>
+                  <span className="text-[#981A1E]">in 2 minutes</span>
                 </h2>
                 <p className="text-gray-400 text-lg">
                   Fill in the details and our real estate acquisition team will
@@ -147,7 +147,7 @@ const Partnership: React.FC = () => {
 
               <div className="space-y-8 pt-12">
                 <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-[#E23744] border border-white/10">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-[#981A1E] border border-white/10">
                     <Landmark size={24} />
                   </div>
                   <div>
@@ -158,7 +158,7 @@ const Partnership: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-[#E23744] border border-white/10">
+                  <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-[#981A1E] border border-white/10">
                     <MapPin size={24} />
                   </div>
                   <div>
@@ -181,7 +181,7 @@ const Partnership: React.FC = () => {
                     <input
                       type="text"
                       placeholder="John Wick"
-                      className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium"
+                      className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium"
                     />
                   </div>
                   <div className="space-y-2">
@@ -195,7 +195,7 @@ const Partnership: React.FC = () => {
                       <input
                         type="tel"
                         placeholder="9876543210"
-                        className="flex-1 bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium"
+                        className="flex-1 bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium"
                       />
                     </div>
                   </div>
@@ -209,7 +209,7 @@ const Partnership: React.FC = () => {
                     <select
                       value={propertyType || ""}
                       onChange={(e) => setPropertyType(e.target.value as any)}
-                      className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium appearance-none"
+                      className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium appearance-none"
                     >
                       <option value="">Select Category</option>
                       <option value="warehouse">
@@ -223,7 +223,7 @@ const Partnership: React.FC = () => {
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
                       Purpose
                     </label>
-                    <select className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium appearance-none">
+                    <select className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium appearance-none">
                       <option>Rent / Lease</option>
                       <option>Sale</option>
                     </select>
@@ -237,7 +237,7 @@ const Partnership: React.FC = () => {
                   <input
                     type="number"
                     placeholder="e.g. 2500"
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium"
+                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium"
                   />
                 </div>
 
@@ -248,7 +248,7 @@ const Partnership: React.FC = () => {
                   <textarea
                     rows={3}
                     placeholder="Complete address with landmark..."
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium resize-none"
+                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-xl px-4 py-3.5 transition-all outline-none font-medium resize-none"
                   />
                 </div>
 
@@ -264,7 +264,7 @@ const Partnership: React.FC = () => {
       {/* Trust Quote */}
       <section className="py-24 bg-white text-center">
         <div className="max-w-3xl mx-auto px-6 space-y-8">
-          <div className="text-[#E23744] flex justify-center">
+          <div className="text-[#981A1E] flex justify-center">
             <Info size={48} strokeWidth={1} />
           </div>
           <h2 className="text-3xl font-black text-[#1C1C1C] italic">

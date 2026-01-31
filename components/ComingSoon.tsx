@@ -63,7 +63,7 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ show = true, onClose }) => {
             {/* CONTENT */}
             <div className="grid grid-cols-1 md:grid-cols-2 min-h-[520px]">
               {/* LEFT — BRAND STORY */}
-              <div className="relative p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-[#E23744] to-[#B71C2A] text-white">
+              <div className="relative p-10 md:p-14 flex flex-col justify-center bg-gradient-to-br from-[#981A1E] to-[#B71C2A] text-white">
                 {/* Glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.18),transparent_60%)]" />
 
@@ -114,8 +114,8 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ show = true, onClose }) => {
                     </p>
 
                     <div className="mt-6 space-y-4">
-                      <div className="flex items-center gap-3 border rounded-xl px-4 py-3 focus-within:ring-2 ring-[#E23744]/40">
-                        <Mail className="text-[#E23744]" />
+                      <div className="flex items-center gap-3 border rounded-xl px-4 py-3 focus-within:ring-2 ring-[#981A1E]/40">
+                        <Mail className="text-[#981A1E]" />
                         <input
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -130,7 +130,7 @@ const ComingSoon: React.FC<ComingSoonProps> = ({ show = true, onClose }) => {
                         whileHover={{ scale: 1.04 }}
                         whileTap={{ scale: 0.97 }}
                         onClick={submit}
-                        className="w-full py-3 rounded-xl bg-[#E23744] text-white font-semibold shadow-lg"
+                        className="w-full py-3 rounded-xl bg-[#981A1E] text-white font-semibold shadow-lg"
                       >
                         Join Waitlist
                       </motion.button>

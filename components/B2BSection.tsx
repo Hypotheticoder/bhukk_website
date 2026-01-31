@@ -33,8 +33,8 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
           <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="flex-1">
               <div className="inline-flex items-center gap-3 mb-4">
-                <div className="w-1 h-8 bg-[#E23744] rounded-full" />
-                <span className="text-sm font-bold uppercase text-[#E23744]">
+                <div className="w-1 h-8 bg-[#981A1E] rounded-full" />
+                <span className="text-sm font-bold uppercase text-[#981A1E]">
                   Partner with Bhukk
                 </span>
               </div>
@@ -57,7 +57,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
                         new CustomEvent("navigate", { detail: "store" }),
                       );
                     }}
-                    className="bg-[#E23744] text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-[#c62833]"
+                    className="bg-[#981A1E] text-white px-6 py-3 rounded-xl font-semibold shadow hover:bg-[#c62833]"
                   >
                     Become a Partner
                   </button>
@@ -117,7 +117,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
                 "Secure and timely settlements",
               ].map((t, i) => (
                 <li key={i} className="flex items-center gap-3 group">
-                  <span className="text-white bg-[#E23744] rounded-full p-2">
+                  <span className="text-white bg-[#981A1E] rounded-full p-2">
                     <CheckCircle className="w-4 h-4" />
                   </span>
                   <span className="text-[#1C1C1C] font-medium group-hover:translate-x-2 transition-transform">
@@ -155,19 +155,19 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
             <div className="grid grid-cols-2 gap-4">
               {[
                 {
-                  icon: <Box className="w-6 h-6 text-[#E23744]" />,
+                  icon: <Box className="w-6 h-6 text-[#981A1E]" />,
                   title: "Live order tracking",
                 },
                 {
-                  icon: <BarChart2 className="w-6 h-6 text-[#E23744]" />,
+                  icon: <BarChart2 className="w-6 h-6 text-[#981A1E]" />,
                   title: "Sales & revenue analytics",
                 },
                 {
-                  icon: <CreditCard className="w-6 h-6 text-[#E23744]" />,
+                  icon: <CreditCard className="w-6 h-6 text-[#981A1E]" />,
                   title: "Automated billing & settlements",
                 },
                 {
-                  icon: <Bell className="w-6 h-6 text-[#E23744]" />,
+                  icon: <Bell className="w-6 h-6 text-[#981A1E]" />,
                   title: "Instant order alerts",
                 },
               ].map((c, i) => (
@@ -188,12 +188,12 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
 
           <div className="flex-1 flex justify-center">
             <div className="w-full max-w-lg bg-white rounded-3xl p-6 shadow-xl">
-              <div className="h-48 bg-gradient-to-r from-[#E23744]/10 to-transparent rounded-lg mb-4 flex items-end p-4">
+              <div className="h-48 bg-gradient-to-r from-[#981A1E]/10 to-transparent rounded-lg mb-4 flex items-end p-4">
                 <div className="flex gap-2 w-full h-full items-end justify-around">
                   {[60, 30, 80, 50, 70].map((h, i) => (
                     <div
                       key={i}
-                      className="w-3 bg-[#E23744] rounded-t"
+                      className="w-3 bg-[#981A1E] rounded-t"
                       style={{ height: `${h}%` }}
                     />
                   ))}
@@ -229,7 +229,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
 
               <div className="w-full bg-gray-100 rounded-full h-3 overflow-hidden mb-4">
                 <div
-                  className="h-3 bg-[#E23744] rounded-full transition-all"
+                  className="h-3 bg-[#981A1E] rounded-full transition-all"
                   style={{ width: `${(step / 4) * 100}%` }}
                 />
               </div>
@@ -335,7 +335,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
                   {step < 4 && (
                     <button
                       type="submit"
-                      className="px-6 py-3 rounded-xl bg-[#E23744] text-white"
+                      className="px-6 py-3 rounded-xl bg-[#981A1E] text-white"
                     >
                       Next
                     </button>
@@ -344,7 +344,7 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
                     <button
                       type="button"
                       onClick={() => alert("Application submitted")}
-                      className="px-6 py-3 rounded-xl bg-[#E23744] text-white"
+                      className="px-6 py-3 rounded-xl bg-[#981A1E] text-white"
                     >
                       Apply as Store Partner
                     </button>

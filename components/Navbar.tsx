@@ -59,14 +59,14 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
           <img
             src="/assets/Bhukk_without_bg.png"
             alt="Bhukk logo"
-            className="h-8 w-8 md:h-10 md:w-9 mr-1"
+            className="h-8 w-8 md:h-10 md:w-9 -mr-1"
           />
           <span
             className={`text-2xl md:text-3xl font-black italic tracking-tighter transition-colors ${
-              isDarkNav ? "text-[#E23744]" : "text-white"
+              isDarkNav ? "text-[#981A1E]" : "text-white"
             }`}
           >
-            bhukk
+            hukk
           </span>
         </div>
 

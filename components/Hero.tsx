@@ -1,5 +1,13 @@
 import React from "react";
-import { Smartphone, PlayCircle, ChevronDown, UserPlus } from "lucide-react";
+import {
+  Smartphone,
+  PlayCircle,
+  ChevronDown,
+  Store,
+  Truck,
+  Package,
+  UserPlus,
+} from "lucide-react";
 
 const Hero: React.FC = () => {
   return (
@@ -63,26 +71,44 @@ const Hero: React.FC = () => {
             </button>
           </div>
 
-          <div className="w-full md:w-auto flex justify-center">
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                try {
-                  window.location.hash = "#store";
-                  window.dispatchEvent(
-                    new CustomEvent("navigate", { detail: "store" }),
-                  );
-                } catch (err) {
-                  window.dispatchEvent(
-                    new CustomEvent("navigate", { detail: "store" }),
-                  );
-                }
-              }}
-              className="mt-2 inline-flex items-center gap-3 bg-transparent text-white border border-white/30 px-6 py-3 rounded-xl font-semibold text-base hover:bg-white hover:text-[#1C1C1C] transition-all shadow-lg max-w-[720px] text-center"
-            >
-              <UserPlus className="text-[#E23744]" />
-              Become a Bhukk Partner — Retailers, Distributors & Store Owners
-            </button>
+          <div className="w-full md:w-auto flex flex-col items-center">
+            <div className="mb-4 w-full">
+              <div className="flex items-center gap-3 justify-center text-white/95">
+                <UserPlus className="text-[#E23744]" />
+                <span className="text-white font-semibold text-lg">
+                  Become a Bhukk Partner — Become a partner as
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-row items-center justify-center gap-3">
+              {[
+                { label: "Retailers", Icon: Store },
+                { label: "Manufacturers", Icon: Package },
+                { label: "Distributors", Icon: Truck },
+              ].map(({ label, Icon }) => (
+                <button
+                  key={label}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    try {
+                      window.location.hash = "store";
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "store" }),
+                      );
+                    } catch (err) {
+                      window.dispatchEvent(
+                        new CustomEvent("navigate", { detail: "store" }),
+                      );
+                    }
+                  }}
+                  className="mt-2 inline-flex items-center gap-3 bg-transparent text-white border border-white/30 px-6 py-3 rounded-xl font-semibold text-base hover:bg-white hover:text-[#1C1C1C] transition-all shadow-lg text-center"
+                >
+                  <Icon className="text-[#E23744]" />
+                  {label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

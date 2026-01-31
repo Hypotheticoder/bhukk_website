@@ -56,7 +56,7 @@ const Contact: React.FC = () => {
         {/* Header Section */}
         <div className="text-center mb-16 animate-fade-in-up">
           <h1 className="text-5xl md:text-6xl font-black text-[#1C1C1C] tracking-tight mb-4">
-            We're here to <span className="text-[#E23744]">help.</span>
+            We're here to <span className="text-[#981A1E]">help.</span>
           </h1>
           <p className="text-[#696969] text-xl max-w-2xl mx-auto">
             Have a question about your order, partnership, or just want to say
@@ -92,7 +92,7 @@ const Contact: React.FC = () => {
                     placeholder="John Doe"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium"
+                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium"
                   />
                 </div>
                 <div className="space-y-2">
@@ -104,7 +104,7 @@ const Contact: React.FC = () => {
                     placeholder="john@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium"
+                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium"
                   />
                 </div>
               </div>
@@ -116,7 +116,7 @@ const Contact: React.FC = () => {
                 <select
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium appearance-none"
+                  className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium appearance-none"
                 >
                   <option>Order Inquiry</option>
                   <option>Partner Support</option>
@@ -134,7 +134,7 @@ const Contact: React.FC = () => {
                   placeholder="Tell us how we can help..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium resize-none"
+                  className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#981A1E] focus:bg-white rounded-2xl px-5 py-4 transition-all outline-none font-medium resize-none"
                 />
               </div>
 
@@ -155,29 +155,29 @@ const Contact: React.FC = () => {
           >
             {/* Address Card */}
             <div className="bg-[#1C1C1C] text-white p-10 rounded-[3rem] shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 text-[#E23744] opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute top-0 right-0 p-8 text-[#981A1E] opacity-10 group-hover:opacity-20 transition-opacity">
                 <MapPin size={120} />
               </div>
               <div className="relative z-10 space-y-6">
-                <div className="w-16 h-16 rounded-2xl bg-[#E23744] flex items-center justify-center text-white mb-8">
+                <div className="w-16 h-16 rounded-2xl bg-[#981A1E] flex items-center justify-center text-white mb-8">
                   <MapPin size={32} />
                 </div>
                 <h3 className="text-3xl font-black">Our Headquarters</h3>
                 <div className="space-y-2 text-xl font-medium text-gray-300">
                   <p>1/30 Chittaranjan Colony</p>
                   <p>Baghajatin, Kolkata - 700032</p>
-                  <p className="text-[#E23744]">West Bengal, India</p>
+                  <p className="text-[#981A1E]">West Bengal, India</p>
                 </div>
                 <div className="pt-8 flex gap-6">
                   <a
                     href="#"
-                    className="flex items-center gap-2 text-sm font-bold hover:text-[#E23744] transition-colors"
+                    className="flex items-center gap-2 text-sm font-bold hover:text-[#981A1E] transition-colors"
                   >
                     <MessageCircle size={18} /> Chat with us
                   </a>
                   <a
                     href="#"
-                    className="flex items-center gap-2 text-sm font-bold hover:text-[#E23744] transition-colors"
+                    className="flex items-center gap-2 text-sm font-bold hover:text-[#981A1E] transition-colors"
                   >
                     <Mail size={18} /> Email Support
                   </a>
@@ -188,7 +188,7 @@ const Contact: React.FC = () => {
             {/* Quick Contact Details */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 flex items-center gap-5 hover:shadow-md transition-shadow">
-                <div className="w-12 h-12 rounded-xl bg-[#FFF1F2] text-[#E23744] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-[#FFF1F2] text-[#981A1E] flex items-center justify-center">
                   <Phone size={24} />
                 </div>
                 <div>
@@ -216,7 +216,7 @@ const Contact: React.FC = () => {
             </div>
 
             {/* Social Links - Enhanced Interactive Design */}
-            <div className="bg-gradient-to-br from-[#E23744] to-[#c62833] p-10 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
+            <div className="bg-gradient-to-br from-[#981A1E] to-[#c62833] p-10 rounded-[3rem] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden group">
               <div className="absolute inset-0 bg-white opacity-[0.03] pattern-diagonal-lines pointer-events-none"></div>
               <h4 className="text-2xl font-black relative z-10 text-center md:text-left">
                 Follow our <br className="hidden md:block" /> journey
@@ -253,7 +253,7 @@ const Contact: React.FC = () => {
                     key={i}
                     href="#"
                     title={name}
-                    className={`w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:rotate-6 hover:-translate-y-2 hover:bg-white hover:text-[#E23744] hover:shadow-[0_15px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/40`}
+                    className={`w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center transition-all duration-300 hover:scale-110 hover:rotate-6 hover:-translate-y-2 hover:bg-white hover:text-[#981A1E] hover:shadow-[0_15px_30px_rgba(0,0,0,0.3)] border border-white/10 hover:border-white/40`}
                   >
                     <Icon size={26} />
                   </a>
