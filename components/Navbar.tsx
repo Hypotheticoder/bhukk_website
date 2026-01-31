@@ -85,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
                   (link.name === "Home" && currentPage === "home") ||
                   (link.name === "Delivery Partner" &&
                     currentPage === "partner") ||
-                  (link.name === "Add Store" && currentPage === "store") ||
+                  (link.name === "" && currentPage === "store") ||
                   (link.name === "Partnership" &&
                     currentPage === "partnership") ||
                   (link.name === "Contact Us" && currentPage === "contact") ||
@@ -100,23 +100,19 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
           </div>
 
           {/* Get App */}
-          <div
+          <button
+            onClick={() =>
+              window.dispatchEvent(new CustomEvent("show-coming-soon"))
+            }
             className={`flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg border ${
               isDarkNav
                 ? "text-[#1C1C1C] border-gray-200"
                 : "text-white border-white/20"
-            }`}
+            } hover:opacity-90 transition-colors`}
           >
             <Smartphone size={16} />
-            <button
-              onClick={() =>
-                window.dispatchEvent(new CustomEvent("show-coming-soon"))
-              }
-              className="hover:opacity-80 transition-opacity"
-            >
-              Get App
-            </button>
-          </div>
+            <span>Get App</span>
+          </button>
         </div>
 
         {/* Mobile Toggle */}

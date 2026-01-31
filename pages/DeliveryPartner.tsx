@@ -57,15 +57,25 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
-              <button className="group w-full sm:w-auto bg-[#E23744] text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-[#c62833] transition-all shadow-2xl flex items-center justify-center gap-3 active:scale-95">
+              <button
+                onClick={() =>
+                  window.dispatchEvent(new CustomEvent("show-coming-soon"))
+                }
+                className="group w-full sm:w-auto bg-[#E23744] text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-[#c62833] transition-all shadow-2xl flex items-center justify-center gap-3 active:scale-95"
+              >
                 Download on App Store{" "}
                 <ArrowRight
                   size={22}
                   className="group-hover:translate-x-1 transition-transform"
                 />
               </button>
-              <button className="w-full sm:w-auto bg-white/10 backdrop-blur-xl text-white border border-white/30 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-3 active:scale-95">
-                <Smartphone size={22} /> Download App
+              <button
+                onClick={() =>
+                  window.dispatchEvent(new CustomEvent("show-coming-soon"))
+                }
+                className="w-full sm:w-auto bg-white/10 backdrop-blur-xl text-white border border-white/30 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all flex items-center justify-center gap-3 active:scale-95"
+              >
+                <Smartphone size={22} /> Download App on Play Store
               </button>
             </div>
 

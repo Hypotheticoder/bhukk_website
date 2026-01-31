@@ -20,26 +20,19 @@ export const NAV_LINKS = [
 export const FOOTER_SECTIONS = [
   {
     title: "ABOUT BHUKK",
-    links: [
-      "Who We Are",
-      "Blog",
-      "Work With Us",
-      "Investor Relations",
-      "Report Fraud",
-      "Contact Us",
-    ],
+    links: ["Our Story", "Careers", "Press", "Contact Us"],
   },
   {
-    title: "BHUKKVERSE",
-    links: ["Bhukk", "Feeding India", "Hyperpure", "Bhukkland"],
+    title: "FOR PARTNERS",
+    links: ["Partner With Us", "B2B Solutions", "Delivery Partners"],
   },
   {
-    title: "FOR STORES",
-    links: ["Partner With Us", "Apps For You"],
+    title: "SUPPORT",
+    links: ["Help Center", "Safety & Compliance", "FAQs", "Report an Issue"],
   },
   {
-    title: "LEARN MORE",
-    links: ["Privacy", "Security", "Terms", "Sitemap"],
+    title: "LEGAL",
+    links: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
   },
 ];
 
