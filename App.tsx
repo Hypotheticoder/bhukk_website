@@ -7,6 +7,7 @@ import AddStore from "./pages/AddStore";
 import Partnership from "./pages/Partnership";
 import Contact from "./pages/Contact";
 import Trust from "./pages/Trust";
+import About from "./pages/About";
 import ComingSoon from "./components/ComingSoon";
 
 export type PageType =
@@ -15,7 +16,8 @@ export type PageType =
   | "store"
   | "partnership"
   | "contact"
-  | "trust";
+  | "trust"
+  | "about";
 
 const VALID_PAGES: PageType[] = [
   "home",
@@ -24,6 +26,7 @@ const VALID_PAGES: PageType[] = [
   "partnership",
   "contact",
   "trust",
+  "about",
 ];
 
 const App: React.FC = () => {
@@ -118,6 +121,8 @@ const App: React.FC = () => {
         return <Contact />;
       case "trust":
         return <Trust />;
+      case "about":
+        return <About />;
       case "home":
       default:
         return <Home />;

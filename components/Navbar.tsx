@@ -34,6 +34,9 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
       case "Trust":
         navigate("trust");
         break;
+      case "About Us":
+        navigate("about");
+        break;
       default:
         break;
     }
@@ -85,11 +88,12 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
                   (link.name === "Home" && currentPage === "home") ||
                   (link.name === "Delivery Partner" &&
                     currentPage === "partner") ||
-                  (link.name === "" && currentPage === "store") ||
+                  (link.name === "Add Store" && currentPage === "store") ||
                   (link.name === "Partnership" &&
                     currentPage === "partnership") ||
                   (link.name === "Contact Us" && currentPage === "contact") ||
-                  (link.name === "Trust" && currentPage === "trust")
+                  (link.name === "Trust" && currentPage === "trust") ||
+                  (link.name === "About Us" && currentPage === "about")
                     ? "text-[#E23744] font-semibold"
                     : ""
                 }`}
