@@ -47,10 +47,11 @@ const AboutMission: React.FC = () => {
               </div>
               <h3 className="text-3xl font-black mb-4">Our Mission</h3>
               <p className="text-white/85 text-lg leading-relaxed">
-                To provide every Indian adult a <strong>safe, legal, and
-                convenient</strong> way to discover and order premium beverages
-                — while empowering local retailers, distributors, and delivery
-                partners with technology that grows their business.
+                To provide every Indian adult a{" "}
+                <strong>safe, legal, and convenient</strong> way to discover and
+                order premium beverages — while empowering local retailers,
+                distributors, and delivery partners with technology that grows
+                their business.
               </p>
             </div>
           </motion.div>
@@ -71,9 +72,10 @@ const AboutMission: React.FC = () => {
               </div>
               <h3 className="text-3xl font-black mb-4">Our Vision</h3>
               <p className="text-white/75 text-lg leading-relaxed">
-                To become India's most <strong>trusted beverages delivery
-                ecosystem</strong> — setting the gold standard for compliance,
-                speed, and customer experience across every city we operate in.
+                To become India's most{" "}
+                <strong>trusted beverages delivery ecosystem</strong> — setting
+                the gold standard for compliance, speed, and customer experience
+                across every city we operate in.
               </p>
             </div>
           </motion.div>

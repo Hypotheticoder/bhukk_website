@@ -1,13 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import {
-  ShieldCheck,
-  Zap,
-  Heart,
-  Scale,
-  Users,
-  Leaf,
-} from "lucide-react";
+import { ShieldCheck, Zap, Heart, Scale, Users, Leaf } from "lucide-react";
 
 const VALUES = [
   {

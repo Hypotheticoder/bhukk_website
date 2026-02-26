@@ -36,8 +36,7 @@ const AboutHero: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.15 }}
           className="text-white text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.05] mb-6"
         >
-          Reimagining How{" "}
-          <span className="text-[#E23744]">India Drinks</span>
+          Reimagining How <span className="text-[#E23744]">India Drinks</span>
         </motion.h1>
 
         <motion.p
@@ -46,8 +45,8 @@ const AboutHero: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="text-white/70 text-lg md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed"
         >
-          We're building the most trusted, compliant, and tech-forward
-          beverages delivery platform in the country — one city at a time.
+          We're building the most trusted, compliant, and tech-forward beverages
+          delivery platform in the country — one city at a time.
         </motion.p>
 
         <motion.div
