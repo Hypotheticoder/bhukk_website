@@ -23,7 +23,7 @@ export type RetailerFormData = {
   alt_phn?: string;
   email: string;
   authorized_signatory_name?: string;
-  
+
   shop_photo_file?: File | null;
   cancelled_cheque_file: File | null;
   excise_license_file: File | null;
@@ -57,9 +57,7 @@ export const sendRetailerMessage = async (
       });
     }
 
-    const response = await axios.post('/api/bhukk_retailers/post', payload, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await axios.post('/api/retailers/create', payload);
     return response.data;
   } catch (error) {
     throw new Error('Failed to upload the retailer form data');

@@ -51,9 +51,7 @@ export const sendManufacturerMessage = async (
       });
     }
 
-    const response = await axios.post('/api/bhukk_manufacturers/post', payload, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const response = await axios.post('/api/manufacturers/create', payload);
     return response.data;
   } catch (error) {
     throw new Error('Failed to upload the manufacturer form data');

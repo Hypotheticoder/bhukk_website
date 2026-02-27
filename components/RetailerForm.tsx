@@ -41,11 +41,16 @@ const RetailerForm: React.FC = () => {
 
   // File Fields
   const [shopPhotoFile, setShopPhotoFile] = useState<File | null>(null);
-  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(null);
+  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(
+    null,
+  );
   const [exciseLicenseFile, setExciseLicenseFile] = useState<File | null>(null);
   const [tradeLicenseFile, setTradeLicenseFile] = useState<File | null>(null);
-  const [shopEstablishmentLicenseFile, setShopEstablishmentLicenseFile] = useState<File | null>(null);
-  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(null);
+  const [shopEstablishmentLicenseFile, setShopEstablishmentLicenseFile] =
+    useState<File | null>(null);
+  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(
+    null,
+  );
   const [fireNocFile, setFireNocFile] = useState<File | null>(null);
 
   // Refs for resetting file inputs
@@ -98,16 +103,40 @@ const RetailerForm: React.FC = () => {
       if (bankBranchName) form.append("bank_branch_name", bankBranchName);
       if (upiId) form.append("upi_id", upiId);
       if (altPhn) form.append("alt_phn", altPhn);
-      if (authorizedSignatoryName) form.append("authorized_signatory_name", authorizedSignatoryName);
+      if (authorizedSignatoryName)
+        form.append("authorized_signatory_name", authorizedSignatoryName);
 
       // Files
-      if (cancelledChequeFile) form.append("cancelled_cheque_file", cancelledChequeFile);
-      if (exciseLicenseFile) form.append("excise_license_file", exciseLicenseFile);
+      if (cancelledChequeFile)
+        form.append("cancelled_cheque_file", cancelledChequeFile);
+      if (exciseLicenseFile)
+        form.append("excise_license_file", exciseLicenseFile);
       if (tradeLicenseFile) form.append("trade_license_file", tradeLicenseFile);
-      if (shopEstablishmentLicenseFile) form.append("shop_establishment_license_file", shopEstablishmentLicenseFile);
-      if (gstCertificateFile) form.append("gst_certificate_file", gstCertificateFile);
+      if (shopEstablishmentLicenseFile)
+        form.append(
+          "shop_establishment_license_file",
+          shopEstablishmentLicenseFile,
+        );
+      if (gstCertificateFile)
+        form.append("gst_certificate_file", gstCertificateFile);
       if (fireNocFile) form.append("fire_noc_file", fireNocFile);
       if (shopPhotoFile) form.append("shop_photo_file", shopPhotoFile);
+
+      // Backend expects UploadFile for the corresponding "*_url" fields; send file objects
+      if (cancelledChequeFile)
+        form.append("cancelled_cheque_url", cancelledChequeFile);
+      if (exciseLicenseFile)
+        form.append("excise_license_url", exciseLicenseFile);
+      if (tradeLicenseFile) form.append("trade_license_url", tradeLicenseFile);
+      if (shopEstablishmentLicenseFile)
+        form.append(
+          "shop_establishment_license_url",
+          shopEstablishmentLicenseFile,
+        );
+      if (gstCertificateFile)
+        form.append("gst_certificate_url", gstCertificateFile);
+      if (fireNocFile) form.append("fire_noc_url", fireNocFile);
+      if (shopPhotoFile) form.append("shop_photo_url", shopPhotoFile);
 
       await sendRetailerMessage(form);
       setSubmitSuccess(
@@ -245,7 +274,6 @@ const RetailerForm: React.FC = () => {
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              
               {/* === SHOP DETAILS === */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
@@ -313,7 +341,9 @@ const RetailerForm: React.FC = () => {
                     type="file"
                     accept="image/*"
                     className="w-full text-sm"
-                    onChange={(e) => setShopPhotoFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setShopPhotoFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
@@ -475,7 +505,8 @@ const RetailerForm: React.FC = () => {
                 <div className="space-y-3">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Excise License Document <span className="text-red-500">*</span>
+                      Excise License Document{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={exciseRef}
@@ -483,7 +514,9 @@ const RetailerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setExciseLicenseFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setExciseLicenseFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
 
@@ -497,13 +530,16 @@ const RetailerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setTradeLicenseFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setTradeLicenseFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Shop Establishment License <span className="text-red-500">*</span>
+                      Shop Establishment License{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={shopEstabRef}
@@ -511,7 +547,11 @@ const RetailerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setShopEstablishmentLicenseFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setShopEstablishmentLicenseFile(
+                          e.target.files?.[0] ?? null,
+                        )
+                      }
                     />
                   </div>
 
@@ -525,7 +565,9 @@ const RetailerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setGstCertificateFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setGstCertificateFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
 
@@ -539,7 +581,9 @@ const RetailerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setFireNocFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setFireNocFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
                 </div>
@@ -590,7 +634,7 @@ const RetailerForm: React.FC = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -618,7 +662,8 @@ const RetailerForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Cancelled Cheque <span className="text-red-500">*</span>
+                    <Upload size={12} /> Cancelled Cheque{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={chequeRef}
@@ -626,7 +671,9 @@ const RetailerForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setCancelledChequeFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setCancelledChequeFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
@@ -639,7 +686,8 @@ const RetailerForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                    Email Address <span className="text-red-500">*</span> <Info size={12} className="text-gray-300" />
+                    Email Address <span className="text-red-500">*</span>{" "}
+                    <Info size={12} className="text-gray-300" />
                   </label>
                   <input
                     type="email"
@@ -693,7 +741,8 @@ const RetailerForm: React.FC = () => {
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
-                    I verify that all submitted documents and information are genuine. I agree to Bhukk's Retailer Terms.
+                    I verify that all submitted documents and information are
+                    genuine. I agree to Bhukk's Retailer Terms.
                   </span>
                 </label>
               </div>

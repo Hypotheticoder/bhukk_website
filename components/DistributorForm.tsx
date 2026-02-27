@@ -17,48 +17,59 @@ const DistributorForm: React.FC = () => {
   // Text Fields
   const [tradeName, setTradeName] = useState("");
   const [businessType, setBusinessType] = useState("");
-  
+
   const [gstNo, setGstNo] = useState("");
   const [panNo, setPanNo] = useState("");
   const [tanNo, setTanNo] = useState("");
-  
+
   const [msmeRegistered, setMsmeRegistered] = useState(false);
-  
+
   const [registeredAddress, setRegisteredAddress] = useState("");
   const [warehouseAddress, setWarehouseAddress] = useState("");
-  
+
   const [warehouseLicenseNo, setWarehouseLicenseNo] = useState("");
   const [exciseLicenseNo, setExciseLicenseNo] = useState("");
   const [licenseValidFrom, setLicenseValidFrom] = useState("");
   const [licenseValidUpto, setLicenseValidUpto] = useState("");
-  
+
   const [bankAcName, setBankAcName] = useState("");
   const [bankAcNo, setBankAcNo] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [bankBranchName, setBankBranchName] = useState("");
   const [upiId, setUpiId] = useState("");
-  
+
   const [deliveryFleetSize, setDeliveryFleetSize] = useState("");
   const [servicingArea, setServicingArea] = useState("");
   const [vehicleCount, setVehicleCount] = useState("");
-  
+
   const [contactPersonName, setContactPersonName] = useState("");
   const [phnNo, setPhnNo] = useState("");
   const [altPhnNo, setAltPhnNo] = useState("");
   const [email, setEmail] = useState("");
-  
+
   const [termsAccepted, setTermsAccepted] = useState(true);
 
   // File Fields
-  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(null);
+  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(
+    null,
+  );
   const [panFile, setPanFile] = useState<File | null>(null);
-  const [msmeCertificateFile, setMsmeCertificateFile] = useState<File | null>(null);
-  const [firesafetyCertificateFile, setFiresafetyCertificateFile] = useState<File | null>(null);
+  const [msmeCertificateFile, setMsmeCertificateFile] = useState<File | null>(
+    null,
+  );
+  const [firesafetyCertificateFile, setFiresafetyCertificateFile] =
+    useState<File | null>(null);
   const [exciseLicenseFile, setExciseLicenseFile] = useState<File | null>(null);
-  const [companyIncorporationCertificateFile, setCompanyIncorporationCertificateFile] = useState<File | null>(null);
+  const [
+    companyIncorporationCertificateFile,
+    setCompanyIncorporationCertificateFile,
+  ] = useState<File | null>(null);
   const [tradeLicenseFile, setTradeLicenseFile] = useState<File | null>(null);
-  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(null);
-  const [transporationLogisticsFile, setTransporationLogisticsFile] = useState<File | null>(null);
+  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(
+    null,
+  );
+  const [transporationLogisticsFile, setTransporationLogisticsFile] =
+    useState<File | null>(null);
 
   // Refs for resetting file inputs
   const gstCertRef = useRef<HTMLInputElement>(null);
@@ -104,28 +115,62 @@ const DistributorForm: React.FC = () => {
       if (tanNo) form.append("tan_no", tanNo);
       form.append("msme_registered", msmeRegistered ? "true" : "false");
       if (warehouseAddress) form.append("warehouse_address", warehouseAddress);
-      if (warehouseLicenseNo) form.append("warehouse_license_no", warehouseLicenseNo);
+      if (warehouseLicenseNo)
+        form.append("warehouse_license_no", warehouseLicenseNo);
       if (exciseLicenseNo) form.append("excise_license_no", exciseLicenseNo);
       if (licenseValidFrom) form.append("license_valid_from", licenseValidFrom);
       if (licenseValidUpto) form.append("license_valid_upto", licenseValidUpto);
       if (bankBranchName) form.append("bank_branch_name", bankBranchName);
       if (upiId) form.append("upi_id", upiId);
-      if (deliveryFleetSize) form.append("delivery_fleet_size", deliveryFleetSize);
+      if (deliveryFleetSize)
+        form.append("delivery_fleet_size", deliveryFleetSize);
       if (servicingArea) form.append("servicing_area", servicingArea);
       if (vehicleCount) form.append("vehicle_count", vehicleCount);
-      if (contactPersonName) form.append("contact_person_name", contactPersonName);
+      if (contactPersonName)
+        form.append("contact_person_name", contactPersonName);
       if (altPhnNo) form.append("alt_phn_no", altPhnNo);
 
       // Files
-      if (gstCertificateFile) form.append("gst_certificate_file", gstCertificateFile);
+      if (gstCertificateFile)
+        form.append("gst_certificate_file", gstCertificateFile);
       if (panFile) form.append("pan_file", panFile);
-      if (msmeCertificateFile) form.append("msme_certificate_file", msmeCertificateFile);
-      if (firesafetyCertificateFile) form.append("firesafety_certificate_file", firesafetyCertificateFile);
-      if (exciseLicenseFile) form.append("excise_license_file", exciseLicenseFile);
-      if (companyIncorporationCertificateFile) form.append("company_incorporation_certificate_file", companyIncorporationCertificateFile);
+      if (msmeCertificateFile)
+        form.append("msme_certificate_file", msmeCertificateFile);
+      if (firesafetyCertificateFile)
+        form.append("firesafety_certificate_file", firesafetyCertificateFile);
+      if (exciseLicenseFile)
+        form.append("excise_license_file", exciseLicenseFile);
+      if (companyIncorporationCertificateFile)
+        form.append(
+          "company_incorporation_certificate_file",
+          companyIncorporationCertificateFile,
+        );
       if (tradeLicenseFile) form.append("trade_license_file", tradeLicenseFile);
-      if (cancelledChequeFile) form.append("cancelled_cheque_file", cancelledChequeFile);
-      if (transporationLogisticsFile) form.append("transporation_logistics_file", transporationLogisticsFile);
+      if (cancelledChequeFile)
+        form.append("cancelled_cheque_file", cancelledChequeFile);
+      if (transporationLogisticsFile)
+        form.append("transporation_logistics_file", transporationLogisticsFile);
+
+      // Backend expects corresponding "*_url" UploadFile fields; send file objects for those keys too
+      if (gstCertificateFile)
+        form.append("gst_certificate_url", gstCertificateFile);
+      if (panFile) form.append("pan_url", panFile);
+      if (msmeCertificateFile)
+        form.append("msme_certificate_url", msmeCertificateFile);
+      if (firesafetyCertificateFile)
+        form.append("firesafety_certificate_url", firesafetyCertificateFile);
+      if (exciseLicenseFile)
+        form.append("excise_license_url", exciseLicenseFile);
+      if (companyIncorporationCertificateFile)
+        form.append(
+          "company_incorporation_certificate_url",
+          companyIncorporationCertificateFile,
+        );
+      if (tradeLicenseFile) form.append("trade_license_url", tradeLicenseFile);
+      if (cancelledChequeFile)
+        form.append("cancelled_cheque_url", cancelledChequeFile);
+      if (transporationLogisticsFile)
+        form.append("transporation_logistics_url", transporationLogisticsFile);
 
       await sendDistributorMessage(form);
       setSubmitSuccess(
@@ -268,7 +313,6 @@ const DistributorForm: React.FC = () => {
             </div>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-              
               {/* === COMPANY DETAILS === */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
@@ -302,7 +346,8 @@ const DistributorForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Company Incorporation Certificate <span className="text-red-500">*</span>
+                    <Upload size={12} /> Company Incorporation Certificate{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={companyIncRef}
@@ -310,7 +355,11 @@ const DistributorForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setCompanyIncorporationCertificateFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setCompanyIncorporationCertificateFile(
+                        e.target.files?.[0] ?? null,
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -335,7 +384,8 @@ const DistributorForm: React.FC = () => {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Upload size={12} /> PAN Upload <span className="text-red-500">*</span>
+                      <Upload size={12} /> PAN Upload{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={panRef}
@@ -362,7 +412,8 @@ const DistributorForm: React.FC = () => {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Upload size={12} /> GST Certificate <span className="text-red-500">*</span>
+                      <Upload size={12} /> GST Certificate{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={gstCertRef}
@@ -370,7 +421,9 @@ const DistributorForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-xs"
                       required
-                      onChange={(e) => setGstCertificateFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setGstCertificateFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
                 </div>
@@ -414,7 +467,8 @@ const DistributorForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> MSME Certificate <span className="text-red-500">*</span>
+                    <Upload size={12} /> MSME Certificate{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={msmeCertRef}
@@ -422,7 +476,9 @@ const DistributorForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setMsmeCertificateFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setMsmeCertificateFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
@@ -520,7 +576,8 @@ const DistributorForm: React.FC = () => {
                 <div className="space-y-3 pt-2">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Upload size={12} /> Excise License Document <span className="text-red-500">*</span>
+                      <Upload size={12} /> Excise License Document{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={exciseRef}
@@ -528,13 +585,16 @@ const DistributorForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setExciseLicenseFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setExciseLicenseFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Upload size={12} /> Trade License <span className="text-red-500">*</span>
+                      <Upload size={12} /> Trade License{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={tradeRef}
@@ -542,13 +602,16 @@ const DistributorForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setTradeLicenseFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setTradeLicenseFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
 
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Upload size={12} /> Fire Safety Certificate <span className="text-red-500">*</span>
+                      <Upload size={12} /> Fire Safety Certificate{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={fireNocRef}
@@ -556,12 +619,15 @@ const DistributorForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setFiresafetyCertificateFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setFiresafetyCertificateFile(
+                          e.target.files?.[0] ?? null,
+                        )
+                      }
                     />
                   </div>
                 </div>
               </div>
-
 
               {/* === FLEET & LOGISTICS === */}
               <div className="space-y-4">
@@ -610,7 +676,8 @@ const DistributorForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Logistics & Transport Details <span className="text-red-500">*</span>
+                    <Upload size={12} /> Logistics & Transport Details{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={logisticsRef}
@@ -618,11 +685,12 @@ const DistributorForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setTransporationLogisticsFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setTransporationLogisticsFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
-
 
               {/* === BANK DETAILS === */}
               <div className="space-y-4">
@@ -669,7 +737,7 @@ const DistributorForm: React.FC = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -697,7 +765,8 @@ const DistributorForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Cancelled Cheque <span className="text-red-500">*</span>
+                    <Upload size={12} /> Cancelled Cheque{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={chequeRef}
@@ -705,11 +774,12 @@ const DistributorForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setCancelledChequeFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setCancelledChequeFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
-
 
               {/* === CONTACT DETAILS === */}
               <div className="space-y-4">
@@ -731,7 +801,8 @@ const DistributorForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                    Email Address <span className="text-red-500">*</span> <Info size={12} className="text-gray-300" />
+                    Email Address <span className="text-red-500">*</span>{" "}
+                    <Info size={12} className="text-gray-300" />
                   </label>
                   <input
                     type="email"
@@ -772,7 +843,6 @@ const DistributorForm: React.FC = () => {
                 </div>
               </div>
 
-
               <div className="pt-3">
                 <label className="flex items-start gap-3 cursor-pointer group">
                   <div className="relative mt-0.5">
@@ -786,7 +856,8 @@ const DistributorForm: React.FC = () => {
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
-                    I verify that all submitted documents and information are genuine. I agree to Bhukk's Distributor Terms.
+                    I verify that all submitted documents and information are
+                    genuine. I agree to Bhukk's Distributor Terms.
                   </span>
                 </label>
               </div>

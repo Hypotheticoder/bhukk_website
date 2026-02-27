@@ -70,9 +70,7 @@ export const sendDistributorMessage = async (
             });
         }
 
-        const response = await axios.post('/api/bhukk_distributors/post', payload, {
-            headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await axios.post('/api/distributors/create', payload);
         return response.data;
     } catch (error) {
         throw new Error('Failed to upload the distributor form data');

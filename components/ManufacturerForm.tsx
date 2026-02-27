@@ -115,6 +115,24 @@ const ManufacturerForm: React.FC = () => {
         );
       }
 
+      // Also send UploadFile objects for backend-required "*_url" fields
+      if (incorporationCertificate)
+        form.append("incorporation_certificate_url", incorporationCertificate);
+      if (panFile) form.append("pan_url", panFile);
+      if (gstCertFile) form.append("gst_cert_url", gstCertFile);
+      if (exciseLicenseFile)
+        form.append("excise_license_url", exciseLicenseFile);
+      if (fssaiLicenseFile) form.append("fssai_license_url", fssaiLicenseFile);
+      if (tradeLicenseFile) form.append("trade_license_url", tradeLicenseFile);
+      if (authLetterFile) form.append("auth_letter_url", authLetterFile);
+      if (cancelledChequeFile)
+        form.append("cancelled_cheque_url", cancelledChequeFile);
+      if (manufacturerImages?.length) {
+        manufacturerImages.forEach((f) =>
+          form.append("manufacturer_images_url", f),
+        );
+      }
+
       await sendManufacturerMessage(form);
       setSubmitSuccess(
         "Application submitted! Our team will contact you soon.",
@@ -267,7 +285,8 @@ const ManufacturerForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Incorporation Certificate <span className="text-red-500">*</span>
+                    Incorporation Certificate{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={incCertRef}
@@ -324,9 +343,7 @@ const ManufacturerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) =>
-                        setPanFile(e.target.files?.[0] ?? null)
-                      }
+                      onChange={(e) => setPanFile(e.target.files?.[0] ?? null)}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -355,7 +372,8 @@ const ManufacturerForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Registered Office Address <span className="text-red-500">*</span>
+                    Registered Office Address{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     rows={2}
@@ -414,7 +432,8 @@ const ManufacturerForm: React.FC = () => {
 
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Excise License <span className="text-red-500">*</span>
+                    <Upload size={12} /> Excise License{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={exciseRef}
@@ -429,7 +448,8 @@ const ManufacturerForm: React.FC = () => {
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> FSSAI License <span className="text-red-500">*</span>
+                    <Upload size={12} /> FSSAI License{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={fssaiRef}
@@ -437,12 +457,15 @@ const ManufacturerForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setFssaiLicenseFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setFssaiLicenseFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Trade License <span className="text-red-500">*</span>
+                    <Upload size={12} /> Trade License{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={tradeRef}
@@ -450,7 +473,9 @@ const ManufacturerForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setTradeLicenseFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setTradeLicenseFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
@@ -473,7 +498,8 @@ const ManufacturerForm: React.FC = () => {
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Auth Letter Document <span className="text-red-500">*</span>
+                    <Upload size={12} /> Auth Letter Document{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={authLetterRef}
@@ -481,7 +507,9 @@ const ManufacturerForm: React.FC = () => {
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setAuthLetterFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setAuthLetterFile(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
@@ -493,7 +521,8 @@ const ManufacturerForm: React.FC = () => {
                 </h3>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                    <Upload size={12} /> Manufacturer Images <span className="text-red-500">*</span>
+                    <Upload size={12} /> Manufacturer Images{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <input
                     ref={imagesRef}
@@ -502,7 +531,11 @@ const ManufacturerForm: React.FC = () => {
                     multiple
                     className="w-full text-sm"
                     required
-                    onChange={(e) => setManufacturerImages(e.target.files ? Array.from(e.target.files) : null)}
+                    onChange={(e) =>
+                      setManufacturerImages(
+                        e.target.files ? Array.from(e.target.files) : null,
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -567,7 +600,8 @@ const ManufacturerForm: React.FC = () => {
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Upload size={12} /> Cancelled Cheque <span className="text-red-500">*</span>
+                      <Upload size={12} /> Cancelled Cheque{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
                       ref={chequeRef}
@@ -575,7 +609,9 @@ const ManufacturerForm: React.FC = () => {
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
                       required
-                      onChange={(e) => setCancelledChequeFile(e.target.files?.[0] ?? null)}
+                      onChange={(e) =>
+                        setCancelledChequeFile(e.target.files?.[0] ?? null)
+                      }
                     />
                   </div>
                 </div>
@@ -643,7 +679,8 @@ const ManufacturerForm: React.FC = () => {
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
-                    I verify that all submitted documents and information are genuine. I agree to Bhukk's Manufacturer Terms.
+                    I verify that all submitted documents and information are
+                    genuine. I agree to Bhukk's Manufacturer Terms.
                   </span>
                 </label>
               </div>
