@@ -58,12 +58,12 @@ const DeliveryPartner: React.FC<DeliveryPartnerProps> = ({ onGoHome }) => {
 
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <button
-                onClick={() =>
-                  window.dispatchEvent(new CustomEvent("show-coming-soon"))
-                }
+                onClick={() => {
+                  window.location.hash = "delivery-partner-form";
+                }}
                 className="group w-full sm:w-auto bg-[#E23744] text-white px-10 py-5 rounded-2xl font-bold text-lg hover:bg-[#c62833] transition-all shadow-2xl flex items-center justify-center gap-3 active:scale-95"
               >
-                Download on App Store{" "}
+                Register Now{" "}
                 <ArrowRight
                   size={22}
                   className="group-hover:translate-x-1 transition-transform"

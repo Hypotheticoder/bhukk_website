@@ -11,6 +11,7 @@ import About from "./pages/About";
 import DistributorFormPage from "./pages/DistributorFormPage";
 import ManufacturerFormPage from "./pages/ManufacturerFormPage";
 import RetailerFormPage from "./pages/RetailerFormPage";
+import DeliveryPartnerFormPage from "./pages/DeliveryPartnerFormPage";
 import ComingSoon from "./components/ComingSoon";
 
 export type PageType =
@@ -23,7 +24,8 @@ export type PageType =
   | "about"
   | "distributor-form"
   | "manufacturer-form"
-  | "retailer-form";
+  | "retailer-form"
+  | "delivery-partner-form";
 
 const VALID_PAGES: PageType[] = [
   "home",
@@ -36,6 +38,7 @@ const VALID_PAGES: PageType[] = [
   "distributor-form",
   "manufacturer-form",
   "retailer-form",
+  "delivery-partner-form",
 ];
 
 const App: React.FC = () => {
@@ -138,6 +141,8 @@ const App: React.FC = () => {
         return <ManufacturerFormPage />;
       case "retailer-form":
         return <RetailerFormPage />;
+      case "delivery-partner-form":
+        return <DeliveryPartnerFormPage />;
       case "home":
       default:
         return <Home />;
