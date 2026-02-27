@@ -7,7 +7,18 @@ import {
   Globe,
   ArrowRight,
   CheckCircle2,
+  Building2,
+  Factory,
 } from "lucide-react";
+
+/** Navigate to the AddStore page and smooth-scroll to a partner section */
+const goToPartnerSection = (
+  section: "retailer" | "distributor" | "manufacturer",
+) => {
+  sessionStorage.setItem("scrollToSection", section);
+  window.location.hash = "store";
+  window.dispatchEvent(new CustomEvent("scrollToPartnerSection"));
+};
 
 const DistributorRetailer: React.FC = () => {
   return (
@@ -200,26 +211,55 @@ const DistributorRetailer: React.FC = () => {
         </div>
 
         {/* Website-ready footer copy */}
-        <div className="mt-16 pt-10 border-t border-gray-100 grid md:grid-cols-2 gap-10">
+        <div className="mt-16 pt-10 border-t border-gray-100 grid md:grid-cols-3 gap-10">
           <div>
             <p className="text-[#981A1E] font-bold text-sm uppercase tracking-widest mb-2">
               For Distributors
             </p>
-            <p className="text-[#696969] text-sm leading-relaxed">
+            <p className="text-[#696969] text-sm leading-relaxed mb-4">
               Discover and connect with verified liquor retailers in your
               operating areas. Expand your network, understand real demand, and
               build direct business relationships.
             </p>
+            <button
+              onClick={() => goToPartnerSection("distributor")}
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#981A1E] hover:underline"
+            >
+              <Building2 size={16} /> Apply as Distributor{" "}
+              <ArrowRight size={14} />
+            </button>
           </div>
           <div>
             <p className="text-[#1C1C1C] font-bold text-sm uppercase tracking-widest mb-2">
               For Retailers
             </p>
-            <p className="text-[#696969] text-sm leading-relaxed">
+            <p className="text-[#696969] text-sm leading-relaxed mb-4">
               Connect with multiple licensed distributors, reach new customers
               instantly, and manage your business digitally — all from one
               platform.
             </p>
+            <button
+              onClick={() => goToPartnerSection("retailer")}
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#981A1E] hover:underline"
+            >
+              <Store size={16} /> Apply as Retailer <ArrowRight size={14} />
+            </button>
+          </div>
+          <div>
+            <p className="text-[#E6A23C] font-bold text-sm uppercase tracking-widest mb-2">
+              For Manufacturers
+            </p>
+            <p className="text-[#696969] text-sm leading-relaxed mb-4">
+              Connect directly with hundreds of distributors and retailers
+              across India and let Bhukk power your go-to-market strategy.
+            </p>
+            <button
+              onClick={() => goToPartnerSection("manufacturer")}
+              className="inline-flex items-center gap-2 text-sm font-bold text-[#E6A23C] hover:underline"
+            >
+              <Factory size={16} /> Apply as Manufacturer{" "}
+              <ArrowRight size={14} />
+            </button>
           </div>
         </div>
       </div>

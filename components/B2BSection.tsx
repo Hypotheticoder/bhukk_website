@@ -6,7 +6,19 @@ import {
   Box,
   Bell,
   CreditCard,
+  Store,
+  Building2,
+  Factory,
 } from "lucide-react";
+
+/** Navigate to the AddStore page and smooth-scroll to a partner section */
+const goToPartnerSection = (
+  section: "retailer" | "distributor" | "manufacturer",
+) => {
+  sessionStorage.setItem("scrollToSection", section);
+  window.location.hash = "store";
+  window.dispatchEvent(new CustomEvent("scrollToPartnerSection"));
+};
 
 type B2BSectionProps = {
   showHero?: boolean;
@@ -72,6 +84,36 @@ const B2BSection: React.FC<B2BSectionProps> = ({ showHero = true }) => {
                   >
                     Request a Demo
                   </button>
+                </div>
+
+                {/* Quick-links to specific partner sections */}
+                <div className="flex flex-wrap gap-3 mt-4">
+                  {[
+                    {
+                      section: "retailer" as const,
+                      label: "Retailer",
+                      icon: <Store size={16} />,
+                    },
+                    {
+                      section: "distributor" as const,
+                      label: "Distributor",
+                      icon: <Building2 size={16} />,
+                    },
+                    {
+                      section: "manufacturer" as const,
+                      label: "Manufacturer",
+                      icon: <Factory size={16} />,
+                    },
+                  ].map((item) => (
+                    <button
+                      key={item.section}
+                      onClick={() => goToPartnerSection(item.section)}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-[#981A1E]/30 text-[#981A1E] text-sm font-semibold hover:bg-[#981A1E] hover:text-white transition-all"
+                    >
+                      {item.icon}
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 

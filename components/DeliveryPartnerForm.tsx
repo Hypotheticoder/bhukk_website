@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle, Upload, Bike } from "lucide-react";
 import { sendDeliveryPartnerMessage } from "@/api/services/deliverypartner.service";
+import TermsConditionsModal from "./TermsConditionsModal";
 
 const inputClass =
   "w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300";
@@ -47,6 +48,7 @@ const DeliveryPartnerForm: React.FC = () => {
   const [upiId, setUpiId] = useState("");
 
   const [termsAccepted, setTermsAccepted] = useState(true);
+  const [showTerms, setShowTerms] = useState(false);
 
   // File fields
   const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
@@ -711,7 +713,18 @@ const DeliveryPartnerForm: React.FC = () => {
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
                     I verify that all submitted information is genuine. I agree
-                    to Bhukk's Delivery Partner Terms &amp; Conditions.
+                    to Bhukk's Delivery Partner{" "}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTerms(true);
+                      }}
+                      className="text-[#E23744] underline hover:text-[#c62833] transition-colors"
+                    >
+                      Terms &amp; Conditions
+                    </button>
+                    .
                   </span>
                 </label>
               </div>
@@ -739,6 +752,10 @@ const DeliveryPartnerForm: React.FC = () => {
           </motion.div>
         </div>
       </section>
+      <TermsConditionsModal
+        open={showTerms}
+        onClose={() => setShowTerms(false)}
+      />
     </div>
   );
 };

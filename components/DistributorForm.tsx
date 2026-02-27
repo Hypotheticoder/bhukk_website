@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { motion } from "framer-motion";
+import TermsConditionsModal from "./TermsConditionsModal";
 import {
   ArrowRight,
   ArrowLeft,
@@ -48,6 +49,7 @@ const DistributorForm: React.FC = () => {
   const [email, setEmail] = useState("");
 
   const [termsAccepted, setTermsAccepted] = useState(true);
+  const [showTerms, setShowTerms] = useState(false);
 
   // File Fields
   const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(
@@ -857,7 +859,18 @@ const DistributorForm: React.FC = () => {
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
                     I verify that all submitted documents and information are
-                    genuine. I agree to Bhukk's Distributor Terms.
+                    genuine. I agree to Bhukk's Distributor{" "}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowTerms(true);
+                      }}
+                      className="text-[#E23744] underline hover:text-[#c62833] transition-colors"
+                    >
+                      Terms &amp; Conditions
+                    </button>
+                    .
                   </span>
                 </label>
               </div>
@@ -885,6 +898,10 @@ const DistributorForm: React.FC = () => {
           </motion.div>
         </div>
       </section>
+      <TermsConditionsModal
+        open={showTerms}
+        onClose={() => setShowTerms(false)}
+      />
     </div>
   );
 };

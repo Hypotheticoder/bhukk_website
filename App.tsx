@@ -92,9 +92,49 @@ const App: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Scroll to top on page change
+  // Scroll to top on page change — or scroll to a specific section if pending
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "auto" });
+    const target = sessionStorage.getItem("scrollToSection");
+
+    if (target && currentPage === "store") {
+      sessionStorage.removeItem("scrollToSection");
+      let attempts = 0;
+      const tryJump = () => {
+        const el = document.getElementById(`section-${target}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        } else if (attempts < 20) {
+          attempts++;
+          requestAnimationFrame(tryJump);
+        }
+      };
+      setTimeout(tryJump, 50);
+    } else {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [currentPage]);
+
+  // Listen for custom scroll-to-section events (covers same-page re-navigation)
+  useEffect(() => {
+    const handler = () => {
+      const target = sessionStorage.getItem("scrollToSection");
+      if (target && currentPage === "store") {
+        sessionStorage.removeItem("scrollToSection");
+        let attempts = 0;
+        const tryJump = () => {
+          const el = document.getElementById(`section-${target}`);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          } else if (attempts < 20) {
+            attempts++;
+            requestAnimationFrame(tryJump);
+          }
+        };
+        setTimeout(tryJump, 50);
+      }
+    };
+    window.addEventListener("scrollToPartnerSection", handler);
+    return () => window.removeEventListener("scrollToPartnerSection", handler);
   }, [currentPage]);
 
   /* -------------------------------

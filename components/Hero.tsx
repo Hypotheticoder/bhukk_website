@@ -100,13 +100,23 @@ const Hero: React.FC = () => {
             {/* Partner buttons */}
             <div className="flex flex-wrap justify-center gap-3">
               {[
-                { label: "Retailers", Icon: Store },
-                { label: "Manufacturers", Icon: Package },
-                { label: "Distributors", Icon: Truck },
-              ].map(({ label, Icon }) => (
+                { label: "Retailers", Icon: Store, section: "retailer" },
+                {
+                  label: "Manufacturers",
+                  Icon: Package,
+                  section: "manufacturer",
+                },
+                { label: "Distributors", Icon: Truck, section: "distributor" },
+              ].map(({ label, Icon, section }) => (
                 <button
                   key={label}
-                  onClick={() => (window.location.hash = "store")}
+                  onClick={() => {
+                    sessionStorage.setItem("scrollToSection", section);
+                    window.location.hash = "store";
+                    window.dispatchEvent(
+                      new CustomEvent("scrollToPartnerSection"),
+                    );
+                  }}
                   className="
                     flex items-center gap-3
                     border border-white/30
