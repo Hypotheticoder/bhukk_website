@@ -12,7 +12,7 @@ export const NAV_LINKS = [
   { name: "Home", href: "#" },
   { name: "About Us", href: "#" },
   // { name: "Trust", href: "#" },
-  { name: "Add Store", href: "#" },
+  { name: "Partner With Us", href: "#" },
   // { name: "Partnership", href: "#" },
   { name: "Delivery Partner", href: "#" },
   { name: "Contact Us", href: "#" },

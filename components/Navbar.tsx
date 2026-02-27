@@ -22,7 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
       case "Delivery Partner":
         navigate("partner");
         break;
-      case "Add Store":
+      case "Partner With Us":
         navigate("store");
         break;
       case "Partnership":
@@ -88,7 +88,8 @@ const Navbar: React.FC<NavbarProps> = ({ scrolled, currentPage, navigate }) => {
                   (link.name === "Home" && currentPage === "home") ||
                   (link.name === "Delivery Partner" &&
                     currentPage === "partner") ||
-                  (link.name === "Add Store" && currentPage === "store") ||
+                  (link.name === "Partner With Us" &&
+                    currentPage === "store") ||
                   (link.name === "Partnership" &&
                     currentPage === "partnership") ||
                   (link.name === "Contact Us" && currentPage === "contact") ||

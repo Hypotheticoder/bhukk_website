@@ -1,640 +1,592 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 import {
-  Users,
-  Truck,
-  Briefcase,
-  ChevronRight,
-  Info,
-  CheckCircle,
   ArrowRight,
-  ChevronDown,
+  Store,
+  Factory,
+  Building2,
+  CheckCircle2,
+  Zap,
+  BarChart2,
+  Truck,
+  ShieldCheck,
+  Globe,
+  Users,
+  CreditCard,
+  TrendingUp,
+  Package,
+  Repeat,
+  Smartphone,
 } from "lucide-react";
-import B2BSection from "@/components/B2BSection";
-import DistributorRetailer from "@/components/DistributorRetailer";
-import { sendPartnerMessage } from "@/api/services/partner.service";
 
-const COUNTRIES = [
+/* ------------------------------------------------------------------ */
+/*  Data                                                               */
+/* ------------------------------------------------------------------ */
+
+const PARTNER_TYPES = [
   {
-    code: "IN",
-    name: "India",
-    dial: "+91",
-    flag: "https://flagcdn.com/w20/in.png",
+    id: "retailer",
+    hash: "retailer-form",
+    icon: <Store size={32} />,
+    color: "bg-[#E23744]",
+    shadow: "shadow-[#E23744]/20",
+    title: "Retailers",
+    tagline: "Sell More. Digitally.",
+    description:
+      "List your licensed beverages store on Bhukk and reach thousands of nearby customers without building your own app or delivery fleet.",
+    benefits: [
+      "Instant online store presence in your locality",
+      "Real-time order notifications & dashboard",
+      "Smart inventory & stock control",
+      "No delivery management headache — we handle it",
+      "Secure & timely weekly settlements",
+      "Dedicated account manager & onboarding support",
+    ],
+    cta: "Apply as Retailer",
   },
   {
-    code: "US",
-    name: "United States",
-    dial: "+1",
-    flag: "https://flagcdn.com/w20/us.png",
+    id: "distributor",
+    hash: "distributor-form",
+    icon: <Building2 size={32} />,
+    color: "bg-[#1C1C1C]",
+    shadow: "shadow-black/10",
+    title: "Distributors",
+    tagline: "Expand. Connect. Grow.",
+    description:
+      "Join Bhukk as a licensed distributor and get direct access to verified retailers across your zones — powered by real demand data.",
+    benefits: [
+      "Direct access to verified retailers in your area",
+      "Real-time demand data & zone analytics",
+      "Expand your retail network quickly",
+      "Fast, transparent settlements",
+      "Dedicated relationship manager",
+      "Compliance-first digital onboarding",
+    ],
+    cta: "Apply as Distributor",
   },
   {
-    code: "GB",
-    name: "United Kingdom",
-    dial: "+44",
-    flag: "https://flagcdn.com/w20/gb.png",
-  },
-  {
-    code: "AE",
-    name: "UAE",
-    dial: "+971",
-    flag: "https://flagcdn.com/w20/ae.png",
-  },
-  {
-    code: "SG",
-    name: "Singapore",
-    dial: "+65",
-    flag: "https://flagcdn.com/w20/sg.png",
+    id: "manufacturer",
+    hash: "manufacturer-form",
+    icon: <Factory size={32} />,
+    color: "bg-[#E6A23C]",
+    shadow: "shadow-[#E6A23C]/20",
+    title: "Manufacturers",
+    tagline: "Scale Your Reach.",
+    description:
+      "Connect directly with hundreds of distributors and retailers across India and let Bhukk power your go-to-market strategy.",
+    benefits: [
+      "Direct-to-retailer & distributor channels",
+      "Demand analytics by region & product category",
+      "Brand visibility to end consumers",
+      "Product catalog showcased on the platform",
+      "Compliance-first partner onboarding",
+      "Dedicated brand partnership team",
+    ],
+    cta: "Apply as Manufacturer",
   },
 ];
 
+const WHY_BHUKK = [
+  {
+    icon: <Users size={28} />,
+    title: "Access New Customers",
+    desc: "Get discovered by people actively searching for beverages in your neighbourhood.",
+  },
+  {
+    icon: <Truck size={28} />,
+    title: "Seamless Delivery Network",
+    desc: "Leverage Bhukk's trained delivery partners for fast & compliant order fulfilment.",
+  },
+  {
+    icon: <BarChart2 size={28} />,
+    title: "Powerful Dashboard",
+    desc: "Track orders, revenue, inventory and settlements from one clean interface.",
+  },
+  {
+    icon: <ShieldCheck size={28} />,
+    title: "100 % Compliant",
+    desc: "Every partner is license-verified. Every delivery follows local excise laws.",
+  },
+  {
+    icon: <CreditCard size={28} />,
+    title: "Timely Settlements",
+    desc: "Clear weekly payouts with transparent line-item breakdowns.",
+  },
+  {
+    icon: <TrendingUp size={28} />,
+    title: "Grow with Data",
+    desc: "Real demand signals, zone analytics, and customer insights to fuel growth.",
+  },
+];
+
+const HOW_IT_WORKS = [
+  {
+    step: "01",
+    title: "Apply Online",
+    desc: "Fill a quick form with business details & documents.",
+  },
+  {
+    step: "02",
+    title: "Get Verified",
+    desc: "Our team reviews your license, identity & store/facility.",
+  },
+  {
+    step: "03",
+    title: "Onboard & Go Live",
+    desc: "Complete training, set up your dashboard, and start receiving orders.",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
+
 const AddStore: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
-  const [isCountryDropdownOpen, setIsCountryDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // form state
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [storeName, setStoreName] = useState("");
-  const [businessCategory, setBusinessCategory] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(true);
-
-  // file inputs
-  const [beveragesLicenseFile, setbeveragesLicenseFile] = useState<File | null>(
-    null,
-  );
-  const [businessRegFile, setBusinessRegFile] = useState<File | null>(null);
-  const [ownerIdFiles, setOwnerIdFiles] = useState<File[] | null>(null);
-  const [addressProofFile, setAddressProofFile] = useState<File | null>(null);
-  const [storePhotos, setStorePhotos] = useState<File[] | null>(null);
-
-  // refs to clear file inputs after submit
-  const beveragesRef = useRef<HTMLInputElement | null>(null);
-  const businessRegRef = useRef<HTMLInputElement | null>(null);
-  const ownerIdRef = useRef<HTMLInputElement | null>(null);
-  const addressProofRef = useRef<HTMLInputElement | null>(null);
-  const storePhotosRef = useRef<HTMLInputElement | null>(null);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsCountryDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(null);
-
-    if (!termsAccepted) {
-      setSubmitError("You must accept the terms to continue.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const form = new FormData();
-      form.append("first_name", firstName);
-      form.append("last_name", lastName);
-      form.append("email", email);
-      form.append("country_code", selectedCountry.dial);
-      form.append("phone", phone);
-      form.append("store_name", storeName);
-      form.append("business_category", businessCategory);
-      form.append("terms_accepted", termsAccepted ? "1" : "0");
-
-      if (beveragesLicenseFile)
-        form.append("beverages_retail_license", beveragesLicenseFile);
-      if (businessRegFile)
-        form.append("business_registration_license", businessRegFile);
-      if (ownerIdFiles && ownerIdFiles.length)
-        ownerIdFiles.forEach((f) => form.append("owner_id_files", f));
-      if (addressProofFile)
-        form.append("store_address_proof", addressProofFile);
-      if (storePhotos && storePhotos.length)
-        storePhotos.forEach((f) => form.append("store_photos", f));
-
-      await sendPartnerMessage(form);
-      setSubmitSuccess("Application submitted — we will contact you soon.");
-      // optionally clear form
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
-      setStoreName("");
-      setBusinessCategory("");
-      setbeveragesLicenseFile(null);
-      setBusinessRegFile(null);
-      setOwnerIdFiles(null);
-      setAddressProofFile(null);
-      setStorePhotos(null);
-      // clear file input DOM values so the inputs appear empty
-      if (beveragesRef.current) beveragesRef.current.value = "";
-      if (businessRegRef.current) businessRegRef.current.value = "";
-      if (ownerIdRef.current) ownerIdRef.current.value = "";
-      if (addressProofRef.current) addressProofRef.current.value = "";
-      if (storePhotosRef.current) storePhotosRef.current.value = "";
-    } catch (err) {
-      setSubmitError("Failed to submit. Please try again later.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
     <div className="pt-0 overflow-x-hidden">
-      {/* Split Hero Section - Premium Merchant Layout */}
-      <section className="relative flex flex-col lg:flex-row min-h-screen bg-white">
-        {/* Left Side: Brand Visuals */}
-        <div className="relative flex-[1.1] hidden lg:flex items-center justify-center overflow-hidden">
-          <div
-            className="absolute inset-0 bg-cover bg-[center_20%] transition-transform duration-[20s] hover:scale-105"
-            style={{
-              backgroundImage:
-                'url("https://images.unsplash.com/photo-1562601579-599dec564e06?auto=format&fit=crop&q=80&w=1600")',
-            }}
-          />
-          <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20"></div>
+      {/* ===================== HERO ===================== */}
+      <section className="relative min-h-[85vh] flex items-center justify-center bg-[#1C1C1C] overflow-hidden">
+        {/* Decorative gradient blobs */}
+        <div className="absolute top-[-15%] left-[-8%] w-[500px] h-[500px] bg-[#E23744]/15 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-[#E6A23C]/10 rounded-full blur-[100px] pointer-events-none" />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
 
-          <div className="relative z-10 p-16 xl:p-24 max-w-2xl animate-fade-in-up">
-            <h1 className="text-white text-5xl xl:text-7xl font-black mb-6 leading-[1.1] tracking-tight">
-              Partner with the <br />
-              <span className="text-[#E23744]">#1 Beverages Facilitator</span>
-            </h1>
-            <p className="text-white/90 text-xl xl:text-2xl leading-relaxed font-medium max-w-lg">
-              Reach millions of customers and grow your retail business with
-              Bhukk's smart delivery network.
-            </p>
+        <div className="relative z-10 max-w-[1100px] mx-auto px-6 text-center py-32">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 text-white px-5 py-2 rounded-full text-sm font-bold tracking-widest uppercase mb-8"
+          >
+            <Zap size={16} className="text-[#E23744]" />
+            Partner With Bhukk
+          </motion.div>
 
-            <div className="mt-12 flex items-center gap-6">
-              <div className="flex -space-x-3">
-                {/* {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-10 rounded-full border-2 border-white overflow-hidden shadow-lg"
-                  >
-                    <img
-                      src={`https://i.pravatar.cc/100?img=${i + 15}`}
-                      alt="Merchant"
-                    />
-                  </div>
-                ))} */}
-              </div>
-              {/* <div className="text-white/70 text-xs font-bold uppercase tracking-[0.2em]">
-                Trusted by 5,000+ Stores
-              </div> */}
-            </div>
-          </div>
-        </div>
+          <motion.h1
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="text-white text-5xl md:text-7xl lg:text-8xl font-black tracking-tight leading-[1.05] mb-6"
+          >
+            Grow Your Business <span className="text-[#E23744]">With Us</span>
+          </motion.h1>
 
-        {/* Right Side: Professional Enrollment Form */}
-        <div className="flex-1 bg-white flex flex-col items-center justify-center p-6 sm:p-12 lg:p-16 xl:p-24 pt-28 lg:pt-16">
-          <div className="w-full max-w-[440px] space-y-8 animate-fade-in-up">
-            <div className="space-y-2">
-              <h2 className="text-3xl font-black text-[#1C1C1C] tracking-tight">
-                Get started
-              </h2>
-            </div>
+          <motion.p
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="text-white/60 text-lg md:text-2xl max-w-2xl mx-auto leading-relaxed"
+          >
+            Whether you're a retailer, distributor, or manufacturer — Bhukk
+            gives you the tech, the customers, and the compliance layer to scale
+            your beverages business digitally.
+          </motion.p>
 
-            <form
-              id="store-enroll-form"
-              className="space-y-4"
-              onSubmit={handleSubmit}
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
-                    placeholder="Jane"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
-                    placeholder="Doe"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                  Email <Info size={12} className="text-gray-300" />
-                </label>
-                <input
-                  type="email"
-                  placeholder="jane@beveragesshop.com"
-                  className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Store Phone Number
-                </label>
-                <div className="flex gap-2 relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setIsCountryDropdownOpen(!isCountryDropdownOpen)
-                    }
-                    className="bg-[#F6F6F6] rounded-xl px-4 py-3 flex items-center gap-2 text-sm border-r border-gray-200 hover:bg-[#EFEFEF] transition-colors min-w-[100px] justify-between"
-                  >
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={selectedCountry.flag}
-                        className="w-5"
-                        alt={selectedCountry.code}
-                      />
-                      <span className="font-bold">{selectedCountry.dial}</span>
-                    </div>
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-200 ${isCountryDropdownOpen ? "rotate-180" : ""}`}
-                    />
-                  </button>
-
-                  {isCountryDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-full max-w-[240px] bg-white border border-gray-100 rounded-xl shadow-2xl z-50 overflow-hidden animate-fade-in-up">
-                      {COUNTRIES.map((c) => (
-                        <button
-                          key={c.code}
-                          type="button"
-                          onClick={() => {
-                            setSelectedCountry(c);
-                            setIsCountryDropdownOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${selectedCountry.code === c.code ? "bg-[#FFF1F2] text-[#E23744]" : "text-gray-700"}`}
-                        >
-                          <img src={c.flag} className="w-5" alt={c.code} />
-                          <span className="font-bold min-w-[40px]">
-                            {c.dial}
-                          </span>
-                          <span className="truncate">{c.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-
-                  <input
-                    type="tel"
-                    placeholder="9876543210"
-                    className="flex-1 bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Store Name
-                </label>
-                <input
-                  type="text"
-                  placeholder="Vintage Spirits Boutique"
-                  className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300"
-                  value={storeName}
-                  onChange={(e) => setStoreName(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Business Type
-                </label>
-                <div className="relative">
-                  <select
-                    className="w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium appearance-none"
-                    value={businessCategory}
-                    onChange={(e) => setBusinessCategory(e.target.value)}
-                  >
-                    <option value="">Select Business Category</option>
-                    <option>Beverages Manufacturer</option>
-                    <option>Authorized Distributor</option>
-                    <option>Beverages Retailer</option>
-                  </select>
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                    <ChevronDown size={16} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-3">
-                <label className="flex items-start gap-3 cursor-pointer group">
-                  <div className="relative mt-0.5">
-                    <input
-                      type="checkbox"
-                      className="peer sr-only"
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
-                    />
-                    <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all"></div>
-                    <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
-                  </div>
-                  <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
-                    I agree to Bhukk's Store Terms and acknowledge the{" "}
-                    <a href="#" className="text-[#E23744] hover:underline">
-                      Privacy Notice
-                    </a>
-                    .
-                  </span>
-                </label>
-              </div>
-
-              {/* Document Uploads */}
-              <div className="pt-2 space-y-4">
-                <h4 className="text-sm font-bold text-[#1C1C1C]">
-                  Required Documents
-                </h4>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    beverages Retail License
-                  </label>
-                  <input
-                    ref={beveragesRef}
-                    type="file"
-                    accept="application/pdf,image/*"
-                    className="w-full"
-                    onChange={(e) =>
-                      setbeveragesLicenseFile(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Business Registration
-                  </label>
-                  <input
-                    ref={businessRegRef}
-                    type="file"
-                    accept="application/pdf,image/*"
-                    className="w-full"
-                    onChange={(e) =>
-                      setBusinessRegFile(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Owner ID & PAN (upload)
-                    </label>
-                    <input
-                      ref={ownerIdRef}
-                      type="file"
-                      accept="application/pdf,image/*"
-                      multiple
-                      className="w-full"
-                      onChange={(e) =>
-                        setOwnerIdFiles(
-                          e.target.files ? Array.from(e.target.files) : null,
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Store Address Proof
-                    </label>
-                    <input
-                      ref={addressProofRef}
-                      type="file"
-                      accept="application/pdf,image/*"
-                      className="w-full"
-                      onChange={(e) =>
-                        setAddressProofFile(e.target.files?.[0] ?? null)
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Store Photos
-                  </label>
-                  <input
-                    ref={storePhotosRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="w-full"
-                    onChange={(e) =>
-                      setStorePhotos(
-                        e.target.files ? Array.from(e.target.files) : null,
-                      )
-                    }
-                  />
-                </div>
-              </div>
-              {submitError && (
-                <div className="text-sm text-red-500">{submitError}</div>
-              )}
-              {submitSuccess && (
-                <div className="text-sm text-green-600">{submitSuccess}</div>
-              )}
-
+          {/* Quick CTA chips */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="mt-10 flex flex-wrap justify-center gap-4"
+          >
+            {PARTNER_TYPES.map((p) => (
               <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-[#1C1C1C] text-white py-4 rounded-xl font-bold text-base hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
+                key={p.id}
+                onClick={() => {
+                  document
+                    .getElementById(`section-${p.id}`)
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="group flex items-center gap-3 border border-white/20 text-white px-6 py-3 rounded-xl font-semibold text-base hover:bg-white hover:text-[#1C1C1C] transition-all active:scale-[0.97]"
               >
-                {isSubmitting ? "Submitting..." : "Submit & Start Selling"}{" "}
-                <ArrowRight size={18} />
+                {p.icon}
+                {p.title}
               </button>
-            </form>
-          </div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
-      {/* local handlers */}
+      {/* ===================== PARTNER TYPE SECTIONS ===================== */}
+      {PARTNER_TYPES.map((p, idx) => {
+        const isEven = idx % 2 === 0;
+        return (
+          <section
+            key={p.id}
+            id={`section-${p.id}`}
+            className={`py-24 ${isEven ? "bg-white" : "bg-[#FBFBFA]"}`}
+          >
+            <div className="max-w-[1100px] mx-auto px-6">
+              <div
+                className={`flex flex-col ${
+                  isEven ? "lg:flex-row" : "lg:flex-row-reverse"
+                } gap-16 items-center`}
+              >
+                {/* Text Side */}
+                <motion.div
+                  initial={{ opacity: 0, x: isEven ? -40 : 40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.7 }}
+                  className="flex-1 space-y-8"
+                >
+                  <div className="flex items-center gap-4">
+                    <div
+                      className={`w-16 h-16 ${p.color} text-white rounded-2xl flex items-center justify-center shadow-lg ${p.shadow}`}
+                    >
+                      {p.icon}
+                    </div>
+                    <div>
+                      <h2 className="text-3xl md:text-4xl font-black text-[#1C1C1C] tracking-tight">
+                        {p.title}
+                      </h2>
+                      <p className="text-[#696969] font-medium">{p.tagline}</p>
+                    </div>
+                  </div>
 
-      {/* B2B Partner Overview (inserted) */}
-      <DistributorRetailer />
+                  <p className="text-[#696969] text-lg leading-relaxed max-w-xl">
+                    {p.description}
+                  </p>
 
-      {/* Distributors ↔ Retailers section */}
-      <B2BSection showHero={false} />
+                  <ul className="space-y-4">
+                    {p.benefits.map((b, i) => (
+                      <motion.li
+                        key={i}
+                        initial={{ opacity: 0, x: -20 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.4, delay: i * 0.08 }}
+                        className="flex items-start gap-3"
+                      >
+                        <CheckCircle2
+                          size={20}
+                          className="text-[#E23744] mt-0.5 flex-shrink-0"
+                        />
+                        <span className="text-[#1C1C1C] font-medium">{b}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
 
-      {/* Why Bhukk Section */}
+                  <button
+                    onClick={() => (window.location.hash = p.hash)}
+                    className={`group inline-flex items-center gap-3 ${p.color} text-white px-8 py-4 rounded-xl font-bold text-base shadow-lg hover:opacity-90 transition-all active:scale-[0.97]`}
+                  >
+                    {p.cta}
+                    <ArrowRight
+                      size={18}
+                      className="group-hover:translate-x-1 transition-transform"
+                    />
+                  </button>
+                </motion.div>
+
+                {/* Visual Side */}
+                <motion.div
+                  initial={{ opacity: 0, x: isEven ? 40 : -40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.7, delay: 0.15 }}
+                  className="flex-1 w-full"
+                >
+                  <PartnerVisual type={p.id} />
+                </motion.div>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      {/* ===================== WHY BHUKK ===================== */}
       <section className="py-24 bg-white">
         <div className="max-w-[1100px] mx-auto px-6">
-          <h2 className="text-4xl font-black text-[#1C1C1C] mb-16 tracking-tight">
-            Why Bhukk
-          </h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 text-xs font-bold tracking-widest uppercase bg-[#FFF1F2] text-[#981A1E] rounded-full mb-4">
+              Platform Benefits
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-[#1C1C1C] tracking-tight">
+              Why Partners Choose Bhukk
+            </h2>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
-            {[
-              {
-                icon: <Users size={44} strokeWidth={1.5} />,
-                title: "Access new customers",
-                desc: "Get discovered by people actively searching for food, spirits, and retail items in your neighborhood.",
-              },
-              {
-                icon: <Truck size={44} strokeWidth={1.5} />,
-                title: "Seamless delivery network",
-                desc: "Leverage Bhukk's extensive network of couriers for fast and reliable order fulfillment at scale.",
-              },
-              {
-                icon: <Briefcase size={44} strokeWidth={1.5} />,
-                title: "Flexible choices",
-                desc: "Offer on-demand delivery, pickup, and scheduled orders tailored to your store operations.",
-              },
-            ].map((feature, i) => (
-              <div
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {WHY_BHUKK.map((item, i) => (
+              <motion.div
                 key={i}
-                className="space-y-6 animate-fade-in-up"
-                style={{ animationDelay: `${i * 150}ms` }}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group bg-[#FBFBFA] p-8 rounded-[1.5rem] border border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-500"
               >
-                <div className="text-[#1C1C1C] mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-bold text-[#1C1C1C] tracking-tight">
-                  {feature.title}
+                <div className="w-14 h-14 bg-[#1C1C1C] text-white rounded-2xl flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold text-[#1C1C1C] mb-2">
+                  {item.title}
                 </h3>
-                <p className="text-[#696969] text-base leading-relaxed">
-                  {feature.desc}
+                <p className="text-[#696969] text-sm leading-relaxed">
+                  {item.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Modern High-Impact Visual Section */}
-      <section className="relative py-32 bg-[#F8F8F8] overflow-hidden">
-        <div className="max-w-[1100px] mx-auto px-6 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-16 xl:gap-24">
-            <div className="flex-1 space-y-8 text-center lg:text-left">
-              <h2 className="text-4xl md:text-5xl font-black text-[#1C1C1C] leading-[1.1] tracking-tight">
-                Ready to take your store{" "}
-                <span className="text-[#E23744]">digital?</span>
-              </h2>
-              <p className="text-[#696969] text-xl leading-relaxed max-w-xl mx-auto lg:mx-0">
-                Join the platform that is redefining how India discovers and
-                orders premium beverages legally and responsibly.
-              </p>
+      {/* ===================== HOW IT WORKS ===================== */}
+      <section className="py-24 bg-[#1C1C1C]">
+        <div className="max-w-[900px] mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
+              How It Works
+            </h2>
+            <p className="mt-4 text-white/50 text-lg">
+              Three simple steps to join the Bhukk partner ecosystem.
+            </p>
+          </motion.div>
 
-              <div className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4">
-                <button
-                  onClick={() => {
-                    const el = document.getElementById("store-enroll-form");
-                    if (el) {
-                      const headerOffset = 80; // adjust if navbar height changes
-                      const rect = el.getBoundingClientRect();
-                      const target =
-                        window.pageYOffset + rect.top - headerOffset;
-                      window.scrollTo({ top: target, behavior: "smooth" });
-                      // Delay focus so the browser's focus-to-element doesn't
-                      // cancel/override the smooth scroll animation.
-                      setTimeout(() => {
-                        (
-                          el.querySelector(
-                            "input, select, textarea",
-                          ) as HTMLElement | null
-                        )?.focus();
-                      }, 350);
-                      return;
-                    }
-                    try {
-                      window.dispatchEvent(
-                        new CustomEvent("navigate", { detail: "store" }),
-                      );
-                      window.location.hash = "store";
-                    } catch (e) {
-                      window.location.hash = "store";
-                    }
-                    setTimeout(() => {
-                      const el2 = document.getElementById("store-enroll-form");
-                      if (el2) {
-                        const headerOffset = 80;
-                        const rect2 = el2.getBoundingClientRect();
-                        const target2 =
-                          window.pageYOffset + rect2.top - headerOffset;
-                        window.scrollTo({ top: target2, behavior: "smooth" });
-                        (
-                          el2.querySelector(
-                            "input, select, textarea",
-                          ) as HTMLElement | null
-                        )?.focus();
-                      }
-                    }, 350);
-                  }}
-                  className="bg-[#1C1C1C] text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition-all shadow-xl flex items-center gap-2"
-                >
-                  Get Started <ChevronRight size={20} />
-                </button>
-                <button
-                  onClick={() => {
-                    try {
-                      window.location.hash = "contact";
-                      window.dispatchEvent(
-                        new CustomEvent("navigate", { detail: "contact" }),
-                      );
-                    } catch (e) {
-                      window.location.hash = "contact";
-                    }
-                  }}
-                  className="bg-white text-[#1C1C1C] border border-gray-200 px-8 py-4 rounded-xl font-bold hover:bg-gray-50 transition-all"
-                >
-                  Contact Support
-                </button>
-              </div>
-            </div>
-
-            <div className="flex-1 relative w-full">
-              <div className="relative rounded-[2.5rem] overflow-hidden shadow-2xl group">
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10"></div>
-                <img
-                  src="/assets/dashboard.png"
-                  alt="Store Management"
-                  className="w-full h-[450px] object-cover transition-transform duration-[10s] group-hover:scale-110"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-10 z-20 bg-gradient-to-t from-black/80 to-transparent">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                    <span className="text-white/80 text-xs font-bold uppercase tracking-widest">
-                      LIVE DASHBOARD
-                    </span>
-                  </div>
-                  <h4 className="text-white text-2xl font-bold">
-                    Manage everything on the go
-                  </h4>
+          <div className="space-y-10">
+            {HOW_IT_WORKS.map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                className="flex items-start gap-8"
+              >
+                <div className="text-5xl font-black text-[#E23744]/30 leading-none select-none">
+                  {s.step}
                 </div>
-              </div>
-            </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {s.title}
+                  </h3>
+                  <p className="text-white/60 leading-relaxed">{s.desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ===================== BOTTOM CTA ===================== */}
+      <section className="py-24 bg-white">
+        <div className="max-w-[900px] mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="relative bg-gradient-to-br from-[#981A1E] to-[#E23744] rounded-[2.5rem] p-12 md:p-20 text-center text-white overflow-hidden"
+          >
+            <div className="absolute top-[-60px] right-[-60px] w-48 h-48 border-[3px] border-white/10 rounded-full" />
+            <div className="absolute bottom-[-40px] left-[-40px] w-32 h-32 border-[3px] border-white/10 rounded-full" />
+
+            <h2 className="relative z-10 text-3xl md:text-5xl font-black tracking-tight leading-tight mb-6">
+              Ready to Partner?
+            </h2>
+            <p className="relative z-10 text-white/80 text-lg md:text-xl max-w-xl mx-auto mb-10">
+              Choose your business type and fill a quick application. Our team
+              will get back to you within 48 hours.
+            </p>
+
+            <div className="relative z-10 flex flex-wrap justify-center gap-4">
+              {PARTNER_TYPES.map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => (window.location.hash = p.hash)}
+                  className="group bg-white text-[#981A1E] px-7 py-4 rounded-xl font-bold text-base hover:bg-gray-100 transition-all shadow-xl flex items-center gap-2 active:scale-[0.97]"
+                >
+                  {p.icon}
+                  {p.cta}
+                  <ArrowRight
+                    size={16}
+                    className="group-hover:translate-x-1 transition-transform"
+                  />
+                </button>
+              ))}
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>
   );
 };
+
+/* ------------------------------------------------------------------ */
+/*  Visual cards for each partner type                                 */
+/* ------------------------------------------------------------------ */
+
+function PartnerVisual({ type }: { type: string }) {
+  if (type === "retailer") {
+    return (
+      <div className="bg-[#FBFBFA] rounded-[2rem] p-8 border border-gray-100 shadow-sm space-y-6">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="w-3 h-3 rounded-full bg-green-500 animate-pulse" />
+          <span className="text-xs font-bold text-[#1C1C1C] uppercase tracking-widest">
+            Retailer Dashboard Preview
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          {[
+            { icon: <Package size={22} />, label: "Live Orders", value: "24" },
+            {
+              icon: <TrendingUp size={22} />,
+              label: "Today's Revenue",
+              value: "₹18,400",
+            },
+            {
+              icon: <Smartphone size={22} />,
+              label: "App Orders",
+              value: "89%",
+            },
+            {
+              icon: <CreditCard size={22} />,
+              label: "Settlement",
+              value: "₹1.2L",
+            },
+          ].map((s, i) => (
+            <div key={i} className="bg-white p-5 rounded-xl shadow-sm">
+              <div className="text-[#E23744] mb-2">{s.icon}</div>
+              <div className="text-2xl font-black text-[#1C1C1C]">
+                {s.value}
+              </div>
+              <div className="text-xs text-[#696969] font-medium">
+                {s.label}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="h-28 bg-gradient-to-r from-[#E23744]/10 to-transparent rounded-xl flex items-end p-4">
+          <div className="flex gap-2 w-full items-end justify-around">
+            {[55, 30, 70, 45, 80, 60, 75].map((h, i) => (
+              <div
+                key={i}
+                className="w-4 bg-[#E23744] rounded-t"
+                style={{ height: `${h}%` }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (type === "distributor") {
+    return (
+      <div className="bg-[#1C1C1C] rounded-[2rem] p-8 text-white space-y-6">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="w-3 h-3 rounded-full bg-[#E23744] animate-pulse" />
+          <span className="text-xs font-bold uppercase tracking-widest text-white/60">
+            Distributor Network
+          </span>
+        </div>
+        <div className="space-y-5">
+          {[
+            {
+              icon: <Globe size={20} />,
+              title: "Zone Analytics",
+              desc: "Track demand across 50+ cities in real-time.",
+            },
+            {
+              icon: <Repeat size={20} />,
+              title: "Retailer Connections",
+              desc: "Direct access to 5,000+ verified stores.",
+            },
+            {
+              icon: <CreditCard size={20} />,
+              title: "Fast Settlements",
+              desc: "Weekly payouts with transparent breakdowns.",
+            },
+          ].map((item, i) => (
+            <div key={i} className="flex items-start gap-4 group">
+              <div className="p-3 bg-white/10 rounded-xl group-hover:bg-[#E23744] transition-colors">
+                {item.icon}
+              </div>
+              <div>
+                <div className="font-bold text-lg">{item.title}</div>
+                <div className="text-gray-400 text-sm mt-0.5">{item.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // manufacturer
+  return (
+    <div className="bg-[#FFFBF7] rounded-[2rem] p-8 border border-[#f5eee6] space-y-6">
+      <div className="flex items-center gap-3 mb-2">
+        <span className="w-3 h-3 rounded-full bg-[#E6A23C] animate-pulse" />
+        <span className="text-xs font-bold text-[#1C1C1C] uppercase tracking-widest">
+          Manufacturer Insights
+        </span>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        {[
+          { label: "Retailers Reached", value: "2,400+" },
+          { label: "Cities Active", value: "35" },
+          { label: "Brands Listed", value: "120+" },
+          { label: "Monthly Orders", value: "50K+" },
+        ].map((s, i) => (
+          <div
+            key={i}
+            className="bg-white p-5 rounded-xl shadow-sm text-center"
+          >
+            <div className="text-2xl font-black text-[#E6A23C]">{s.value}</div>
+            <div className="text-xs text-[#696969] font-medium mt-1">
+              {s.label}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="bg-white rounded-xl p-5 space-y-3">
+        <div className="text-sm font-bold text-[#1C1C1C]">Demand by Region</div>
+        {[
+          { region: "West Bengal", pct: 85 },
+          { region: "Maharashtra", pct: 72 },
+          { region: "Delhi NCR", pct: 60 },
+          { region: "Karnataka", pct: 48 },
+        ].map((r, i) => (
+          <div key={i} className="space-y-1">
+            <div className="flex justify-between text-xs text-[#696969]">
+              <span>{r.region}</span>
+              <span className="font-bold">{r.pct}%</span>
+            </div>
+            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                whileInView={{ width: `${r.pct}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: i * 0.1 }}
+                className="h-full bg-[#E6A23C] rounded-full"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default AddStore;
