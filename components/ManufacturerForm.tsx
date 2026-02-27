@@ -2,94 +2,67 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  ArrowLeft,
   CheckCircle,
   ChevronDown,
   Info,
   Upload,
   Factory,
 } from "lucide-react";
-import { sendPartnerMessage } from "@/api/services/partner.service";
-
-const COUNTRIES = [
-  {
-    code: "IN",
-    name: "India",
-    dial: "+91",
-    flag: "https://flagcdn.com/w20/in.png",
-  },
-  {
-    code: "US",
-    name: "United States",
-    dial: "+1",
-    flag: "https://flagcdn.com/w20/us.png",
-  },
-  {
-    code: "GB",
-    name: "United Kingdom",
-    dial: "+44",
-    flag: "https://flagcdn.com/w20/gb.png",
-  },
-  {
-    code: "AE",
-    name: "UAE",
-    dial: "+971",
-    flag: "https://flagcdn.com/w20/ae.png",
-  },
-  {
-    code: "SG",
-    name: "Singapore",
-    dial: "+65",
-    flag: "https://flagcdn.com/w20/sg.png",
-  },
-];
+import { sendManufacturerMessage } from "@/api/services/manufacturer.service";
 
 const inputClass =
   "w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300";
 
 const ManufacturerForm: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
-  const [isCountryOpen, setIsCountryOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  // Text Fields
   const [companyName, setCompanyName] = useState("");
-  const [productCategory, setProductCategory] = useState("");
-  const [annualCapacity, setAnnualCapacity] = useState("");
-  const [plantLocation, setPlantLocation] = useState("");
+  const [panNo, setPanNo] = useState("");
+  const [gstNo, setGstNo] = useState("");
+  const [registeredOfficeAddress, setRegisteredOfficeAddress] = useState("");
+  const [factoryAddress, setFactoryAddress] = useState("");
+  const [exciseNo, setExciseNo] = useState("");
+  const [fssaiLicenseNo, setFssaiLicenseNo] = useState("");
+  const [authSignatoryName, setAuthSignatoryName] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankAcNo, setBankAcNo] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [email, setEmail] = useState("");
+  const [phnNo, setPhnNo] = useState("");
+  const [altPhnNo, setAltPhnNo] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(true);
 
-  const [manufacturingLicense, setManufacturingLicense] = useState<File | null>(
+  // File Fields
+  const [incorporationCertificate, setIncorporationCertificate] =
+    useState<File | null>(null);
+  const [panFile, setPanFile] = useState<File | null>(null);
+  const [gstCertFile, setGstCertFile] = useState<File | null>(null);
+  const [exciseLicenseFile, setExciseLicenseFile] = useState<File | null>(null);
+  const [fssaiLicenseFile, setFssaiLicenseFile] = useState<File | null>(null);
+  const [tradeLicenseFile, setTradeLicenseFile] = useState<File | null>(null);
+  const [authLetterFile, setAuthLetterFile] = useState<File | null>(null);
+  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(
     null,
   );
-  const [businessRegFile, setBusinessRegFile] = useState<File | null>(null);
-  const [ownerIdFiles, setOwnerIdFiles] = useState<File[] | null>(null);
-  const [fssaiCertificate, setFssaiCertificate] = useState<File | null>(null);
-  const [productCatalog, setProductCatalog] = useState<File[] | null>(null);
+  const [manufacturerImages, setManufacturerImages] = useState<File[] | null>(
+    null,
+  );
 
-  const manufacturingLicenseRef = useRef<HTMLInputElement>(null);
-  const businessRegRef = useRef<HTMLInputElement>(null);
-  const ownerIdRef = useRef<HTMLInputElement>(null);
+  // Refs for resetting file inputs
+  const incCertRef = useRef<HTMLInputElement>(null);
+  const panFileRef = useRef<HTMLInputElement>(null);
+  const gstCertRef = useRef<HTMLInputElement>(null);
+  const exciseRef = useRef<HTMLInputElement>(null);
   const fssaiRef = useRef<HTMLInputElement>(null);
-  const catalogRef = useRef<HTMLInputElement>(null);
+  const tradeRef = useRef<HTMLInputElement>(null);
+  const authLetterRef = useRef<HTMLInputElement>(null);
+  const chequeRef = useRef<HTMLInputElement>(null);
+  const imagesRef = useRef<HTMLInputElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      )
-        setIsCountryOpen(false);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,49 +76,88 @@ const ManufacturerForm: React.FC = () => {
     setIsSubmitting(true);
     try {
       const form = new FormData();
-      form.append("first_name", firstName);
-      form.append("last_name", lastName);
+
+      // Required Text
+      form.append("company_name", companyName);
+      form.append("registered_office_address", registeredOfficeAddress);
+      form.append("bank_name", bankName);
+      form.append("bank_ac_no", bankAcNo);
+      form.append("ifsc_code", ifscCode);
       form.append("email", email);
-      form.append("country_code", selectedCountry.dial);
-      form.append("phone", phone);
-      form.append("store_name", companyName);
-      form.append("business_category", "Beverages Manufacturer");
-      form.append("terms_accepted", termsAccepted ? "1" : "0");
+      form.append("phn_no", phnNo);
 
-      if (manufacturingLicense)
-        form.append("beverages_retail_license", manufacturingLicense);
-      if (businessRegFile)
-        form.append("business_registration_license", businessRegFile);
-      if (ownerIdFiles?.length)
-        ownerIdFiles.forEach((f) => form.append("owner_id_files", f));
-      if (fssaiCertificate)
-        form.append("store_address_proof", fssaiCertificate);
-      if (productCatalog?.length)
-        productCatalog.forEach((f) => form.append("store_photos", f));
+      // Optional Text
+      if (panNo) form.append("pan_no", panNo);
+      if (gstNo) form.append("gst_no", gstNo);
+      if (factoryAddress) form.append("factory_address", factoryAddress);
+      if (exciseNo) form.append("excise_no", exciseNo);
+      if (fssaiLicenseNo) form.append("fssai_license_no", fssaiLicenseNo);
+      if (authSignatoryName)
+        form.append("auth_signatory_name", authSignatoryName);
+      if (upiId) form.append("upi_id", upiId);
+      if (altPhnNo) form.append("alt_phn_no", altPhnNo);
 
-      await sendPartnerMessage(form);
+      // Files
+      if (incorporationCertificate)
+        form.append("incorporation_certificate", incorporationCertificate);
+      if (panFile) form.append("pan_file", panFile);
+      if (gstCertFile) form.append("gst_cert_file", gstCertFile);
+      if (exciseLicenseFile)
+        form.append("excise_license_file", exciseLicenseFile);
+      if (fssaiLicenseFile) form.append("fssai_license_file", fssaiLicenseFile);
+      if (tradeLicenseFile) form.append("trade_license_file", tradeLicenseFile);
+      if (authLetterFile) form.append("auth_letter_file", authLetterFile);
+      if (cancelledChequeFile)
+        form.append("cancelled_cheque_file", cancelledChequeFile);
+      if (manufacturerImages?.length) {
+        manufacturerImages.forEach((f) =>
+          form.append("manufacturer_images", f),
+        );
+      }
+
+      await sendManufacturerMessage(form);
       setSubmitSuccess(
         "Application submitted! Our team will contact you soon.",
       );
-      setFirstName("");
-      setLastName("");
-      setEmail("");
-      setPhone("");
+
+      // Reset text
       setCompanyName("");
-      setProductCategory("");
-      setAnnualCapacity("");
-      setPlantLocation("");
-      setManufacturingLicense(null);
-      setBusinessRegFile(null);
-      setOwnerIdFiles(null);
-      setFssaiCertificate(null);
-      setProductCatalog(null);
+      setPanNo("");
+      setGstNo("");
+      setRegisteredOfficeAddress("");
+      setFactoryAddress("");
+      setExciseNo("");
+      setFssaiLicenseNo("");
+      setAuthSignatoryName("");
+      setBankName("");
+      setBankAcNo("");
+      setIfscCode("");
+      setUpiId("");
+      setEmail("");
+      setPhnNo("");
+      setAltPhnNo("");
+
+      // Reset files
+      setIncorporationCertificate(null);
+      setPanFile(null);
+      setGstCertFile(null);
+      setExciseLicenseFile(null);
+      setFssaiLicenseFile(null);
+      setTradeLicenseFile(null);
+      setAuthLetterFile(null);
+      setCancelledChequeFile(null);
+      setManufacturerImages(null);
+
       [
-        manufacturingLicenseRef,
-        businessRegRef,
-        ownerIdRef,
+        incCertRef,
+        panFileRef,
+        gstCertRef,
+        exciseRef,
         fssaiRef,
-        catalogRef,
+        tradeRef,
+        authLetterRef,
+        chequeRef,
+        imagesRef,
       ].forEach((r) => {
         if (r.current) r.current.value = "";
       });
@@ -158,7 +170,6 @@ const ManufacturerForm: React.FC = () => {
 
   return (
     <div className="pt-0 overflow-x-hidden">
-      {/* Hero */}
       <section className="relative flex flex-col lg:flex-row min-h-screen bg-white">
         <div className="relative flex-[1.1] hidden lg:flex items-center justify-center overflow-hidden">
           <div
@@ -181,6 +192,15 @@ const ManufacturerForm: React.FC = () => {
               <Factory size={16} className="text-[#E23744]" />
               Manufacturer Partner
             </div>
+            <motion.button
+              whileHover={{ scale: 1.05, x: -5 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.history.back()}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 text-white px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase mb-6 hover:bg-white/20 transition-colors ml-4"
+            >
+              <ArrowLeft size={16} />
+              Back
+            </motion.button>
             <h1 className="text-white text-5xl xl:text-7xl font-black mb-6 leading-[1.1] tracking-tight">
               Scale Your <br />
               <span className="text-[#E23744]">Production Reach</span>
@@ -209,176 +229,405 @@ const ManufacturerForm: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Form */}
         <div className="flex-1 bg-white flex flex-col items-center justify-center p-6 sm:p-12 lg:p-16 xl:p-24 pt-28 lg:pt-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full max-w-[460px] space-y-8"
+            className="w-full max-w-[500px] space-y-8"
           >
             <div>
               <h2 className="text-3xl font-black text-[#1C1C1C] tracking-tight">
                 Manufacturer Application
               </h2>
               <p className="text-[#696969] mt-2 text-sm">
-                Tell us about your manufacturing setup and our team will connect
-                within 48 hours.
+                Complete your company profile and compliance info below.
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* === COMPANY DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Company Details
+                </h3>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    First Name
+                    Company Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     className={inputClass}
-                    placeholder="Amit"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="M/S Royal Beverages Pvt Ltd"
+                    value={companyName}
+                    required
+                    onChange={(e) => setCompanyName(e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Last Name
+                    Incorporation Certificate <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className={inputClass}
-                    placeholder="Gupta"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    ref={incCertRef}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) =>
+                      setIncorporationCertificate(e.target.files?.[0] ?? null)
+                    }
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                  Email <Info size={12} className="text-gray-300" />
-                </label>
-                <input
-                  type="email"
-                  className={inputClass}
-                  placeholder="amit@brewery.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+              {/* === TAX DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Tax Details
+                </h3>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Phone Number
-                </label>
-                <div className="flex gap-2 relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() => setIsCountryOpen(!isCountryOpen)}
-                    className="bg-[#F6F6F6] rounded-xl px-4 py-3 flex items-center gap-2 text-sm border-r border-gray-200 hover:bg-[#EFEFEF] transition-colors min-w-[100px] justify-between"
-                  >
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={selectedCountry.flag}
-                        className="w-5"
-                        alt={selectedCountry.code}
-                      />
-                      <span className="font-bold">{selectedCountry.dial}</span>
-                    </div>
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-200 ${isCountryOpen ? "rotate-180" : ""}`}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      PAN No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="ABCDE1234F"
+                      value={panNo}
+                      onChange={(e) => setPanNo(e.target.value)}
                     />
-                  </button>
-                  {isCountryOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-full max-w-[240px] bg-white border border-gray-100 rounded-xl shadow-2xl z-50 overflow-hidden">
-                      {COUNTRIES.map((c) => (
-                        <button
-                          key={c.code}
-                          type="button"
-                          onClick={() => {
-                            setSelectedCountry(c);
-                            setIsCountryOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${selectedCountry.code === c.code ? "bg-[#FFF1F2] text-[#E23744]" : "text-gray-700"}`}
-                        >
-                          <img src={c.flag} className="w-5" alt={c.code} />
-                          <span className="font-bold min-w-[40px]">
-                            {c.dial}
-                          </span>
-                          <span className="truncate">{c.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <input
-                    type="tel"
-                    className={"flex-1 " + inputClass}
-                    placeholder="9876543210"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Company / Brand Name
-                </label>
-                <input
-                  className={inputClass}
-                  placeholder="Royal Beverages India Pvt Ltd"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Product Category
-                  </label>
-                  <div className="relative">
-                    <select
-                      className={inputClass + " appearance-none"}
-                      value={productCategory}
-                      onChange={(e) => setProductCategory(e.target.value)}
-                    >
-                      <option value="">Select Category</option>
-                      <option>Beer & Cider</option>
-                      <option>Spirits & Liquor</option>
-                      <option>Wine</option>
-                      <option>Ready-to-Drink</option>
-                      <option>Non-Alcoholic Beverages</option>
-                    </select>
-                    <ChevronDown
-                      size={14}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      GST No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="27ABCDE1234F1Z5"
+                      value={gstNo}
+                      onChange={(e) => setGstNo(e.target.value)}
                     />
                   </div>
                 </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      PAN Document <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={panFileRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) =>
+                        setPanFile(e.target.files?.[0] ?? null)
+                      }
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      GST Certificate <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={gstCertRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) =>
+                        setGstCertFile(e.target.files?.[0] ?? null)
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* === ADDRESS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Address Details
+                </h3>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Annual Capacity
+                    Registered Office Address <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    className={inputClass}
-                    placeholder="e.g. 5,00,000 cases"
-                    value={annualCapacity}
-                    onChange={(e) => setAnnualCapacity(e.target.value)}
+                  <textarea
+                    rows={2}
+                    className={inputClass + " resize-none"}
+                    placeholder="Full Address"
+                    value={registeredOfficeAddress}
+                    required
+                    onChange={(e) => setRegisteredOfficeAddress(e.target.value)}
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Factory Address
+                  </label>
+                  <textarea
+                    rows={2}
+                    className={inputClass + " resize-none"}
+                    placeholder="Manufacturing Unit Address"
+                    value={factoryAddress}
+                    onChange={(e) => setFactoryAddress(e.target.value)}
                   />
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Manufacturing Plant Location
-                </label>
-                <input
-                  className={inputClass}
-                  placeholder="Nashik, Maharashtra"
-                  value={plantLocation}
-                  onChange={(e) => setPlantLocation(e.target.value)}
-                />
+              {/* === REGULATORY LICENSES === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Regulatory Approvals
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Excise No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="EXC-123"
+                      value={exciseNo}
+                      onChange={(e) => setExciseNo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      FSSAI License No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="1002000000"
+                      value={fssaiLicenseNo}
+                      onChange={(e) => setFssaiLicenseNo(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Excise License <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={exciseRef}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) =>
+                      setExciseLicenseFile(e.target.files?.[0] ?? null)
+                    }
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> FSSAI License <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={fssaiRef}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) => setFssaiLicenseFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Trade License <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={tradeRef}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) => setTradeLicenseFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+              </div>
+
+              {/* === AUTH SIGNATORY === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Authority Signatory
+                </h3>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Signatory Name
+                  </label>
+                  <input
+                    className={inputClass}
+                    placeholder="Full Name of Signatory"
+                    value={authSignatoryName}
+                    onChange={(e) => setAuthSignatoryName(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Auth Letter Document <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={authLetterRef}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) => setAuthLetterFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+              </div>
+
+              {/* === MEDIA === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Images
+                </h3>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Manufacturer Images <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={imagesRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) => setManufacturerImages(e.target.files ? Array.from(e.target.files) : null)}
+                  />
+                </div>
+              </div>
+
+              {/* === BANK DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Bank Details
+                </h3>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Bank Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    className={inputClass}
+                    placeholder="HDFC Bank"
+                    value={bankName}
+                    required
+                    onChange={(e) => setBankName(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Account No <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="50123456789"
+                      value={bankAcNo}
+                      required
+                      onChange={(e) => setBankAcNo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      IFSC Code <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="HDFC0000123"
+                      value={ifscCode}
+                      required
+                      onChange={(e) => setIfscCode(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      UPI ID
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="company@upi"
+                      value={upiId}
+                      onChange={(e) => setUpiId(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                      <Upload size={12} /> Cancelled Cheque <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={chequeRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) => setCancelledChequeFile(e.target.files?.[0] ?? null)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* === CONTACT DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Contact Details
+                </h3>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    className={inputClass}
+                    placeholder="contact@company.com"
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Phone Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      className={inputClass}
+                      placeholder="9876543210"
+                      value={phnNo}
+                      required
+                      onChange={(e) => setPhnNo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Alt Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      className={inputClass}
+                      placeholder="Optional"
+                      value={altPhnNo}
+                      onChange={(e) => setAltPhnNo(e.target.value)}
+                    />
+                  </div>
+                </div>
               </div>
 
               <div className="pt-3">
@@ -394,98 +643,9 @@ const ManufacturerForm: React.FC = () => {
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
-                    I agree to Bhukk's Partner Terms and acknowledge the{" "}
-                    <a href="#" className="text-[#E23744] hover:underline">
-                      Privacy Notice
-                    </a>
-                    .
+                    I verify that all submitted documents and information are genuine. I agree to Bhukk's Manufacturer Terms.
                   </span>
                 </label>
-              </div>
-
-              {/* Document Uploads */}
-              <div className="pt-2 space-y-4">
-                <h4 className="text-sm font-bold text-[#1C1C1C] flex items-center gap-2">
-                  <Upload size={14} /> Required Documents
-                </h4>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Manufacturing License
-                  </label>
-                  <input
-                    ref={manufacturingLicenseRef}
-                    type="file"
-                    accept="application/pdf,image/*"
-                    className="w-full text-sm"
-                    onChange={(e) =>
-                      setManufacturingLicense(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Business Registration
-                  </label>
-                  <input
-                    ref={businessRegRef}
-                    type="file"
-                    accept="application/pdf,image/*"
-                    className="w-full text-sm"
-                    onChange={(e) =>
-                      setBusinessRegFile(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Owner ID & PAN
-                    </label>
-                    <input
-                      ref={ownerIdRef}
-                      type="file"
-                      accept="application/pdf,image/*"
-                      multiple
-                      className="w-full text-sm"
-                      onChange={(e) =>
-                        setOwnerIdFiles(
-                          e.target.files ? Array.from(e.target.files) : null,
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      FSSAI Certificate
-                    </label>
-                    <input
-                      ref={fssaiRef}
-                      type="file"
-                      accept="application/pdf,image/*"
-                      className="w-full text-sm"
-                      onChange={(e) =>
-                        setFssaiCertificate(e.target.files?.[0] ?? null)
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Product Catalog / Photos
-                  </label>
-                  <input
-                    ref={catalogRef}
-                    type="file"
-                    accept="image/*,application/pdf"
-                    multiple
-                    className="w-full text-sm"
-                    onChange={(e) =>
-                      setProductCatalog(
-                        e.target.files ? Array.from(e.target.files) : null,
-                      )
-                    }
-                  />
-                </div>
               </div>
 
               {submitError && (

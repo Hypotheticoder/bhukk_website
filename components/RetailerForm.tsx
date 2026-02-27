@@ -2,91 +2,64 @@ import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  ArrowLeft,
   CheckCircle,
-  ChevronDown,
   Info,
   Upload,
   Store,
 } from "lucide-react";
-import { sendPartnerMessage } from "@/api/services/partner.service";
-
-const COUNTRIES = [
-  {
-    code: "IN",
-    name: "India",
-    dial: "+91",
-    flag: "https://flagcdn.com/w20/in.png",
-  },
-  {
-    code: "US",
-    name: "United States",
-    dial: "+1",
-    flag: "https://flagcdn.com/w20/us.png",
-  },
-  {
-    code: "GB",
-    name: "United Kingdom",
-    dial: "+44",
-    flag: "https://flagcdn.com/w20/gb.png",
-  },
-  {
-    code: "AE",
-    name: "UAE",
-    dial: "+971",
-    flag: "https://flagcdn.com/w20/ae.png",
-  },
-  {
-    code: "SG",
-    name: "Singapore",
-    dial: "+65",
-    flag: "https://flagcdn.com/w20/sg.png",
-  },
-];
+import { sendRetailerMessage } from "@/api/services/retailer.service";
 
 const inputClass =
   "w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300";
 
 const RetailerForm: React.FC = () => {
-  const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
-  const [isCountryOpen, setIsCountryOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  // Text Fields
+  const [shopName, setShopName] = useState("");
+  const [licenseType, setLicenseType] = useState("");
+  const [exciseLicenseNo, setExciseLicenseNo] = useState("");
+  const [licenseIssuingAuthority, setLicenseIssuingAuthority] = useState("");
+  const [licenseValidFrom, setLicenseValidFrom] = useState("");
+  const [licenseValidUpto, setLicenseValidUpto] = useState("");
+  const [gstNo, setGstNo] = useState("");
+  const [panNo, setPanNo] = useState("");
+  const [ownerName, setOwnerName] = useState("");
+  const [ownershipType, setOwnershipType] = useState("");
+  const [registeredAddress, setRegisteredAddress] = useState("");
+  const [openingTime, setOpeningTime] = useState("");
+  const [closingTime, setClosingTime] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankAcNo, setBankAcNo] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [bankBranchName, setBankBranchName] = useState("");
+  const [upiId, setUpiId] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [storeName, setStoreName] = useState("");
-  const [storeAddress, setStoreAddress] = useState("");
-  const [storeType, setStoreType] = useState("");
+  const [phnNo, setPhnNo] = useState("");
+  const [altPhn, setAltPhn] = useState("");
+  const [authorizedSignatoryName, setAuthorizedSignatoryName] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(true);
 
-  const [retailLicense, setRetailLicense] = useState<File | null>(null);
-  const [businessRegFile, setBusinessRegFile] = useState<File | null>(null);
-  const [ownerIdFiles, setOwnerIdFiles] = useState<File[] | null>(null);
-  const [addressProofFile, setAddressProofFile] = useState<File | null>(null);
-  const [storePhotos, setStorePhotos] = useState<File[] | null>(null);
+  // File Fields
+  const [shopPhotoFile, setShopPhotoFile] = useState<File | null>(null);
+  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(null);
+  const [exciseLicenseFile, setExciseLicenseFile] = useState<File | null>(null);
+  const [tradeLicenseFile, setTradeLicenseFile] = useState<File | null>(null);
+  const [shopEstablishmentLicenseFile, setShopEstablishmentLicenseFile] = useState<File | null>(null);
+  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(null);
+  const [fireNocFile, setFireNocFile] = useState<File | null>(null);
 
-  const retailLicenseRef = useRef<HTMLInputElement>(null);
-  const businessRegRef = useRef<HTMLInputElement>(null);
-  const ownerIdRef = useRef<HTMLInputElement>(null);
-  const addressProofRef = useRef<HTMLInputElement>(null);
-  const storePhotosRef = useRef<HTMLInputElement>(null);
+  // Refs for resetting file inputs
+  const shopPhotoRef = useRef<HTMLInputElement>(null);
+  const chequeRef = useRef<HTMLInputElement>(null);
+  const exciseRef = useRef<HTMLInputElement>(null);
+  const tradeRef = useRef<HTMLInputElement>(null);
+  const shopEstabRef = useRef<HTMLInputElement>(null);
+  const gstCertRef = useRef<HTMLInputElement>(null);
+  const fireNocRef = useRef<HTMLInputElement>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      )
-        setIsCountryOpen(false);
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,47 +73,88 @@ const RetailerForm: React.FC = () => {
     setIsSubmitting(true);
     try {
       const form = new FormData();
-      form.append("first_name", firstName);
-      form.append("last_name", lastName);
+
+      // Required Text
+      form.append("shop_name", shopName);
+      form.append("license_issuing_authority", licenseIssuingAuthority);
+      form.append("license_valid_from", licenseValidFrom);
+      form.append("license_valid_upto", licenseValidUpto);
+      form.append("registered_address", registeredAddress);
+      form.append("bank_name", bankName);
+      form.append("bank_ac_no", bankAcNo);
+      form.append("ifsc_code", ifscCode);
+      form.append("phn_no", phnNo);
       form.append("email", email);
-      form.append("country_code", selectedCountry.dial);
-      form.append("phone", phone);
-      form.append("store_name", storeName);
-      form.append("business_category", "Beverages Retailer");
-      form.append("terms_accepted", termsAccepted ? "1" : "0");
 
-      if (retailLicense) form.append("beverages_retail_license", retailLicense);
-      if (businessRegFile)
-        form.append("business_registration_license", businessRegFile);
-      if (ownerIdFiles?.length)
-        ownerIdFiles.forEach((f) => form.append("owner_id_files", f));
-      if (addressProofFile)
-        form.append("store_address_proof", addressProofFile);
-      if (storePhotos?.length)
-        storePhotos.forEach((f) => form.append("store_photos", f));
+      // Optional Text
+      if (licenseType) form.append("license_type", licenseType);
+      if (exciseLicenseNo) form.append("excise_license_no", exciseLicenseNo);
+      if (gstNo) form.append("gst_no", gstNo);
+      if (panNo) form.append("pan_no", panNo);
+      if (ownerName) form.append("owner_name", ownerName);
+      if (ownershipType) form.append("ownership_type", ownershipType);
+      if (openingTime) form.append("opening_time", openingTime);
+      if (closingTime) form.append("closing_time", closingTime);
+      if (bankBranchName) form.append("bank_branch_name", bankBranchName);
+      if (upiId) form.append("upi_id", upiId);
+      if (altPhn) form.append("alt_phn", altPhn);
+      if (authorizedSignatoryName) form.append("authorized_signatory_name", authorizedSignatoryName);
 
-      await sendPartnerMessage(form);
+      // Files
+      if (cancelledChequeFile) form.append("cancelled_cheque_file", cancelledChequeFile);
+      if (exciseLicenseFile) form.append("excise_license_file", exciseLicenseFile);
+      if (tradeLicenseFile) form.append("trade_license_file", tradeLicenseFile);
+      if (shopEstablishmentLicenseFile) form.append("shop_establishment_license_file", shopEstablishmentLicenseFile);
+      if (gstCertificateFile) form.append("gst_certificate_file", gstCertificateFile);
+      if (fireNocFile) form.append("fire_noc_file", fireNocFile);
+      if (shopPhotoFile) form.append("shop_photo_file", shopPhotoFile);
+
+      await sendRetailerMessage(form);
       setSubmitSuccess(
         "Application submitted! Our team will contact you soon.",
       );
-      setFirstName("");
-      setLastName("");
+
+      // Reset text
+      setShopName("");
+      setLicenseType("");
+      setExciseLicenseNo("");
+      setLicenseIssuingAuthority("");
+      setLicenseValidFrom("");
+      setLicenseValidUpto("");
+      setGstNo("");
+      setPanNo("");
+      setOwnerName("");
+      setOwnershipType("");
+      setRegisteredAddress("");
+      setOpeningTime("");
+      setClosingTime("");
+      setBankName("");
+      setBankAcNo("");
+      setIfscCode("");
+      setBankBranchName("");
+      setUpiId("");
       setEmail("");
-      setPhone("");
-      setStoreName("");
-      setStoreAddress("");
-      setStoreType("");
-      setRetailLicense(null);
-      setBusinessRegFile(null);
-      setOwnerIdFiles(null);
-      setAddressProofFile(null);
-      setStorePhotos(null);
+      setPhnNo("");
+      setAltPhn("");
+      setAuthorizedSignatoryName("");
+
+      // Reset files
+      setShopPhotoFile(null);
+      setCancelledChequeFile(null);
+      setExciseLicenseFile(null);
+      setTradeLicenseFile(null);
+      setShopEstablishmentLicenseFile(null);
+      setGstCertificateFile(null);
+      setFireNocFile(null);
+
       [
-        retailLicenseRef,
-        businessRegRef,
-        ownerIdRef,
-        addressProofRef,
-        storePhotosRef,
+        shopPhotoRef,
+        chequeRef,
+        exciseRef,
+        tradeRef,
+        shopEstabRef,
+        gstCertRef,
+        fireNocRef,
       ].forEach((r) => {
         if (r.current) r.current.value = "";
       });
@@ -154,7 +168,6 @@ const RetailerForm: React.FC = () => {
   return (
     <div className="pt-0 overflow-x-hidden">
       <section className="relative flex flex-col lg:flex-row min-h-screen bg-white">
-        {/* Left — Hero Visual */}
         <div className="relative flex-[1.1] hidden lg:flex items-center justify-center overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-[20s] hover:scale-105"
@@ -176,6 +189,15 @@ const RetailerForm: React.FC = () => {
               <Store size={16} className="text-[#E23744]" />
               Retailer Partner
             </div>
+            <motion.button
+              whileHover={{ scale: 1.05, x: -5 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.history.back()}
+              className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/10 text-white px-4 py-2 rounded-full text-sm font-bold tracking-widest uppercase mb-6 hover:bg-white/20 transition-colors ml-4"
+            >
+              <ArrowLeft size={16} />
+              Back
+            </motion.button>
             <h1 className="text-white text-5xl xl:text-7xl font-black mb-6 leading-[1.1] tracking-tight">
               Grow Your <br />
               <span className="text-[#E23744]">Retail Business</span>
@@ -205,13 +227,12 @@ const RetailerForm: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Right — Form */}
         <div className="flex-1 bg-white flex flex-col items-center justify-center p-6 sm:p-12 lg:p-16 xl:p-24 pt-28 lg:pt-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="w-full max-w-[460px] space-y-8"
+            className="w-full max-w-[500px] space-y-8"
           >
             <div>
               <h2 className="text-3xl font-black text-[#1C1C1C] tracking-tight">
@@ -223,144 +244,439 @@ const RetailerForm: React.FC = () => {
               </p>
             </div>
 
-            <form className="space-y-4" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              
+              {/* === SHOP DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Shop Details
+                </h3>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    First Name
+                    Shop Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     className={inputClass}
-                    placeholder="Jane"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="M/S Royal Wines"
+                    value={shopName}
+                    required
+                    onChange={(e) => setShopName(e.target.value)}
                   />
                 </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Last Name
+                    Registered Address <span className="text-red-500">*</span>
                   </label>
-                  <input
-                    className={inputClass}
-                    placeholder="Doe"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                  <textarea
+                    rows={2}
+                    className={inputClass + " resize-none"}
+                    placeholder="Full Store Address"
+                    value={registeredAddress}
+                    required
+                    onChange={(e) => setRegisteredAddress(e.target.value)}
                   />
                 </div>
-              </div>
 
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                  Email <Info size={12} className="text-gray-300" />
-                </label>
-                <input
-                  type="email"
-                  className={inputClass}
-                  placeholder="jane@beveragesshop.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Store Phone Number
-                </label>
-                <div className="flex gap-2 relative" ref={dropdownRef}>
-                  <button
-                    type="button"
-                    onClick={() => setIsCountryOpen(!isCountryOpen)}
-                    className="bg-[#F6F6F6] rounded-xl px-4 py-3 flex items-center gap-2 text-sm border-r border-gray-200 hover:bg-[#EFEFEF] transition-colors min-w-[100px] justify-between"
-                  >
-                    <div className="flex items-center gap-2">
-                      <img
-                        src={selectedCountry.flag}
-                        className="w-5"
-                        alt={selectedCountry.code}
-                      />
-                      <span className="font-bold">{selectedCountry.dial}</span>
-                    </div>
-                    <ChevronDown
-                      size={14}
-                      className={`transition-transform duration-200 ${isCountryOpen ? "rotate-180" : ""}`}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Opening Time
+                    </label>
+                    <input
+                      type="time"
+                      className={inputClass}
+                      value={openingTime}
+                      onChange={(e) => setOpeningTime(e.target.value)}
                     />
-                  </button>
-                  {isCountryOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-full max-w-[240px] bg-white border border-gray-100 rounded-xl shadow-2xl z-50 overflow-hidden">
-                      {COUNTRIES.map((c) => (
-                        <button
-                          key={c.code}
-                          type="button"
-                          onClick={() => {
-                            setSelectedCountry(c);
-                            setIsCountryOpen(false);
-                          }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-50 transition-colors ${selectedCountry.code === c.code ? "bg-[#FFF1F2] text-[#E23744]" : "text-gray-700"}`}
-                        >
-                          <img src={c.flag} className="w-5" alt={c.code} />
-                          <span className="font-bold min-w-[40px]">
-                            {c.dial}
-                          </span>
-                          <span className="truncate">{c.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                  <input
-                    type="tel"
-                    className={"flex-1 " + inputClass}
-                    placeholder="9876543210"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                  Store Name
-                </label>
-                <input
-                  className={inputClass}
-                  placeholder="Vintage Spirits Boutique"
-                  value={storeName}
-                  onChange={(e) => setStoreName(e.target.value)}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Store Type
-                  </label>
-                  <div className="relative">
-                    <select
-                      className={inputClass + " appearance-none"}
-                      value={storeType}
-                      onChange={(e) => setStoreType(e.target.value)}
-                    >
-                      <option value="">Select Type</option>
-                      <option>Wine Shop</option>
-                      <option>Beer & Spirits Store</option>
-                      <option>Premium Boutique</option>
-                      <option>Supermarket (Licensed)</option>
-                    </select>
-                    <ChevronDown
-                      size={14}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Closing Time
+                    </label>
+                    <input
+                      type="time"
+                      className={inputClass}
+                      value={closingTime}
+                      onChange={(e) => setClosingTime(e.target.value)}
                     />
                   </div>
                 </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Shop Photo
+                  </label>
+                  <input
+                    ref={shopPhotoRef}
+                    type="file"
+                    accept="image/*"
+                    className="w-full text-sm"
+                    onChange={(e) => setShopPhotoFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+              </div>
+
+              {/* === LICENSE DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  License Details
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      License Type
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="e.g. FL-1"
+                      value={licenseType}
+                      onChange={(e) => setLicenseType(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Excise License No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="EXC-12345"
+                      value={exciseLicenseNo}
+                      onChange={(e) => setExciseLicenseNo(e.target.value)}
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Store Address
+                    Issuing Authority <span className="text-red-500">*</span>
                   </label>
                   <input
                     className={inputClass}
-                    placeholder="MG Road, Bangalore"
-                    value={storeAddress}
-                    onChange={(e) => setStoreAddress(e.target.value)}
+                    placeholder="State Excise Department"
+                    value={licenseIssuingAuthority}
+                    required
+                    onChange={(e) => setLicenseIssuingAuthority(e.target.value)}
                   />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Valid From <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className={inputClass}
+                      value={licenseValidFrom}
+                      required
+                      onChange={(e) => setLicenseValidFrom(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Valid Upto <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="date"
+                      className={inputClass}
+                      value={licenseValidUpto}
+                      required
+                      onChange={(e) => setLicenseValidUpto(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* === OWNER DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Owner Details
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Owner Name
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="Owner Name"
+                      value={ownerName}
+                      onChange={(e) => setOwnerName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Ownership Type
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="e.g. Proprietorship"
+                      value={ownershipType}
+                      onChange={(e) => setOwnershipType(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Authorized Signatory Name
+                  </label>
+                  <input
+                    className={inputClass}
+                    placeholder="Signatory Name"
+                    value={authorizedSignatoryName}
+                    onChange={(e) => setAuthorizedSignatoryName(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {/* === TAX AND COMPLIANCE === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Tax & Compliance
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      PAN No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="ABCDE1234F"
+                      value={panNo}
+                      onChange={(e) => setPanNo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      GST No
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="27ABCDE1234F1Z5"
+                      value={gstNo}
+                      onChange={(e) => setGstNo(e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* === REQUIRED DOCUMENTS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2 flex items-center gap-2">
+                  <Upload size={14} /> Required Documents
+                </h3>
+
+                <div className="space-y-3">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Excise License Document <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={exciseRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) => setExciseLicenseFile(e.target.files?.[0] ?? null)}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Trade License <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={tradeRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) => setTradeLicenseFile(e.target.files?.[0] ?? null)}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Shop Establishment License <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={shopEstabRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) => setShopEstablishmentLicenseFile(e.target.files?.[0] ?? null)}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      GST Certificate <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={gstCertRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) => setGstCertificateFile(e.target.files?.[0] ?? null)}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Fire NOC <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      ref={fireNocRef}
+                      type="file"
+                      accept="application/pdf,image/*"
+                      className="w-full text-sm"
+                      required
+                      onChange={(e) => setFireNocFile(e.target.files?.[0] ?? null)}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* === BANK DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Bank Details
+                </h3>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                    Bank Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    className={inputClass}
+                    placeholder="HDFC Bank"
+                    value={bankName}
+                    required
+                    onChange={(e) => setBankName(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Account No <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="50123456789"
+                      value={bankAcNo}
+                      required
+                      onChange={(e) => setBankAcNo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      IFSC Code <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="HDFC0000123"
+                      value={ifscCode}
+                      required
+                      onChange={(e) => setIfscCode(e.target.value)}
+                    />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Branch Name
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="MG Road Branch"
+                      value={bankBranchName}
+                      onChange={(e) => setBankBranchName(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      UPI ID
+                    </label>
+                    <input
+                      className={inputClass}
+                      placeholder="shop@upi"
+                      value={upiId}
+                      onChange={(e) => setUpiId(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Cancelled Cheque <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    ref={chequeRef}
+                    type="file"
+                    accept="application/pdf,image/*"
+                    className="w-full text-sm"
+                    required
+                    onChange={(e) => setCancelledChequeFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+              </div>
+
+              {/* === CONTACT DETAILS === */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
+                  Contact Details
+                </h3>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-1.5">
+                    Email Address <span className="text-red-500">*</span> <Info size={12} className="text-gray-300" />
+                  </label>
+                  <input
+                    type="email"
+                    className={inputClass}
+                    placeholder="contact@shop.com"
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Phone Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      className={inputClass}
+                      placeholder="9876543210"
+                      value={phnNo}
+                      required
+                      onChange={(e) => setPhnNo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
+                      Alt Phone Number
+                    </label>
+                    <input
+                      type="tel"
+                      className={inputClass}
+                      placeholder="Optional"
+                      value={altPhn}
+                      onChange={(e) => setAltPhn(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -377,98 +693,9 @@ const RetailerForm: React.FC = () => {
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
                   </div>
                   <span className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase tracking-wider">
-                    I agree to Bhukk's Store Terms and acknowledge the{" "}
-                    <a href="#" className="text-[#E23744] hover:underline">
-                      Privacy Notice
-                    </a>
-                    .
+                    I verify that all submitted documents and information are genuine. I agree to Bhukk's Retailer Terms.
                   </span>
                 </label>
-              </div>
-
-              {/* Document Uploads */}
-              <div className="pt-2 space-y-4">
-                <h4 className="text-sm font-bold text-[#1C1C1C] flex items-center gap-2">
-                  <Upload size={14} /> Required Documents
-                </h4>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Beverages Retail License
-                  </label>
-                  <input
-                    ref={retailLicenseRef}
-                    type="file"
-                    accept="application/pdf,image/*"
-                    className="w-full text-sm"
-                    onChange={(e) =>
-                      setRetailLicense(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Business Registration
-                  </label>
-                  <input
-                    ref={businessRegRef}
-                    type="file"
-                    accept="application/pdf,image/*"
-                    className="w-full text-sm"
-                    onChange={(e) =>
-                      setBusinessRegFile(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Owner ID & PAN
-                    </label>
-                    <input
-                      ref={ownerIdRef}
-                      type="file"
-                      accept="application/pdf,image/*"
-                      multiple
-                      className="w-full text-sm"
-                      onChange={(e) =>
-                        setOwnerIdFiles(
-                          e.target.files ? Array.from(e.target.files) : null,
-                        )
-                      }
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      Store Address Proof
-                    </label>
-                    <input
-                      ref={addressProofRef}
-                      type="file"
-                      accept="application/pdf,image/*"
-                      className="w-full text-sm"
-                      onChange={(e) =>
-                        setAddressProofFile(e.target.files?.[0] ?? null)
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Store Photos
-                  </label>
-                  <input
-                    ref={storePhotosRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="w-full text-sm"
-                    onChange={(e) =>
-                      setStorePhotos(
-                        e.target.files ? Array.from(e.target.files) : null,
-                      )
-                    }
-                  />
-                </div>
               </div>
 
               {submitError && (
@@ -487,7 +714,7 @@ const RetailerForm: React.FC = () => {
                 disabled={isSubmitting}
                 className="w-full bg-[#1C1C1C] text-white py-4 rounded-xl font-bold text-base hover:bg-black transition-all shadow-lg active:scale-[0.98] mt-2 flex items-center justify-center gap-2 disabled:opacity-60"
               >
-                {isSubmitting ? "Submitting..." : "Submit & Start Selling"}{" "}
+                {isSubmitting ? "Submitting..." : "Submit Application"}{" "}
                 <ArrowRight size={18} />
               </button>
             </form>
