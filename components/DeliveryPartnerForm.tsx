@@ -1,184 +1,145 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowLeft, CheckCircle, Upload, Bike } from "lucide-react";
 import { sendDeliveryPartnerMessage } from "@/api/services/deliverypartner.service";
 import TermsConditionsModal from "./TermsConditionsModal";
 
+const deliveryPartnerSchema = z.object({
+  fullName: z.string().min(1, "Full Name is required"),
+  email: z.string().email("Invalid email address"),
+  phoneNo: z.string().min(10, "Phone number must be at least 10 digits"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  dateOfBirth: z.string().optional(),
+  gender: z.string().optional(),
+  altPhoneNo: z.string().optional(),
+  idProofType: z.string().optional(),
+  addressLine: z.string().optional(),
+  vehicleType: z.string().optional(),
+  vehicleModel: z.string().optional(),
+  vehicleNumber: z.string().optional(),
+  drivingLicenseNumber: z.string().optional(),
+  servicingZones: z.string().optional(),
+  chaknaEnabled: z.boolean().optional(),
+  foodTradeLicenseAvailable: z.boolean().optional(),
+  fssaiNumber: z.string().optional(),
+  bankAccountName: z.string().optional(),
+  bankName: z.string().optional(),
+  accountNumber: z.string().optional(),
+  ifscCode: z.string().optional(),
+  upiId: z.string().optional(),
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms",
+  }),
+  profilePhotoFile: z.custom<FileList>().optional(),
+  idProofFile: z.custom<FileList>().optional(),
+  vehicleRcFile: z.custom<FileList>().optional(),
+  drivingLicenseFile: z.custom<FileList>().optional(),
+  cancelledChequeFile: z.custom<FileList>().optional(),
+});
+
+type DeliveryPartnerSchema = z.infer<typeof deliveryPartnerSchema>;
+
 const inputClass =
   "w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300";
 
 const DeliveryPartnerForm: React.FC = () => {
-  // Personal details
-  const [fullName, setFullName] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [gender, setGender] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNo, setPhoneNo] = useState("");
-  const [altPhoneNo, setAltPhoneNo] = useState("");
-  const [password, setPassword] = useState("");
-
-  // ID Proof
-  const [idProofType, setIdProofType] = useState("");
-
-  // Address
-  const [addressLine, setAddressLine] = useState("");
-
-  // Vehicle
-  const [vehicleType, setVehicleType] = useState("");
-  const [vehicleModel, setVehicleModel] = useState("");
-  const [vehicleNumber, setVehicleNumber] = useState("");
-
-  // Driving license
-  const [drivingLicenseNumber, setDrivingLicenseNumber] = useState("");
-
-  // Servicing zones
-  const [servicingZones, setServicingZones] = useState("");
-
-  // Toggles
-  const [chaknaEnabled, setChaknaEnabled] = useState(false);
-  const [foodTradeLicenseAvailable, setFoodTradeLicenseAvailable] =
-    useState(false);
-  const [fssaiNumber, setFssaiNumber] = useState("");
-
-  // Bank
-  const [bankAccountName, setBankAccountName] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [ifscCode, setIfscCode] = useState("");
-  const [upiId, setUpiId] = useState("");
-
-  const [termsAccepted, setTermsAccepted] = useState(true);
   const [showTerms, setShowTerms] = useState(false);
-
-  // File fields
-  const [profilePhotoFile, setProfilePhotoFile] = useState<File | null>(null);
-  const [idProofFile, setIdProofFile] = useState<File | null>(null);
-  const [vehicleRcFile, setVehicleRcFile] = useState<File | null>(null);
-  const [drivingLicenseFile, setDrivingLicenseFile] = useState<File | null>(
-    null,
-  );
-  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(
-    null,
-  );
-
-  // Refs for resetting file inputs
-  const profilePhotoRef = useRef<HTMLInputElement>(null);
-  const idProofRef = useRef<HTMLInputElement>(null);
-  const vehicleRcRef = useRef<HTMLInputElement>(null);
-  const drivingLicenseRef = useRef<HTMLInputElement>(null);
-  const cancelledChequeRef = useRef<HTMLInputElement>(null);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(null);
-    if (!termsAccepted) {
-      setSubmitError("You must accept the terms.");
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<DeliveryPartnerSchema>({
+    resolver: zodResolver(deliveryPartnerSchema),
+    defaultValues: {
+      chaknaEnabled: false,
+      foodTradeLicenseAvailable: false,
+      termsAccepted: true,
+    },
+  });
 
-    setIsSubmitting(true);
+  const onSubmit = async (data: DeliveryPartnerSchema) => {
+    setSubmitSuccess(null);
     try {
       const form = new FormData();
 
       // Required text
-      form.append("full_name", fullName);
-      form.append("email", email);
-      form.append("phone_no", phoneNo);
-      form.append("password", password);
+      form.append("full_name", data.fullName);
+      form.append("email", data.email);
+      form.append("phone_no", data.phoneNo);
+      form.append("password", data.password);
 
       // Optional text
-      if (dateOfBirth) form.append("date_of_birth", dateOfBirth);
-      if (gender) form.append("gender", gender);
-      if (altPhoneNo) form.append("alt_phone_no", altPhoneNo);
-      if (idProofType) form.append("id_proof_type", idProofType);
-      if (addressLine) form.append("address_line", addressLine);
-      if (vehicleType) form.append("vehicle_type", vehicleType);
-      if (vehicleModel) form.append("vehicle_model", vehicleModel);
-      if (vehicleNumber) form.append("vehicle_number", vehicleNumber);
-      if (drivingLicenseNumber)
-        form.append("driving_license_number", drivingLicenseNumber);
-      if (servicingZones) form.append("servicing_zones", servicingZones);
-      form.append("chakna_enabled", chaknaEnabled ? "true" : "false");
-      form.append(
-        "food_trade_license_available",
-        foodTradeLicenseAvailable ? "true" : "false",
-      );
-      if (fssaiNumber) form.append("fssai_number", fssaiNumber);
-      if (bankAccountName) form.append("bank_account_name", bankAccountName);
-      if (bankName) form.append("bank_name", bankName);
-      if (accountNumber) form.append("account_number", accountNumber);
-      if (ifscCode) form.append("ifsc_code", ifscCode);
-      if (upiId) form.append("upi_id", upiId);
+      if (data.dateOfBirth) form.append("date_of_birth", data.dateOfBirth);
+      if (data.gender) form.append("gender", data.gender);
+      if (data.altPhoneNo) form.append("alt_phone_no", data.altPhoneNo);
+      if (data.idProofType) form.append("id_proof_type", data.idProofType);
+      if (data.addressLine) form.append("address_line", data.addressLine);
+      if (data.vehicleType) form.append("vehicle_type", data.vehicleType);
+      if (data.vehicleModel) form.append("vehicle_model", data.vehicleModel);
+      if (data.vehicleNumber) form.append("vehicle_number", data.vehicleNumber);
+      if (data.drivingLicenseNumber) form.append("driving_license_number", data.drivingLicenseNumber);
+      if (data.servicingZones) form.append("servicing_zones", data.servicingZones);
+      
+      form.append("chakna_enabled", data.chaknaEnabled ? "true" : "false");
+      form.append("food_trade_license_available", data.foodTradeLicenseAvailable ? "true" : "false");
+      
+      if (data.fssaiNumber) form.append("fssai_number", data.fssaiNumber);
+      if (data.bankAccountName) form.append("bank_account_name", data.bankAccountName);
+      if (data.bankName) form.append("bank_name", data.bankName);
+      if (data.accountNumber) form.append("account_number", data.accountNumber);
+      if (data.ifscCode) form.append("ifsc_code", data.ifscCode);
+      if (data.upiId) form.append("upi_id", data.upiId);
 
-      // Files — send as UploadFile on the "*_url" keys the backend expects
-      if (profilePhotoFile) form.append("profile_photo_url", profilePhotoFile);
-      if (idProofFile) form.append("id_proof_url", idProofFile);
-      if (vehicleRcFile) form.append("vehicle_rc_url", vehicleRcFile);
-      if (drivingLicenseFile)
-        form.append("driving_license_url", drivingLicenseFile);
-      if (cancelledChequeFile)
-        form.append("cancelled_cheque_url", cancelledChequeFile);
+      // Files — send as UploadFile on the "*_url" keys
+      const profilePhoto = data.profilePhotoFile?.[0];
+      if (profilePhoto) form.append("profile_photo_url", profilePhoto);
+      
+      const idProof = data.idProofFile?.[0];
+      if (idProof) form.append("id_proof_url", idProof);
+
+      const vehicleRc = data.vehicleRcFile?.[0];
+      if (vehicleRc) form.append("vehicle_rc_url", vehicleRc);
+
+      const dLicense = data.drivingLicenseFile?.[0];
+      if (dLicense) form.append("driving_license_url", dLicense);
+
+      const cCheque = data.cancelledChequeFile?.[0];
+      if (cCheque) form.append("cancelled_cheque_url", cCheque);
 
       await sendDeliveryPartnerMessage(form);
-      setSubmitSuccess(
-        "Application submitted! Our team will contact you soon.",
-      );
-
-      // Reset text
-      setFullName("");
-      setDateOfBirth("");
-      setGender("");
-      setEmail("");
-      setPhoneNo("");
-      setAltPhoneNo("");
-      setPassword("");
-      setIdProofType("");
-      setAddressLine("");
-      setVehicleType("");
-      setVehicleModel("");
-      setVehicleNumber("");
-      setDrivingLicenseNumber("");
-      setServicingZones("");
-      setChaknaEnabled(false);
-      setFoodTradeLicenseAvailable(false);
-      setFssaiNumber("");
-      setBankAccountName("");
-      setBankName("");
-      setAccountNumber("");
-      setIfscCode("");
-      setUpiId("");
-
-      // Reset files
-      setProfilePhotoFile(null);
-      setIdProofFile(null);
-      setVehicleRcFile(null);
-      setDrivingLicenseFile(null);
-      setCancelledChequeFile(null);
-
-      [
-        profilePhotoRef,
-        idProofRef,
-        vehicleRcRef,
-        drivingLicenseRef,
-        cancelledChequeRef,
-      ].forEach((r) => {
-        if (r.current) r.current.value = "";
-      });
+      setSubmitSuccess("Application submitted! Our team will contact you soon.");
+      reset();
     } catch (err: any) {
       console.error("Delivery partner submit error", err);
-      // Prefer server-provided message when available
-      const serverMsg =
-        err?.response?.data?.detail || err?.response?.data || err?.message;
-      setSubmitError(
-        typeof serverMsg === "string" ? serverMsg : JSON.stringify(serverMsg),
-      );
-    } finally {
-      setIsSubmitting(false);
+      let errorMsg = "Submission failed. Please try again.";
+      const detail = err?.response?.data?.detail;
+      
+      if (Array.isArray(detail)) {
+        errorMsg = detail.map((e: any) => {
+          const field = e.loc?.[e.loc.length - 1] || "Field";
+          return `${field}: ${e.msg}`;
+        }).join(", ");
+      } else if (typeof detail === "string") {
+        errorMsg = detail;
+      } else if (err?.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      } else if (typeof err?.response?.data === "string") {
+        errorMsg = err.response.data;
+      } else if (err?.message) {
+        errorMsg = err.message;
+      }
+
+      setError("root", {
+        type: "server",
+        message: errorMsg,
+      });
     }
   };
 
@@ -262,7 +223,7 @@ const DeliveryPartnerForm: React.FC = () => {
               </p>
             </div>
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               {/* === PERSONAL DETAILS === */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
@@ -274,12 +235,11 @@ const DeliveryPartnerForm: React.FC = () => {
                     Full Name <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className={inputClass}
+                    className={`${inputClass} ${errors.fullName ? "border-red-500" : ""}`}
                     placeholder="John Doe"
-                    value={fullName}
-                    required
-                    onChange={(e) => setFullName(e.target.value)}
+                    {...register("fullName")}
                   />
+                  {errors.fullName && <span className="text-xs text-red-500 ml-1">{errors.fullName.message}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -290,8 +250,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       type="date"
                       className={inputClass}
-                      value={dateOfBirth}
-                      onChange={(e) => setDateOfBirth(e.target.value)}
+                      {...register("dateOfBirth")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -299,9 +258,8 @@ const DeliveryPartnerForm: React.FC = () => {
                       Gender
                     </label>
                     <select
-                      className={inputClass + " appearance-none"}
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
+                      className={`${inputClass} appearance-none`}
+                      {...register("gender")}
                     >
                       <option value="">Select</option>
                       <option value="Male">Male</option>
@@ -317,12 +275,11 @@ const DeliveryPartnerForm: React.FC = () => {
                   </label>
                   <input
                     type="email"
-                    className={inputClass}
+                    className={`${inputClass} ${errors.email ? "border-red-500" : ""}`}
                     placeholder="john@example.com"
-                    value={email}
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register("email")}
                   />
+                  {errors.email && <span className="text-xs text-red-500 ml-1">{errors.email.message}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -332,12 +289,11 @@ const DeliveryPartnerForm: React.FC = () => {
                     </label>
                     <input
                       type="tel"
-                      className={inputClass}
+                      className={`${inputClass} ${errors.phoneNo ? "border-red-500" : ""}`}
                       placeholder="9876543210"
-                      value={phoneNo}
-                      required
-                      onChange={(e) => setPhoneNo(e.target.value)}
+                      {...register("phoneNo")}
                     />
+                    {errors.phoneNo && <span className="text-xs text-red-500 ml-1">{errors.phoneNo.message}</span>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -347,8 +303,7 @@ const DeliveryPartnerForm: React.FC = () => {
                       type="tel"
                       className={inputClass}
                       placeholder="Optional"
-                      value={altPhoneNo}
-                      onChange={(e) => setAltPhoneNo(e.target.value)}
+                      {...register("altPhoneNo")}
                     />
                   </div>
                 </div>
@@ -359,12 +314,11 @@ const DeliveryPartnerForm: React.FC = () => {
                   </label>
                   <input
                     type="password"
-                    className={inputClass}
+                    className={`${inputClass} ${errors.password ? "border-red-500" : ""}`}
                     placeholder="Create a strong password"
-                    value={password}
-                    required
-                    onChange={(e) => setPassword(e.target.value)}
+                    {...register("password")}
                   />
+                  {errors.password && <span className="text-xs text-red-500 ml-1">{errors.password.message}</span>}
                 </div>
 
                 <div className="space-y-1.5">
@@ -372,13 +326,10 @@ const DeliveryPartnerForm: React.FC = () => {
                     <Upload size={12} /> Profile Photo
                   </label>
                   <input
-                    ref={profilePhotoRef}
                     type="file"
                     accept="image/*"
                     className="w-full text-sm"
-                    onChange={(e) =>
-                      setProfilePhotoFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("profilePhotoFile")}
                   />
                 </div>
               </div>
@@ -394,9 +345,8 @@ const DeliveryPartnerForm: React.FC = () => {
                     ID Proof Type
                   </label>
                   <select
-                    className={inputClass + " appearance-none"}
-                    value={idProofType}
-                    onChange={(e) => setIdProofType(e.target.value)}
+                    className={`${inputClass} appearance-none`}
+                    {...register("idProofType")}
                   >
                     <option value="">Select</option>
                     <option value="Aadhaar">Aadhaar</option>
@@ -411,13 +361,10 @@ const DeliveryPartnerForm: React.FC = () => {
                     <Upload size={12} /> ID Proof Document
                   </label>
                   <input
-                    ref={idProofRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    onChange={(e) =>
-                      setIdProofFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("idProofFile")}
                   />
                 </div>
               </div>
@@ -434,10 +381,9 @@ const DeliveryPartnerForm: React.FC = () => {
                   </label>
                   <textarea
                     rows={2}
-                    className={inputClass + " resize-none"}
+                    className={`${inputClass} resize-none`}
                     placeholder="Full Address"
-                    value={addressLine}
-                    onChange={(e) => setAddressLine(e.target.value)}
+                    {...register("addressLine")}
                   />
                 </div>
               </div>
@@ -454,9 +400,8 @@ const DeliveryPartnerForm: React.FC = () => {
                       Vehicle Type
                     </label>
                     <select
-                      className={inputClass + " appearance-none"}
-                      value={vehicleType}
-                      onChange={(e) => setVehicleType(e.target.value)}
+                      className={`${inputClass} appearance-none`}
+                      {...register("vehicleType")}
                     >
                       <option value="">Select</option>
                       <option value="Two-Wheeler">Two-Wheeler</option>
@@ -471,8 +416,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="e.g. Honda Activa 6G"
-                      value={vehicleModel}
-                      onChange={(e) => setVehicleModel(e.target.value)}
+                      {...register("vehicleModel")}
                     />
                   </div>
                 </div>
@@ -484,8 +428,7 @@ const DeliveryPartnerForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="WB26A1234"
-                    value={vehicleNumber}
-                    onChange={(e) => setVehicleNumber(e.target.value)}
+                    {...register("vehicleNumber")}
                   />
                 </div>
 
@@ -494,13 +437,10 @@ const DeliveryPartnerForm: React.FC = () => {
                     <Upload size={12} /> Vehicle RC
                   </label>
                   <input
-                    ref={vehicleRcRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    onChange={(e) =>
-                      setVehicleRcFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("vehicleRcFile")}
                   />
                 </div>
               </div>
@@ -518,8 +458,7 @@ const DeliveryPartnerForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="WB-123456789"
-                    value={drivingLicenseNumber}
-                    onChange={(e) => setDrivingLicenseNumber(e.target.value)}
+                    {...register("drivingLicenseNumber")}
                   />
                 </div>
 
@@ -528,13 +467,10 @@ const DeliveryPartnerForm: React.FC = () => {
                     <Upload size={12} /> License Document
                   </label>
                   <input
-                    ref={drivingLicenseRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    onChange={(e) =>
-                      setDrivingLicenseFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("drivingLicenseFile")}
                   />
                 </div>
               </div>
@@ -552,13 +488,12 @@ const DeliveryPartnerForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="e.g. South Kolkata, Salt Lake"
-                    value={servicingZones}
-                    onChange={(e) => setServicingZones(e.target.value)}
+                    {...register("servicingZones")}
                   />
                 </div>
               </div>
 
-              {/* === FOOD TRADE / FSSAI === */}
+              {/* === ADDITIONAL INFO === */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
                   Additional Info
@@ -570,8 +505,7 @@ const DeliveryPartnerForm: React.FC = () => {
                       <input
                         type="checkbox"
                         className="peer sr-only"
-                        checked={chaknaEnabled}
-                        onChange={(e) => setChaknaEnabled(e.target.checked)}
+                        {...register("chaknaEnabled")}
                       />
                       <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all" />
                       <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -586,10 +520,7 @@ const DeliveryPartnerForm: React.FC = () => {
                       <input
                         type="checkbox"
                         className="peer sr-only"
-                        checked={foodTradeLicenseAvailable}
-                        onChange={(e) =>
-                          setFoodTradeLicenseAvailable(e.target.checked)
-                        }
+                        {...register("foodTradeLicenseAvailable")}
                       />
                       <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all" />
                       <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -607,8 +538,7 @@ const DeliveryPartnerForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="Optional"
-                    value={fssaiNumber}
-                    onChange={(e) => setFssaiNumber(e.target.value)}
+                    {...register("fssaiNumber")}
                   />
                 </div>
               </div>
@@ -627,8 +557,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="John Doe"
-                      value={bankAccountName}
-                      onChange={(e) => setBankAccountName(e.target.value)}
+                      {...register("bankAccountName")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -638,8 +567,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="HDFC Bank"
-                      value={bankName}
-                      onChange={(e) => setBankName(e.target.value)}
+                      {...register("bankName")}
                     />
                   </div>
                 </div>
@@ -652,8 +580,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="50123456789"
-                      value={accountNumber}
-                      onChange={(e) => setAccountNumber(e.target.value)}
+                      {...register("accountNumber")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -663,8 +590,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="HDFC0000123"
-                      value={ifscCode}
-                      onChange={(e) => setIfscCode(e.target.value)}
+                      {...register("ifscCode")}
                     />
                   </div>
                 </div>
@@ -677,8 +603,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="you@upi"
-                      value={upiId}
-                      onChange={(e) => setUpiId(e.target.value)}
+                      {...register("upiId")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -686,13 +611,10 @@ const DeliveryPartnerForm: React.FC = () => {
                       <Upload size={12} /> Cancelled Cheque
                     </label>
                     <input
-                      ref={cancelledChequeRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      onChange={(e) =>
-                        setCancelledChequeFile(e.target.files?.[0] ?? null)
-                      }
+                      {...register("cancelledChequeFile")}
                     />
                   </div>
                 </div>
@@ -705,8 +627,7 @@ const DeliveryPartnerForm: React.FC = () => {
                     <input
                       type="checkbox"
                       className="peer sr-only"
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      {...register("termsAccepted")}
                     />
                     <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all" />
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -727,11 +648,12 @@ const DeliveryPartnerForm: React.FC = () => {
                     .
                   </span>
                 </label>
+                {errors.termsAccepted && <span className="text-xs text-red-500 mt-1 block">{errors.termsAccepted.message}</span>}
               </div>
 
-              {submitError && (
+              {errors.root && (
                 <div className="text-sm text-red-500 bg-red-50 p-3 rounded-xl">
-                  {submitError}
+                  {errors.root.message}
                 </div>
               )}
               {submitSuccess && (

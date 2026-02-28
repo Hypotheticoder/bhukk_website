@@ -1,4 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { motion } from "framer-motion";
 import TermsConditionsModal from "./TermsConditionsModal";
 import {
@@ -11,228 +14,181 @@ import {
 } from "lucide-react";
 import { sendDistributorMessage } from "@/api/services/distributor.service";
 
+const distributorSchema = z.object({
+  tradeName: z.string().min(1, "Trade Name is required"),
+  registeredAddress: z.string().min(1, "Registered Address is required"),
+  bankAcName: z.string().min(1, "Account Name is required"),
+  bankAcNo: z.string().min(1, "Account Number is required"),
+  ifscCode: z.string().min(1, "IFSC Code is required"),
+  phnNo: z.string().min(10, "Phone number must be at least 10 digits"),
+  email: z.string().email("Invalid email address"),
+
+  businessType: z.string().optional(),
+  gstNo: z.string().optional(),
+  panNo: z.string().optional(),
+  tanNo: z.string().optional(),
+  msmeRegistered: z.boolean().optional(),
+  warehouseAddress: z.string().optional(),
+  warehouseLicenseNo: z.string().optional(),
+  exciseLicenseNo: z.string().optional(),
+  licenseValidFrom: z.string().optional(),
+  licenseValidUpto: z.string().optional(),
+  bankBranchName: z.string().optional(),
+  upiId: z.string().optional(),
+  deliveryFleetSize: z.string().optional(),
+  servicingArea: z.string().optional(),
+  vehicleCount: z.string().optional(),
+  contactPersonName: z.string().optional(),
+  altPhnNo: z.string().optional(),
+
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms",
+  }),
+
+  companyIncorporationCertificateFile: z.custom<FileList>().optional(),
+  panFile: z.custom<FileList>().optional(),
+  gstCertificateFile: z.custom<FileList>().optional(),
+  msmeCertificateFile: z.custom<FileList>().optional(),
+  exciseLicenseFile: z.custom<FileList>().optional(),
+  tradeLicenseFile: z.custom<FileList>().optional(),
+  firesafetyCertificateFile: z.custom<FileList>().optional(),
+  transporationLogisticsFile: z.custom<FileList>().optional(),
+  cancelledChequeFile: z.custom<FileList>().optional(),
+});
+
+type DistributorSchema = z.infer<typeof distributorSchema>;
+
 const inputClass =
   "w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300";
 
 const DistributorForm: React.FC = () => {
-  // Text Fields
-  const [tradeName, setTradeName] = useState("");
-  const [businessType, setBusinessType] = useState("");
-
-  const [gstNo, setGstNo] = useState("");
-  const [panNo, setPanNo] = useState("");
-  const [tanNo, setTanNo] = useState("");
-
-  const [msmeRegistered, setMsmeRegistered] = useState(false);
-
-  const [registeredAddress, setRegisteredAddress] = useState("");
-  const [warehouseAddress, setWarehouseAddress] = useState("");
-
-  const [warehouseLicenseNo, setWarehouseLicenseNo] = useState("");
-  const [exciseLicenseNo, setExciseLicenseNo] = useState("");
-  const [licenseValidFrom, setLicenseValidFrom] = useState("");
-  const [licenseValidUpto, setLicenseValidUpto] = useState("");
-
-  const [bankAcName, setBankAcName] = useState("");
-  const [bankAcNo, setBankAcNo] = useState("");
-  const [ifscCode, setIfscCode] = useState("");
-  const [bankBranchName, setBankBranchName] = useState("");
-  const [upiId, setUpiId] = useState("");
-
-  const [deliveryFleetSize, setDeliveryFleetSize] = useState("");
-  const [servicingArea, setServicingArea] = useState("");
-  const [vehicleCount, setVehicleCount] = useState("");
-
-  const [contactPersonName, setContactPersonName] = useState("");
-  const [phnNo, setPhnNo] = useState("");
-  const [altPhnNo, setAltPhnNo] = useState("");
-  const [email, setEmail] = useState("");
-
-  const [termsAccepted, setTermsAccepted] = useState(true);
   const [showTerms, setShowTerms] = useState(false);
-
-  // File Fields
-  const [gstCertificateFile, setGstCertificateFile] = useState<File | null>(
-    null,
-  );
-  const [panFile, setPanFile] = useState<File | null>(null);
-  const [msmeCertificateFile, setMsmeCertificateFile] = useState<File | null>(
-    null,
-  );
-  const [firesafetyCertificateFile, setFiresafetyCertificateFile] =
-    useState<File | null>(null);
-  const [exciseLicenseFile, setExciseLicenseFile] = useState<File | null>(null);
-  const [
-    companyIncorporationCertificateFile,
-    setCompanyIncorporationCertificateFile,
-  ] = useState<File | null>(null);
-  const [tradeLicenseFile, setTradeLicenseFile] = useState<File | null>(null);
-  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(
-    null,
-  );
-  const [transporationLogisticsFile, setTransporationLogisticsFile] =
-    useState<File | null>(null);
-
-  // Refs for resetting file inputs
-  const gstCertRef = useRef<HTMLInputElement>(null);
-  const panRef = useRef<HTMLInputElement>(null);
-  const msmeCertRef = useRef<HTMLInputElement>(null);
-  const fireNocRef = useRef<HTMLInputElement>(null);
-  const exciseRef = useRef<HTMLInputElement>(null);
-  const companyIncRef = useRef<HTMLInputElement>(null);
-  const tradeRef = useRef<HTMLInputElement>(null);
-  const chequeRef = useRef<HTMLInputElement>(null);
-  const logisticsRef = useRef<HTMLInputElement>(null);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(null);
-    if (!termsAccepted) {
-      setSubmitError("You must accept the terms.");
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<DistributorSchema>({
+    resolver: zodResolver(distributorSchema),
+    defaultValues: {
+      msmeRegistered: false,
+      termsAccepted: true,
+    },
+  });
 
-    setIsSubmitting(true);
+  const onSubmit = async (data: DistributorSchema) => {
+    setSubmitSuccess(null);
     try {
       const form = new FormData();
 
       // Required Text
-      form.append("trade_name", tradeName);
-      form.append("registered_address", registeredAddress);
-      form.append("bank_ac_name", bankAcName);
-      form.append("bank_ac_no", bankAcNo);
-      form.append("ifsc_code", ifscCode);
-      form.append("phn_no", phnNo);
-      form.append("email", email);
+      form.append("trade_name", data.tradeName);
+      form.append("registered_address", data.registeredAddress);
+      form.append("bank_ac_name", data.bankAcName);
+      form.append("bank_ac_no", data.bankAcNo);
+      form.append("ifsc_code", data.ifscCode);
+      form.append("phn_no", data.phnNo);
+      form.append("email", data.email);
 
       // Optional Text
-      if (businessType) form.append("business_type", businessType);
-      if (gstNo) form.append("gst_no", gstNo);
-      if (panNo) form.append("pan_no", panNo);
-      if (tanNo) form.append("tan_no", tanNo);
-      form.append("msme_registered", msmeRegistered ? "true" : "false");
-      if (warehouseAddress) form.append("warehouse_address", warehouseAddress);
-      if (warehouseLicenseNo)
-        form.append("warehouse_license_no", warehouseLicenseNo);
-      if (exciseLicenseNo) form.append("excise_license_no", exciseLicenseNo);
-      if (licenseValidFrom) form.append("license_valid_from", licenseValidFrom);
-      if (licenseValidUpto) form.append("license_valid_upto", licenseValidUpto);
-      if (bankBranchName) form.append("bank_branch_name", bankBranchName);
-      if (upiId) form.append("upi_id", upiId);
-      if (deliveryFleetSize)
-        form.append("delivery_fleet_size", deliveryFleetSize);
-      if (servicingArea) form.append("servicing_area", servicingArea);
-      if (vehicleCount) form.append("vehicle_count", vehicleCount);
-      if (contactPersonName)
-        form.append("contact_person_name", contactPersonName);
-      if (altPhnNo) form.append("alt_phn_no", altPhnNo);
+      if (data.businessType) form.append("business_type", data.businessType);
+      if (data.gstNo) form.append("gst_no", data.gstNo);
+      if (data.panNo) form.append("pan_no", data.panNo);
+      if (data.tanNo) form.append("tan_no", data.tanNo);
+      
+      form.append("msme_registered", data.msmeRegistered ? "true" : "false");
+      
+      if (data.warehouseAddress) form.append("warehouse_address", data.warehouseAddress);
+      if (data.warehouseLicenseNo) form.append("warehouse_license_no", data.warehouseLicenseNo);
+      if (data.exciseLicenseNo) form.append("excise_license_no", data.exciseLicenseNo);
+      if (data.licenseValidFrom) form.append("license_valid_from", data.licenseValidFrom);
+      if (data.licenseValidUpto) form.append("license_valid_upto", data.licenseValidUpto);
+      if (data.bankBranchName) form.append("bank_branch_name", data.bankBranchName);
+      if (data.upiId) form.append("upi_id", data.upiId);
+      if (data.deliveryFleetSize) form.append("delivery_fleet_size", data.deliveryFleetSize);
+      if (data.servicingArea) form.append("servicing_area", data.servicingArea);
+      if (data.vehicleCount) form.append("vehicle_count", data.vehicleCount);
+      if (data.contactPersonName) form.append("contact_person_name", data.contactPersonName);
+      if (data.altPhnNo) form.append("alt_phn_no", data.altPhnNo);
 
       // Files
-      if (gstCertificateFile)
-        form.append("gst_certificate_file", gstCertificateFile);
-      if (panFile) form.append("pan_file", panFile);
-      if (msmeCertificateFile)
-        form.append("msme_certificate_file", msmeCertificateFile);
-      if (firesafetyCertificateFile)
-        form.append("firesafety_certificate_file", firesafetyCertificateFile);
-      if (exciseLicenseFile)
-        form.append("excise_license_file", exciseLicenseFile);
-      if (companyIncorporationCertificateFile)
-        form.append(
-          "company_incorporation_certificate_file",
-          companyIncorporationCertificateFile,
-        );
-      if (tradeLicenseFile) form.append("trade_license_file", tradeLicenseFile);
-      if (cancelledChequeFile)
-        form.append("cancelled_cheque_file", cancelledChequeFile);
-      if (transporationLogisticsFile)
-        form.append("transporation_logistics_file", transporationLogisticsFile);
+      const gstCert = data.gstCertificateFile?.[0];
+      const panFile = data.panFile?.[0];
+      const msmeCert = data.msmeCertificateFile?.[0];
+      const fireNoc = data.firesafetyCertificateFile?.[0];
+      const exciseFile = data.exciseLicenseFile?.[0];
+      const incCert = data.companyIncorporationCertificateFile?.[0];
+      const tradeFile = data.tradeLicenseFile?.[0];
+      const chequeFile = data.cancelledChequeFile?.[0];
+      const logisticFile = data.transporationLogisticsFile?.[0];
 
-      // Backend expects corresponding "*_url" UploadFile fields; send file objects for those keys too
-      if (gstCertificateFile)
-        form.append("gst_certificate_url", gstCertificateFile);
-      if (panFile) form.append("pan_url", panFile);
-      if (msmeCertificateFile)
-        form.append("msme_certificate_url", msmeCertificateFile);
-      if (firesafetyCertificateFile)
-        form.append("firesafety_certificate_url", firesafetyCertificateFile);
-      if (exciseLicenseFile)
-        form.append("excise_license_url", exciseLicenseFile);
-      if (companyIncorporationCertificateFile)
-        form.append(
-          "company_incorporation_certificate_url",
-          companyIncorporationCertificateFile,
-        );
-      if (tradeLicenseFile) form.append("trade_license_url", tradeLicenseFile);
-      if (cancelledChequeFile)
-        form.append("cancelled_cheque_url", cancelledChequeFile);
-      if (transporationLogisticsFile)
-        form.append("transporation_logistics_url", transporationLogisticsFile);
+      if (gstCert) {
+        form.append("gst_certificate_file", gstCert);
+        form.append("gst_certificate_url", gstCert);
+      }
+      if (panFile) {
+        form.append("pan_file", panFile);
+        form.append("pan_url", panFile);
+      }
+      if (msmeCert) {
+        form.append("msme_certificate_file", msmeCert);
+        form.append("msme_certificate_url", msmeCert);
+      }
+      if (fireNoc) {
+        form.append("firesafety_certificate_file", fireNoc);
+        form.append("firesafety_certificate_url", fireNoc);
+      }
+      if (exciseFile) {
+        form.append("excise_license_file", exciseFile);
+        form.append("excise_license_url", exciseFile);
+      }
+      if (incCert) {
+        form.append("company_incorporation_certificate_file", incCert);
+        form.append("company_incorporation_certificate_url", incCert);
+      }
+      if (tradeFile) {
+        form.append("trade_license_file", tradeFile);
+        form.append("trade_license_url", tradeFile);
+      }
+      if (chequeFile) {
+        form.append("cancelled_cheque_file", chequeFile);
+        form.append("cancelled_cheque_url", chequeFile);
+      }
+      if (logisticFile) {
+        form.append("transporation_logistics_file", logisticFile);
+        form.append("transporation_logistics_url", logisticFile);
+      }
 
       await sendDistributorMessage(form);
-      setSubmitSuccess(
-        "Application submitted! Our team will contact you soon.",
-      );
+      setSubmitSuccess("Application submitted! Our team will contact you soon.");
+      reset();
+    } catch (err: any) {
+      console.error("Distributor submit error", err);
+      let errorMsg = "Submission failed. Please try again.";
+      const detail = err?.response?.data?.detail;
+      
+      if (Array.isArray(detail)) {
+        errorMsg = detail.map((e: any) => {
+          const field = e.loc?.[e.loc.length - 1] || "Field";
+          return `${field}: ${e.msg}`;
+        }).join(", ");
+      } else if (typeof detail === "string") {
+        errorMsg = detail;
+      } else if (err?.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      } else if (typeof err?.response?.data === "string") {
+        errorMsg = err.response.data;
+      } else if (err?.message) {
+        errorMsg = err.message;
+      }
 
-      // Reset text
-      setTradeName("");
-      setBusinessType("");
-      setGstNo("");
-      setPanNo("");
-      setTanNo("");
-      setMsmeRegistered(false);
-      setRegisteredAddress("");
-      setWarehouseAddress("");
-      setWarehouseLicenseNo("");
-      setExciseLicenseNo("");
-      setLicenseValidFrom("");
-      setLicenseValidUpto("");
-      setBankAcName("");
-      setBankAcNo("");
-      setIfscCode("");
-      setBankBranchName("");
-      setUpiId("");
-      setDeliveryFleetSize("");
-      setServicingArea("");
-      setVehicleCount("");
-      setContactPersonName("");
-      setPhnNo("");
-      setAltPhnNo("");
-      setEmail("");
-
-      // Reset files
-      setGstCertificateFile(null);
-      setPanFile(null);
-      setMsmeCertificateFile(null);
-      setFiresafetyCertificateFile(null);
-      setExciseLicenseFile(null);
-      setCompanyIncorporationCertificateFile(null);
-      setTradeLicenseFile(null);
-      setCancelledChequeFile(null);
-      setTransporationLogisticsFile(null);
-
-      [
-        gstCertRef,
-        panRef,
-        msmeCertRef,
-        fireNocRef,
-        exciseRef,
-        companyIncRef,
-        tradeRef,
-        chequeRef,
-        logisticsRef,
-      ].forEach((r) => {
-        if (r.current) r.current.value = "";
+      setError("root", {
+        type: "server",
+        message: errorMsg,
       });
-    } catch {
-      setSubmitError("Submission failed. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -314,7 +270,7 @@ const DistributorForm: React.FC = () => {
               </p>
             </div>
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               {/* === COMPANY DETAILS === */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
@@ -326,12 +282,11 @@ const DistributorForm: React.FC = () => {
                     Trade Name <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className={inputClass}
+                    className={`${inputClass} ${errors.tradeName ? "border-red-500" : ""}`}
                     placeholder="ABC Beverages Distibutors Pvt Ltd"
-                    value={tradeName}
-                    required
-                    onChange={(e) => setTradeName(e.target.value)}
+                    {...register("tradeName")}
                   />
+                  {errors.tradeName && <span className="text-xs text-red-500 ml-1">{errors.tradeName.message}</span>}
                 </div>
 
                 <div className="space-y-1.5">
@@ -341,8 +296,7 @@ const DistributorForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="e.g. Private Limited, Partnership"
-                    value={businessType}
-                    onChange={(e) => setBusinessType(e.target.value)}
+                    {...register("businessType")}
                   />
                 </div>
 
@@ -352,16 +306,10 @@ const DistributorForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={companyIncRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setCompanyIncorporationCertificateFile(
-                        e.target.files?.[0] ?? null,
-                      )
-                    }
+                    {...register("companyIncorporationCertificateFile")}
                   />
                 </div>
               </div>
@@ -380,8 +328,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="ABCDE1234F"
-                      value={panNo}
-                      onChange={(e) => setPanNo(e.target.value)}
+                      {...register("panNo")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -390,12 +337,10 @@ const DistributorForm: React.FC = () => {
                       <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={panRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-xs"
-                      required
-                      onChange={(e) => setPanFile(e.target.files?.[0] ?? null)}
+                      {...register("panFile")}
                     />
                   </div>
                 </div>
@@ -408,8 +353,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="27ABCDE1234F1Z5"
-                      value={gstNo}
-                      onChange={(e) => setGstNo(e.target.value)}
+                      {...register("gstNo")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -418,14 +362,10 @@ const DistributorForm: React.FC = () => {
                       <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={gstCertRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-xs"
-                      required
-                      onChange={(e) =>
-                        setGstCertificateFile(e.target.files?.[0] ?? null)
-                      }
+                      {...register("gstCertificateFile")}
                     />
                   </div>
                 </div>
@@ -437,8 +377,7 @@ const DistributorForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="Optional TAN No"
-                    value={tanNo}
-                    onChange={(e) => setTanNo(e.target.value)}
+                    {...register("tanNo")}
                   />
                 </div>
               </div>
@@ -455,8 +394,7 @@ const DistributorForm: React.FC = () => {
                       <input
                         type="checkbox"
                         className="peer sr-only"
-                        checked={msmeRegistered}
-                        onChange={(e) => setMsmeRegistered(e.target.checked)}
+                        {...register("msmeRegistered")}
                       />
                       <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all" />
                       <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -473,14 +411,10 @@ const DistributorForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={msmeCertRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setMsmeCertificateFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("msmeCertificateFile")}
                   />
                 </div>
               </div>
@@ -497,12 +431,11 @@ const DistributorForm: React.FC = () => {
                   </label>
                   <textarea
                     rows={2}
-                    className={inputClass + " resize-none"}
+                    className={`${inputClass} resize-none ${errors.registeredAddress ? "border-red-500" : ""}`}
                     placeholder="Full Registered Office Address"
-                    value={registeredAddress}
-                    required
-                    onChange={(e) => setRegisteredAddress(e.target.value)}
+                    {...register("registeredAddress")}
                   />
+                  {errors.registeredAddress && <span className="text-xs text-red-500 ml-1">{errors.registeredAddress.message}</span>}
                 </div>
 
                 <div className="space-y-1.5">
@@ -513,8 +446,7 @@ const DistributorForm: React.FC = () => {
                     rows={2}
                     className={inputClass + " resize-none"}
                     placeholder="Warehouse / Godown Address"
-                    value={warehouseAddress}
-                    onChange={(e) => setWarehouseAddress(e.target.value)}
+                    {...register("warehouseAddress")}
                   />
                 </div>
               </div>
@@ -533,8 +465,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="Optional"
-                      value={warehouseLicenseNo}
-                      onChange={(e) => setWarehouseLicenseNo(e.target.value)}
+                      {...register("warehouseLicenseNo")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -544,8 +475,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="FL-XYZ"
-                      value={exciseLicenseNo}
-                      onChange={(e) => setExciseLicenseNo(e.target.value)}
+                      {...register("exciseLicenseNo")}
                     />
                   </div>
                 </div>
@@ -558,8 +488,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       type="date"
                       className={inputClass}
-                      value={licenseValidFrom}
-                      onChange={(e) => setLicenseValidFrom(e.target.value)}
+                      {...register("licenseValidFrom")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -569,8 +498,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       type="date"
                       className={inputClass}
-                      value={licenseValidUpto}
-                      onChange={(e) => setLicenseValidUpto(e.target.value)}
+                      {...register("licenseValidUpto")}
                     />
                   </div>
                 </div>
@@ -582,14 +510,10 @@ const DistributorForm: React.FC = () => {
                       <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={exciseRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      required
-                      onChange={(e) =>
-                        setExciseLicenseFile(e.target.files?.[0] ?? null)
-                      }
+                      {...register("exciseLicenseFile")}
                     />
                   </div>
 
@@ -599,14 +523,10 @@ const DistributorForm: React.FC = () => {
                       <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={tradeRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      required
-                      onChange={(e) =>
-                        setTradeLicenseFile(e.target.files?.[0] ?? null)
-                      }
+                      {...register("tradeLicenseFile")}
                     />
                   </div>
 
@@ -616,16 +536,10 @@ const DistributorForm: React.FC = () => {
                       <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={fireNocRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      required
-                      onChange={(e) =>
-                        setFiresafetyCertificateFile(
-                          e.target.files?.[0] ?? null,
-                        )
-                      }
+                      {...register("firesafetyCertificateFile")}
                     />
                   </div>
                 </div>
@@ -646,8 +560,7 @@ const DistributorForm: React.FC = () => {
                       type="number"
                       className={inputClass}
                       placeholder="e.g. 15"
-                      value={deliveryFleetSize}
-                      onChange={(e) => setDeliveryFleetSize(e.target.value)}
+                      {...register("deliveryFleetSize")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -658,8 +571,7 @@ const DistributorForm: React.FC = () => {
                       type="number"
                       className={inputClass}
                       placeholder="e.g. 5"
-                      value={vehicleCount}
-                      onChange={(e) => setVehicleCount(e.target.value)}
+                      {...register("vehicleCount")}
                     />
                   </div>
                 </div>
@@ -671,8 +583,7 @@ const DistributorForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="e.g. ['Mumbai', 'Pune', 'Nashik'] or comma separated"
-                    value={servicingArea}
-                    onChange={(e) => setServicingArea(e.target.value)}
+                    {...register("servicingArea")}
                   />
                 </div>
 
@@ -682,14 +593,10 @@ const DistributorForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={logisticsRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setTransporationLogisticsFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("transporationLogisticsFile")}
                   />
                 </div>
               </div>
@@ -705,12 +612,11 @@ const DistributorForm: React.FC = () => {
                     Bank Account Name <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className={inputClass}
+                    className={`${inputClass} ${errors.bankAcName ? "border-red-500" : ""}`}
                     placeholder="Account Name"
-                    value={bankAcName}
-                    required
-                    onChange={(e) => setBankAcName(e.target.value)}
+                    {...register("bankAcName")}
                   />
+                  {errors.bankAcName && <span className="text-xs text-red-500 ml-1">{errors.bankAcName.message}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -719,24 +625,22 @@ const DistributorForm: React.FC = () => {
                       Account No <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className={inputClass}
+                      className={`${inputClass} ${errors.bankAcNo ? "border-red-500" : ""}`}
                       placeholder="50123456789"
-                      value={bankAcNo}
-                      required
-                      onChange={(e) => setBankAcNo(e.target.value)}
+                      {...register("bankAcNo")}
                     />
+                    {errors.bankAcNo && <span className="text-xs text-red-500 ml-1">{errors.bankAcNo.message}</span>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
                       IFSC Code <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className={inputClass}
+                      className={`${inputClass} ${errors.ifscCode ? "border-red-500" : ""}`}
                       placeholder="HDFC0000123"
-                      value={ifscCode}
-                      required
-                      onChange={(e) => setIfscCode(e.target.value)}
+                      {...register("ifscCode")}
                     />
+                    {errors.ifscCode && <span className="text-xs text-red-500 ml-1">{errors.ifscCode.message}</span>}
                   </div>
                 </div>
 
@@ -748,8 +652,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="MG Road Branch"
-                      value={bankBranchName}
-                      onChange={(e) => setBankBranchName(e.target.value)}
+                      {...register("bankBranchName")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -759,8 +662,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="business@upi"
-                      value={upiId}
-                      onChange={(e) => setUpiId(e.target.value)}
+                      {...register("upiId")}
                     />
                   </div>
                 </div>
@@ -771,14 +673,10 @@ const DistributorForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={chequeRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setCancelledChequeFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("cancelledChequeFile")}
                   />
                 </div>
               </div>
@@ -796,8 +694,7 @@ const DistributorForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="Jane Doe"
-                    value={contactPersonName}
-                    onChange={(e) => setContactPersonName(e.target.value)}
+                    {...register("contactPersonName")}
                   />
                 </div>
 
@@ -808,12 +705,11 @@ const DistributorForm: React.FC = () => {
                   </label>
                   <input
                     type="email"
-                    className={inputClass}
+                    className={`${inputClass} ${errors.email ? "border-red-500" : ""}`}
                     placeholder="contact@company.com"
-                    value={email}
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register("email")}
                   />
+                  {errors.email && <span className="text-xs text-red-500 ml-1">{errors.email.message}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -823,12 +719,11 @@ const DistributorForm: React.FC = () => {
                     </label>
                     <input
                       type="tel"
-                      className={inputClass}
+                      className={`${inputClass} ${errors.phnNo ? "border-red-500" : ""}`}
                       placeholder="9876543210"
-                      value={phnNo}
-                      required
-                      onChange={(e) => setPhnNo(e.target.value)}
+                      {...register("phnNo")}
                     />
+                    {errors.phnNo && <span className="text-xs text-red-500 ml-1">{errors.phnNo.message}</span>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -838,8 +733,7 @@ const DistributorForm: React.FC = () => {
                       type="tel"
                       className={inputClass}
                       placeholder="Optional"
-                      value={altPhnNo}
-                      onChange={(e) => setAltPhnNo(e.target.value)}
+                      {...register("altPhnNo")}
                     />
                   </div>
                 </div>
@@ -851,8 +745,7 @@ const DistributorForm: React.FC = () => {
                     <input
                       type="checkbox"
                       className="peer sr-only"
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      {...register("termsAccepted")}
                     />
                     <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all" />
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -873,11 +766,12 @@ const DistributorForm: React.FC = () => {
                     .
                   </span>
                 </label>
+                {errors.termsAccepted && <span className="text-xs text-red-500 mt-1 block">{errors.termsAccepted.message}</span>}
               </div>
 
-              {submitError && (
+              {errors.root && (
                 <div className="text-sm text-red-500 bg-red-50 p-3 rounded-xl">
-                  {submitError}
+                  {errors.root.message}
                 </div>
               )}
               {submitSuccess && (

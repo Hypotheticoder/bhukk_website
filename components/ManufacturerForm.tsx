@@ -1,190 +1,194 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { motion } from "framer-motion";
 import TermsConditionsModal from "./TermsConditionsModal";
 import {
   ArrowRight,
   ArrowLeft,
   CheckCircle,
-  ChevronDown,
   Info,
   Upload,
   Factory,
 } from "lucide-react";
 import { sendManufacturerMessage } from "@/api/services/manufacturer.service";
 
+const manufacturerSchema = z.object({
+  companyName: z.string().min(1, "Company Name is required"),
+  registeredOfficeAddress: z.string().min(1, "Registered Office Address is required"),
+  bankName: z.string().min(1, "Bank Name is required"),
+  bankAcNo: z.string().min(1, "Account Number is required"),
+  ifscCode: z.string().min(1, "IFSC Code is required"),
+  email: z.string().email("Invalid email address"),
+  phnNo: z.string().min(10, "Phone number must be at least 10 digits"),
+
+  panNo: z.string().optional(),
+  gstNo: z.string().optional(),
+  factoryAddress: z.string().optional(),
+  exciseNo: z.string().optional(),
+  fssaiLicenseNo: z.string().optional(),
+  authSignatoryName: z.string().optional(),
+  upiId: z.string().optional(),
+  altPhnNo: z.string().optional(),
+
+  termsAccepted: z.boolean().refine((val) => val === true, {
+    message: "You must accept the terms",
+  }),
+
+  incorporationCertificateFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "Incorporation Certificate is required"),
+  panFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "PAN Document is required"),
+  gstCertFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "GST Certificate is required"),
+  exciseLicenseFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "Excise License is required"),
+  fssaiLicenseFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "FSSAI License is required"),
+  tradeLicenseFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "Trade License is required"),
+  authLetterFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "Auth Letter is required"),
+  cancelledChequeFile: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "Cancelled Cheque is required"),
+  manufacturerImagesFileList: z
+    .custom<FileList>()
+    .refine((files) => files && files.length > 0, "Manufacturer Images are required"),
+});
+
+type ManufacturerSchema = z.infer<typeof manufacturerSchema>;
+
 const inputClass =
   "w-full bg-[#F6F6F6] border-2 border-transparent focus:border-[#E23744] focus:bg-white rounded-xl px-4 py-3 transition-all outline-none text-gray-800 font-medium placeholder:text-gray-300";
 
 const ManufacturerForm: React.FC = () => {
-  // Text Fields
-  const [companyName, setCompanyName] = useState("");
-  const [panNo, setPanNo] = useState("");
-  const [gstNo, setGstNo] = useState("");
-  const [registeredOfficeAddress, setRegisteredOfficeAddress] = useState("");
-  const [factoryAddress, setFactoryAddress] = useState("");
-  const [exciseNo, setExciseNo] = useState("");
-  const [fssaiLicenseNo, setFssaiLicenseNo] = useState("");
-  const [authSignatoryName, setAuthSignatoryName] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [bankAcNo, setBankAcNo] = useState("");
-  const [ifscCode, setIfscCode] = useState("");
-  const [upiId, setUpiId] = useState("");
-  const [email, setEmail] = useState("");
-  const [phnNo, setPhnNo] = useState("");
-  const [altPhnNo, setAltPhnNo] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(true);
   const [showTerms, setShowTerms] = useState(false);
-
-  // File Fields
-  const [incorporationCertificate, setIncorporationCertificate] =
-    useState<File | null>(null);
-  const [panFile, setPanFile] = useState<File | null>(null);
-  const [gstCertFile, setGstCertFile] = useState<File | null>(null);
-  const [exciseLicenseFile, setExciseLicenseFile] = useState<File | null>(null);
-  const [fssaiLicenseFile, setFssaiLicenseFile] = useState<File | null>(null);
-  const [tradeLicenseFile, setTradeLicenseFile] = useState<File | null>(null);
-  const [authLetterFile, setAuthLetterFile] = useState<File | null>(null);
-  const [cancelledChequeFile, setCancelledChequeFile] = useState<File | null>(
-    null,
-  );
-  const [manufacturerImages, setManufacturerImages] = useState<File[] | null>(
-    null,
-  );
-
-  // Refs for resetting file inputs
-  const incCertRef = useRef<HTMLInputElement>(null);
-  const panFileRef = useRef<HTMLInputElement>(null);
-  const gstCertRef = useRef<HTMLInputElement>(null);
-  const exciseRef = useRef<HTMLInputElement>(null);
-  const fssaiRef = useRef<HTMLInputElement>(null);
-  const tradeRef = useRef<HTMLInputElement>(null);
-  const authLetterRef = useRef<HTMLInputElement>(null);
-  const chequeRef = useRef<HTMLInputElement>(null);
-  const imagesRef = useRef<HTMLInputElement>(null);
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitError(null);
-    setSubmitSuccess(null);
-    if (!termsAccepted) {
-      setSubmitError("You must accept the terms.");
-      return;
-    }
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<ManufacturerSchema>({
+    resolver: zodResolver(manufacturerSchema),
+    defaultValues: {
+      termsAccepted: true,
+    },
+  });
 
-    setIsSubmitting(true);
+  const onSubmit = async (data: ManufacturerSchema) => {
+    setSubmitSuccess(null);
     try {
       const form = new FormData();
 
       // Required Text
-      form.append("company_name", companyName);
-      form.append("registered_office_address", registeredOfficeAddress);
-      form.append("bank_name", bankName);
-      form.append("bank_ac_no", bankAcNo);
-      form.append("ifsc_code", ifscCode);
-      form.append("email", email);
-      form.append("phn_no", phnNo);
+      form.append("company_name", data.companyName);
+      form.append("registered_office_address", data.registeredOfficeAddress);
+      form.append("bank_name", data.bankName);
+      form.append("bank_ac_no", data.bankAcNo);
+      form.append("ifsc_code", data.ifscCode);
+      form.append("email", data.email);
+      form.append("phn_no", data.phnNo);
 
       // Optional Text
-      if (panNo) form.append("pan_no", panNo);
-      if (gstNo) form.append("gst_no", gstNo);
-      if (factoryAddress) form.append("factory_address", factoryAddress);
-      if (exciseNo) form.append("excise_no", exciseNo);
-      if (fssaiLicenseNo) form.append("fssai_license_no", fssaiLicenseNo);
-      if (authSignatoryName)
-        form.append("auth_signatory_name", authSignatoryName);
-      if (upiId) form.append("upi_id", upiId);
-      if (altPhnNo) form.append("alt_phn_no", altPhnNo);
+      if (data.panNo) form.append("pan_no", data.panNo);
+      if (data.gstNo) form.append("gst_no", data.gstNo);
+      if (data.factoryAddress) form.append("factory_address", data.factoryAddress);
+      if (data.exciseNo) form.append("excise_no", data.exciseNo);
+      if (data.fssaiLicenseNo) form.append("fssai_license_no", data.fssaiLicenseNo);
+      if (data.authSignatoryName) form.append("auth_signatory_name", data.authSignatoryName);
+      if (data.upiId) form.append("upi_id", data.upiId);
+      if (data.altPhnNo) form.append("alt_phn_no", data.altPhnNo);
 
       // Files
-      if (incorporationCertificate)
-        form.append("incorporation_certificate", incorporationCertificate);
-      if (panFile) form.append("pan_file", panFile);
-      if (gstCertFile) form.append("gst_cert_file", gstCertFile);
-      if (exciseLicenseFile)
-        form.append("excise_license_file", exciseLicenseFile);
-      if (fssaiLicenseFile) form.append("fssai_license_file", fssaiLicenseFile);
-      if (tradeLicenseFile) form.append("trade_license_file", tradeLicenseFile);
-      if (authLetterFile) form.append("auth_letter_file", authLetterFile);
-      if (cancelledChequeFile)
-        form.append("cancelled_cheque_file", cancelledChequeFile);
-      if (manufacturerImages?.length) {
-        manufacturerImages.forEach((f) =>
-          form.append("manufacturer_images", f),
-        );
+      const incCert = data.incorporationCertificateFile?.[0];
+      const panFile = data.panFile?.[0];
+      const gstCert = data.gstCertFile?.[0];
+      const exciseFile = data.exciseLicenseFile?.[0];
+      const fssaiFile = data.fssaiLicenseFile?.[0];
+      const tradeFile = data.tradeLicenseFile?.[0];
+      const authLetter = data.authLetterFile?.[0];
+      const cancelledCheque = data.cancelledChequeFile?.[0];
+      const imagesFiles = data.manufacturerImagesFileList;
+
+      if (incCert) {
+        form.append("incorporation_certificate", incCert);
+        form.append("incorporation_certificate_url", incCert);
+      }
+      if (panFile) {
+        form.append("pan_file", panFile);
+        form.append("pan_url", panFile);
+      }
+      if (gstCert) {
+        form.append("gst_cert_file", gstCert);
+        form.append("gst_cert_url", gstCert);
+      }
+      if (exciseFile) {
+        form.append("excise_license_file", exciseFile);
+        form.append("excise_license_url", exciseFile);
+      }
+      if (fssaiFile) {
+        form.append("fssai_license_file", fssaiFile);
+        form.append("fssai_license_url", fssaiFile);
+      }
+      if (tradeFile) {
+        form.append("trade_license_file", tradeFile);
+        form.append("trade_license_url", tradeFile);
+      }
+      if (authLetter) {
+        form.append("auth_letter_file", authLetter);
+        form.append("auth_letter_url", authLetter);
+      }
+      if (cancelledCheque) {
+        form.append("cancelled_cheque_file", cancelledCheque);
+        form.append("cancelled_cheque_url", cancelledCheque);
       }
 
-      // Also send UploadFile objects for backend-required "*_url" fields
-      if (incorporationCertificate)
-        form.append("incorporation_certificate_url", incorporationCertificate);
-      if (panFile) form.append("pan_url", panFile);
-      if (gstCertFile) form.append("gst_cert_url", gstCertFile);
-      if (exciseLicenseFile)
-        form.append("excise_license_url", exciseLicenseFile);
-      if (fssaiLicenseFile) form.append("fssai_license_url", fssaiLicenseFile);
-      if (tradeLicenseFile) form.append("trade_license_url", tradeLicenseFile);
-      if (authLetterFile) form.append("auth_letter_url", authLetterFile);
-      if (cancelledChequeFile)
-        form.append("cancelled_cheque_url", cancelledChequeFile);
-      if (manufacturerImages?.length) {
-        manufacturerImages.forEach((f) =>
-          form.append("manufacturer_images_url", f),
-        );
+      if (imagesFiles && imagesFiles.length > 0) {
+        Array.from(imagesFiles).forEach((f) => {
+          form.append("manufacturer_images", f);
+          form.append("manufacturer_images_url", f);
+        });
       }
 
       await sendManufacturerMessage(form);
-      setSubmitSuccess(
-        "Application submitted! Our team will contact you soon.",
-      );
+      setSubmitSuccess("Application submitted! Our team will contact you soon.");
+      reset();
+    } catch (err: any) {
+      console.error("Manufacturer submit error", err);
+      let errorMsg = "Submission failed. Please try again.";
+      const detail = err?.response?.data?.detail;
+      
+      if (Array.isArray(detail)) {
+        errorMsg = detail.map((e: any) => {
+          const field = e.loc?.[e.loc.length - 1] || "Field";
+          return `${field}: ${e.msg}`;
+        }).join(", ");
+      } else if (typeof detail === "string") {
+        errorMsg = detail;
+      } else if (err?.response?.data?.message) {
+        errorMsg = err.response.data.message;
+      } else if (typeof err?.response?.data === "string") {
+        errorMsg = err.response.data;
+      } else if (err?.message) {
+        errorMsg = err.message;
+      }
 
-      // Reset text
-      setCompanyName("");
-      setPanNo("");
-      setGstNo("");
-      setRegisteredOfficeAddress("");
-      setFactoryAddress("");
-      setExciseNo("");
-      setFssaiLicenseNo("");
-      setAuthSignatoryName("");
-      setBankName("");
-      setBankAcNo("");
-      setIfscCode("");
-      setUpiId("");
-      setEmail("");
-      setPhnNo("");
-      setAltPhnNo("");
-
-      // Reset files
-      setIncorporationCertificate(null);
-      setPanFile(null);
-      setGstCertFile(null);
-      setExciseLicenseFile(null);
-      setFssaiLicenseFile(null);
-      setTradeLicenseFile(null);
-      setAuthLetterFile(null);
-      setCancelledChequeFile(null);
-      setManufacturerImages(null);
-
-      [
-        incCertRef,
-        panFileRef,
-        gstCertRef,
-        exciseRef,
-        fssaiRef,
-        tradeRef,
-        authLetterRef,
-        chequeRef,
-        imagesRef,
-      ].forEach((r) => {
-        if (r.current) r.current.value = "";
+      setError("root", {
+        type: "server",
+        message: errorMsg,
       });
-    } catch {
-      setSubmitError("Submission failed. Please try again.");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -265,7 +269,7 @@ const ManufacturerForm: React.FC = () => {
               </p>
             </div>
 
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
               {/* === COMPANY DETAILS === */}
               <div className="space-y-4">
                 <h3 className="text-sm font-bold text-[#981A1E] uppercase tracking-widest border-b pb-2">
@@ -277,29 +281,25 @@ const ManufacturerForm: React.FC = () => {
                     Company Name <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className={inputClass}
+                    className={`${inputClass} ${errors.companyName ? "border-red-500" : ""}`}
                     placeholder="M/S Royal Beverages Pvt Ltd"
-                    value={companyName}
-                    required
-                    onChange={(e) => setCompanyName(e.target.value)}
+                    {...register("companyName")}
                   />
+                  {errors.companyName && <span className="text-xs text-red-500 ml-1">{errors.companyName.message}</span>}
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                    Incorporation Certificate{" "}
+                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                    <Upload size={12} /> Incorporation Certificate{" "}
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={incCertRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setIncorporationCertificate(e.target.files?.[0] ?? null)
-                    }
+                    {...register("incorporationCertificateFile")}
                   />
+                  {errors.incorporationCertificateFile && <span className="text-xs text-red-500 ml-1">{errors.incorporationCertificateFile.message?.toString()}</span>}
                 </div>
               </div>
 
@@ -317,8 +317,7 @@ const ManufacturerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="ABCDE1234F"
-                      value={panNo}
-                      onChange={(e) => setPanNo(e.target.value)}
+                      {...register("panNo")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -328,40 +327,37 @@ const ManufacturerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="27ABCDE1234F1Z5"
-                      value={gstNo}
-                      onChange={(e) => setGstNo(e.target.value)}
+                      {...register("gstNo")}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      PAN Document <span className="text-red-500">*</span>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                      <Upload size={12} /> PAN Document{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={panFileRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      required
-                      onChange={(e) => setPanFile(e.target.files?.[0] ?? null)}
+                      {...register("panFile")}
                     />
+                    {errors.panFile && <span className="text-xs text-red-500 ml-1">{errors.panFile.message?.toString()}</span>}
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
-                      GST Certificate <span className="text-red-500">*</span>
+                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
+                      <Upload size={12} /> GST Certificate{" "}
+                      <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={gstCertRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      required
-                      onChange={(e) =>
-                        setGstCertFile(e.target.files?.[0] ?? null)
-                      }
+                      {...register("gstCertFile")}
                     />
+                    {errors.gstCertFile && <span className="text-xs text-red-500 ml-1">{errors.gstCertFile.message?.toString()}</span>}
                   </div>
                 </div>
               </div>
@@ -379,12 +375,11 @@ const ManufacturerForm: React.FC = () => {
                   </label>
                   <textarea
                     rows={2}
-                    className={inputClass + " resize-none"}
+                    className={`${inputClass} resize-none ${errors.registeredOfficeAddress ? "border-red-500" : ""}`}
                     placeholder="Full Address"
-                    value={registeredOfficeAddress}
-                    required
-                    onChange={(e) => setRegisteredOfficeAddress(e.target.value)}
+                    {...register("registeredOfficeAddress")}
                   />
+                  {errors.registeredOfficeAddress && <span className="text-xs text-red-500 ml-1">{errors.registeredOfficeAddress.message}</span>}
                 </div>
 
                 <div className="space-y-1.5">
@@ -395,8 +390,7 @@ const ManufacturerForm: React.FC = () => {
                     rows={2}
                     className={inputClass + " resize-none"}
                     placeholder="Manufacturing Unit Address"
-                    value={factoryAddress}
-                    onChange={(e) => setFactoryAddress(e.target.value)}
+                    {...register("factoryAddress")}
                   />
                 </div>
               </div>
@@ -415,8 +409,7 @@ const ManufacturerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="EXC-123"
-                      value={exciseNo}
-                      onChange={(e) => setExciseNo(e.target.value)}
+                      {...register("exciseNo")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -426,8 +419,7 @@ const ManufacturerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="1002000000"
-                      value={fssaiLicenseNo}
-                      onChange={(e) => setFssaiLicenseNo(e.target.value)}
+                      {...register("fssaiLicenseNo")}
                     />
                   </div>
                 </div>
@@ -438,15 +430,12 @@ const ManufacturerForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={exciseRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setExciseLicenseFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("exciseLicenseFile")}
                   />
+                  {errors.exciseLicenseFile && <span className="text-xs text-red-500 ml-1">{errors.exciseLicenseFile.message?.toString()}</span>}
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
@@ -454,15 +443,12 @@ const ManufacturerForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={fssaiRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setFssaiLicenseFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("fssaiLicenseFile")}
                   />
+                  {errors.fssaiLicenseFile && <span className="text-xs text-red-500 ml-1">{errors.fssaiLicenseFile.message?.toString()}</span>}
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1 flex items-center gap-2">
@@ -470,15 +456,12 @@ const ManufacturerForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={tradeRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setTradeLicenseFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("tradeLicenseFile")}
                   />
+                  {errors.tradeLicenseFile && <span className="text-xs text-red-500 ml-1">{errors.tradeLicenseFile.message?.toString()}</span>}
                 </div>
               </div>
 
@@ -494,8 +477,7 @@ const ManufacturerForm: React.FC = () => {
                   <input
                     className={inputClass}
                     placeholder="Full Name of Signatory"
-                    value={authSignatoryName}
-                    onChange={(e) => setAuthSignatoryName(e.target.value)}
+                    {...register("authSignatoryName")}
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -504,15 +486,12 @@ const ManufacturerForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={authLetterRef}
                     type="file"
                     accept="application/pdf,image/*"
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setAuthLetterFile(e.target.files?.[0] ?? null)
-                    }
+                    {...register("authLetterFile")}
                   />
+                  {errors.authLetterFile && <span className="text-xs text-red-500 ml-1">{errors.authLetterFile.message?.toString()}</span>}
                 </div>
               </div>
 
@@ -527,18 +506,13 @@ const ManufacturerForm: React.FC = () => {
                     <span className="text-red-500">*</span>
                   </label>
                   <input
-                    ref={imagesRef}
                     type="file"
                     accept="image/*"
                     multiple
                     className="w-full text-sm"
-                    required
-                    onChange={(e) =>
-                      setManufacturerImages(
-                        e.target.files ? Array.from(e.target.files) : null,
-                      )
-                    }
+                    {...register("manufacturerImagesFileList")}
                   />
+                  {errors.manufacturerImagesFileList && <span className="text-xs text-red-500 ml-1">{errors.manufacturerImagesFileList.message?.toString()}</span>}
                 </div>
               </div>
 
@@ -553,12 +527,11 @@ const ManufacturerForm: React.FC = () => {
                     Bank Name <span className="text-red-500">*</span>
                   </label>
                   <input
-                    className={inputClass}
+                    className={`${inputClass} ${errors.bankName ? "border-red-500" : ""}`}
                     placeholder="HDFC Bank"
-                    value={bankName}
-                    required
-                    onChange={(e) => setBankName(e.target.value)}
+                    {...register("bankName")}
                   />
+                  {errors.bankName && <span className="text-xs text-red-500 ml-1">{errors.bankName.message}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -567,24 +540,22 @@ const ManufacturerForm: React.FC = () => {
                       Account No <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className={inputClass}
+                      className={`${inputClass} ${errors.bankAcNo ? "border-red-500" : ""}`}
                       placeholder="50123456789"
-                      value={bankAcNo}
-                      required
-                      onChange={(e) => setBankAcNo(e.target.value)}
+                      {...register("bankAcNo")}
                     />
+                    {errors.bankAcNo && <span className="text-xs text-red-500 ml-1">{errors.bankAcNo.message}</span>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
                       IFSC Code <span className="text-red-500">*</span>
                     </label>
                     <input
-                      className={inputClass}
+                      className={`${inputClass} ${errors.ifscCode ? "border-red-500" : ""}`}
                       placeholder="HDFC0000123"
-                      value={ifscCode}
-                      required
-                      onChange={(e) => setIfscCode(e.target.value)}
+                      {...register("ifscCode")}
                     />
+                    {errors.ifscCode && <span className="text-xs text-red-500 ml-1">{errors.ifscCode.message}</span>}
                   </div>
                 </div>
 
@@ -596,8 +567,7 @@ const ManufacturerForm: React.FC = () => {
                     <input
                       className={inputClass}
                       placeholder="company@upi"
-                      value={upiId}
-                      onChange={(e) => setUpiId(e.target.value)}
+                      {...register("upiId")}
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -606,15 +576,12 @@ const ManufacturerForm: React.FC = () => {
                       <span className="text-red-500">*</span>
                     </label>
                     <input
-                      ref={chequeRef}
                       type="file"
                       accept="application/pdf,image/*"
                       className="w-full text-sm"
-                      required
-                      onChange={(e) =>
-                        setCancelledChequeFile(e.target.files?.[0] ?? null)
-                      }
+                      {...register("cancelledChequeFile")}
                     />
+                    {errors.cancelledChequeFile && <span className="text-xs text-red-500 ml-1">{errors.cancelledChequeFile.message?.toString()}</span>}
                   </div>
                 </div>
               </div>
@@ -631,12 +598,11 @@ const ManufacturerForm: React.FC = () => {
                   </label>
                   <input
                     type="email"
-                    className={inputClass}
+                    className={`${inputClass} ${errors.email ? "border-red-500" : ""}`}
                     placeholder="contact@company.com"
-                    value={email}
-                    required
-                    onChange={(e) => setEmail(e.target.value)}
+                    {...register("email")}
                   />
+                  {errors.email && <span className="text-xs text-red-500 ml-1">{errors.email.message}</span>}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -646,12 +612,11 @@ const ManufacturerForm: React.FC = () => {
                     </label>
                     <input
                       type="tel"
-                      className={inputClass}
+                      className={`${inputClass} ${errors.phnNo ? "border-red-500" : ""}`}
                       placeholder="9876543210"
-                      value={phnNo}
-                      required
-                      onChange={(e) => setPhnNo(e.target.value)}
+                      {...register("phnNo")}
                     />
+                    {errors.phnNo && <span className="text-xs text-red-500 ml-1">{errors.phnNo.message}</span>}
                   </div>
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">
@@ -661,8 +626,7 @@ const ManufacturerForm: React.FC = () => {
                       type="tel"
                       className={inputClass}
                       placeholder="Optional"
-                      value={altPhnNo}
-                      onChange={(e) => setAltPhnNo(e.target.value)}
+                      {...register("altPhnNo")}
                     />
                   </div>
                 </div>
@@ -674,8 +638,7 @@ const ManufacturerForm: React.FC = () => {
                     <input
                       type="checkbox"
                       className="peer sr-only"
-                      checked={termsAccepted}
-                      onChange={(e) => setTermsAccepted(e.target.checked)}
+                      {...register("termsAccepted")}
                     />
                     <div className="w-5 h-5 border-2 border-gray-200 rounded peer-checked:bg-[#E23744] peer-checked:border-[#E23744] transition-all" />
                     <CheckCircle className="absolute inset-0 text-white opacity-0 peer-checked:opacity-100 transition-opacity p-0.5" />
@@ -696,11 +659,12 @@ const ManufacturerForm: React.FC = () => {
                     .
                   </span>
                 </label>
+                {errors.termsAccepted && <span className="text-xs text-red-500 mt-1 block">{errors.termsAccepted.message}</span>}
               </div>
 
-              {submitError && (
+              {errors.root && (
                 <div className="text-sm text-red-500 bg-red-50 p-3 rounded-xl">
-                  {submitError}
+                  {errors.root.message}
                 </div>
               )}
               {submitSuccess && (
