@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: token_frontend
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    networks:
+      - token_net
+
+networks:
+  token_net:
+    driver: bridge
